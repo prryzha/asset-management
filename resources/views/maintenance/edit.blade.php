@@ -16,19 +16,19 @@
         </x-slot:actions>
     </x-ui.page-header>
 
-    <div class="card">
-        <div class="card-header">
-            <h3>Detail Perawatan</h3>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('maintenance.update', $maintenanceSchedule) }}" method="POST">
-                @csrf @method('PUT')
+    <form action="{{ route('maintenance.update', $maintenanceSchedule) }}" method="POST" x-data="{ submitting: false }" x-on:submit="submitting = true">
+        @csrf @method('PUT')
 
-                @php
-                    $normalAssets = $assets->whereNotIn('id', $damagedAssetIds);
-                    $damagedAssets = $assets->whereIn('id', $damagedAssetIds);
-                @endphp
+        @php
+            $normalAssets = $assets->whereNotIn('id', $damagedAssetIds);
+            $damagedAssets = $assets->whereIn('id', $damagedAssetIds);
+        @endphp
 
+        <div class="card">
+            <div class="card-header">
+                <h3>Detail Perawatan</h3>
+            </div>
+            <div class="card-body">
                 <div class="space-y-5">
                     <div class="form-group">
                         <label class="form-label">Aset <span class="text-danger">*</span></label>
@@ -71,17 +71,26 @@
                         @error('catatan')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
                 </div>
+            </div>
 
-                <div class="card-footer">
-                    <div class="flex items-center gap-3">
-                        <button type="submit" class="btn-primary">Update</button>
-                        <a href="{{ route('maintenance.index') }}" class="btn-secondary">Kembali</a>
-                    </div>
+            <div class="card-footer">
+                <div class="flex items-center justify-end gap-3">
+                    <a href="{{ route('maintenance.index') }}" class="btn-secondary btn-sm">Batal</a>
+                    <button type="submit" :disabled="submitting" class="btn-primary btn-sm">
+                        <span x-show="!submitting">Simpan Perubahan</span>
+                        <span x-show="submitting" class="inline-flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                            </svg>
+                            Menyimpan...
+                        </span>
+                    </button>
                 </div>
-
-            </form>
+            </div>
         </div>
-    </div>
+
+    </form>
 
 </div>
 @endsection

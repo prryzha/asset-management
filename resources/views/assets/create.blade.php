@@ -138,20 +138,16 @@
                     </div>
 
                     {{-- Foto --}}
-                    <div class="lg:col-span-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <label class="form-label">Foto Aset</label>
-                                <div class="flex items-start gap-6">
-                                    <div class="flex-1">
-                                        <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Format: JPG, JPEG, PNG. Maks: 2MB</p>
-                                        @error('foto')<p class="form-error">{{ $message }}</p>@enderror
-                                    </div>
-                                    <div id="foto_preview" class="w-32 h-32 border-2 border-dashed border-[#E5E7EB] dark:border-gray-600 flex items-center justify-center overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-700 hidden">
-                                        <img id="foto_preview_img" class="w-full h-full object-cover">
-                                    </div>
-                                </div>
+                    <div class="lg:col-span-2 pt-6 border-t border-[#E5E7EB] dark:border-gray-700">
+                        <label class="form-label">Foto Aset</label>
+                        <div class="flex items-start gap-6">
+                            <div class="flex-1">
+                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Format: JPG, JPEG, PNG. Maks: 2MB</p>
+                                @error('foto')<p class="form-error">{{ $message }}</p>@enderror
+                            </div>
+                            <div id="foto_preview" class="w-32 h-32 border-2 border-dashed border-[#E5E7EB] dark:border-gray-600 flex items-center justify-center overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-700 hidden">
+                                <img id="foto_preview_img" class="w-full h-full object-cover">
                             </div>
                         </div>
                     </div>
@@ -161,8 +157,8 @@
 
             <div class="card-footer">
                 <div class="flex items-center justify-end gap-3">
-                    <a href="{{ route('assets.index') }}" class="btn-secondary">Batal</a>
-                    <button type="submit" id="submitBtn" class="btn-primary">
+                    <a href="{{ route('assets.index') }}" class="btn-secondary btn-sm">Batal</a>
+                    <button type="submit" id="submitBtn" class="btn-primary btn-sm">
                         <span id="submitText">Simpan Aset</span>
                         <span id="submitLoading" class="inline-flex items-center gap-2 hidden">
                             <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">

@@ -29,9 +29,9 @@
                 <h3>Informasi Profile</h3>
                 <p class="text-xs text-secondary mt-0.5">Perbarui informasi akun dan email anda.</p>
             </div>
-            <div class="card-body">
-                <form method="post" action="{{ route('profile.update') }}">
-                    @csrf @method('patch')
+            <form method="post" action="{{ route('profile.update') }}">
+                @csrf @method('patch')
+                <div class="card-body">
                     <div class="space-y-5">
                         <div class="form-group">
                             <label class="form-label">Nama</label>
@@ -44,13 +44,13 @@
                             @error('email')<p class="form-error">{{ $message }}</p>@enderror
                         </div>
                     </div>
-                    <div class="card-footer -mx-6 -mb-6 mt-6">
-                        <div class="flex items-center gap-4">
-                            <button type="submit" class="btn-primary">Simpan</button>
-                        </div>
+                </div>
+                <div class="card-footer">
+                    <div class="flex items-center gap-4">
+                        <button type="submit" class="btn-primary btn-sm">Simpan</button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
 
         {{-- Update Password --}}
@@ -59,9 +59,9 @@
                 <h3>Ubah Password</h3>
                 <p class="text-xs text-secondary mt-0.5">Pastikan akun menggunakan password yang kuat.</p>
             </div>
-            <div class="card-body">
-                <form method="post" action="{{ route('password.update') }}">
-                    @csrf @method('put')
+            <form method="post" action="{{ route('password.update') }}">
+                @csrf @method('put')
+                <div class="card-body">
                     <div class="space-y-5">
                         <div class="form-group">
                             <label class="form-label">Password Saat Ini</label>
@@ -79,13 +79,13 @@
                             @error('password_confirmation', 'updatePassword')<p class="form-error">{{ $message }}</p>@enderror
                         </div>
                     </div>
-                    <div class="card-footer -mx-6 -mb-6 mt-6">
-                        <div class="flex items-center gap-4">
-                            <button type="submit" class="btn-primary">Simpan</button>
-                        </div>
+                </div>
+                <div class="card-footer">
+                    <div class="flex items-center gap-4">
+                        <button type="submit" class="btn-primary btn-sm">Simpan</button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
 
         {{-- Delete Account --}}

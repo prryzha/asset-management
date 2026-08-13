@@ -46,10 +46,10 @@
         <div class="card-header">
             <h3>Hasil Perawatan</h3>
         </div>
-        <div class="card-body">
-            <form action="{{ route('maintenance.complete', $maintenanceSchedule) }}" method="POST">
-                @csrf @method('PUT')
+        <form action="{{ route('maintenance.complete', $maintenanceSchedule) }}" method="POST">
+            @csrf @method('PUT')
 
+            <div class="card-body">
                 <div class="space-y-5">
                     <div class="form-group">
                         <label class="form-label">Kondisi Setelah Perawatan <span class="text-danger">*</span></label>
@@ -67,21 +67,20 @@
                         @error('catatan_selesai')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
                 </div>
+            </div>
 
-                <div class="card-footer">
-                    <div class="flex items-center gap-3">
-                        <button type="submit" class="btn-success">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Selesaikan Perawatan
-                        </button>
-                        <a href="{{ route('maintenance.index') }}" class="btn-secondary">Kembali</a>
-                    </div>
+            <div class="card-footer">
+                <div class="flex items-center justify-end gap-3">
+                    <a href="{{ route('maintenance.index') }}" class="btn-secondary btn-sm">Batal</a>
+                    <button type="submit" class="btn-success btn-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Selesaikan Perawatan
+                    </button>
                 </div>
-
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 
 </div>
