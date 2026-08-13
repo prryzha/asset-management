@@ -105,7 +105,7 @@
             </table>
         </div>
         @if($transactions->hasPages())
-        <div class="px-5 py-3 border-t border-[#E5E7EB]">
+        <div class="px-5 py-3 border-t border-[#E5E7EB] dark:border-gray-700">
             {{ $transactions->links() }}
         </div>
         @endif

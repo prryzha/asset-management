@@ -132,6 +132,7 @@
                     html.classList.remove('dark');
                 }
                 localStorage.setItem('darkMode', isDark ? 'true' : 'false');
+                window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark } }));
             }
 
             // Apply saved preference

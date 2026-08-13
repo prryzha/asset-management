@@ -29,6 +29,7 @@ export default {
             },
             colors: {
                 primary: {
+                    DEFAULT: '#2563EB',
                     50: '#EFF6FF',
                     100: '#DBEAFE',
                     200: '#BFDBFE',
@@ -41,6 +42,7 @@ export default {
                     900: '#1E3A8A',
                 },
                 success: {
+                    DEFAULT: '#16A34A',
                     50: '#F0FDF4',
                     100: '#DCFCE7',
                     400: '#4ADE80',
@@ -49,6 +51,7 @@ export default {
                     700: '#15803D',
                 },
                 warning: {
+                    DEFAULT: '#D97706',
                     50: '#FFFBEB',
                     100: '#FEF3C7',
                     400: '#FBBF24',
@@ -57,6 +60,7 @@ export default {
                     700: '#B45309',
                 },
                 danger: {
+                    DEFAULT: '#DC2626',
                     50: '#FEF2F2',
                     100: '#FEE2E2',
                     400: '#F87171',
@@ -65,6 +69,7 @@ export default {
                     700: '#B91C1C',
                 },
                 info: {
+                    DEFAULT: '#0284C7',
                     50: '#F0F9FF',
                     100: '#E0F2FE',
                     500: '#0EA5E9',

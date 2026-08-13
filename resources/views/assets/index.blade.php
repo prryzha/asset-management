@@ -76,12 +76,12 @@
                         <td>
                             <div class="flex items-center gap-3">
                                 @if($asset->foto)
-                                <div class="w-10 h-10 overflow-hidden flex-shrink-0 bg-gray-100">
+                                <div class="w-10 h-10 overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-700">
                                     <img src="{{ asset('storage/'.$asset->foto) }}" alt="{{ $asset->nama_barang }}" class="w-full h-full object-cover">
                                 </div>
                                 @else
-                                <div class="w-10 h-10 bg-primary-50 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-10 h-10 bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-primary dark:text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                     </svg>
                                 </div>
@@ -98,12 +98,12 @@
                         <td>
                             @php
                                 $kondisiBadge = [
-                                    'Baik' => 'bg-success-50 text-success',
-                                    'Kurang Baik' => 'bg-warning-50 text-warning',
-                                    'Rusak Berat' => 'bg-danger-50 text-danger',
+                                    'Baik' => 'bg-success-50 text-success dark:bg-emerald-900/30 dark:text-emerald-300',
+                                    'Kurang Baik' => 'bg-warning-50 text-warning dark:bg-amber-900/30 dark:text-amber-300',
+                                    'Rusak Berat' => 'bg-danger-50 text-danger dark:bg-red-900/30 dark:text-red-300',
                                 ];
                             @endphp
-                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold {{ $kondisiBadge[$asset->kondisi] ?? 'bg-gray-100 text-secondary' }}">
+                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold {{ $kondisiBadge[$asset->kondisi] ?? 'bg-gray-100 text-secondary dark:bg-gray-700' }}">
                                 {{ $asset->kondisi }}
                             </span>
                         </td>
