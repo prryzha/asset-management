@@ -5,7 +5,7 @@
 @section('content')
 <div class="p-8 max-w-2xl mx-auto">
 
-    <x-ui.page-header title="Form Peminjaman Barang" subtitle="Catat peminjaman asset oleh guru atau siswa.">
+    <x-ui.page-header title="Form Peminjaman Barang" subtitle="Catat peminjaman aset oleh guru atau siswa.">
         <x-slot:actions>
             <a href="{{ route('transactions.index') }}" class="btn-ghost btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

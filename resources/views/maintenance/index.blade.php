@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Manajemen Maintenance')
+@section('title', 'Manajemen Perawatan')
 
 @section('content')
 <div class="p-8">
 
-    <x-ui.page-header title="Manajemen Maintenance" subtitle="Kelola jadwal maintenance seluruh aset.">
+    <x-ui.page-header title="Manajemen Perawatan" subtitle="Kelola jadwal perawatan seluruh aset.">
         <x-slot:actions>
             <a href="{{ route('maintenance.create') }}" class="btn-primary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
-                Jadwalkan Maintenance
+                Jadwalkan Perawatan
             </a>
         </x-slot:actions>
     </x-ui.page-header>
@@ -38,7 +38,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Asset</th>
+                        <th>Aset</th>
                         <th>Jenis Perawatan</th>
                         <th class="text-center">Jadwal</th>
                         <th class="text-center">Status</th>
@@ -81,7 +81,7 @@
                                         </button>
                                     </form>
                                     <form action="{{ route('maintenance.cancel', $maintenance) }}" method="POST" class="inline"
-                                          onsubmit="return confirm('Batalkan maintenance ini?')">
+                                          onsubmit="return confirm('Batalkan perawatan ini?')">
                                         @csrf @method('PATCH')
                                         <button type="submit" class="btn-ghost btn-sm px-2 py-1 text-xs text-danger hover:text-white hover:bg-danger">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,8 +108,8 @@
                         <td colspan="5" class="text-center py-16">
                             <x-ui.empty-state
                                 icon="tool"
-                                title="Belum Ada Jadwal Maintenance"
-                                description="Belum ada jadwal maintenance. Silakan buat jadwal baru." />
+                                title="Belum Ada Jadwal Perawatan"
+                                description="Belum ada jadwal perawatan. Silakan buat jadwal baru." />
                         </td>
                     </tr>
                     @endforelse

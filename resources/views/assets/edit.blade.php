@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Asset')
+@section('title', 'Edit Aset')
 
 @section('content')
 <div class="p-8">
 
-    <x-ui.page-header title="Edit Asset" subtitle="Perbarui informasi asset.">
+    <x-ui.page-header title="Edit Aset" subtitle="Perbarui informasi aset.">
         <x-slot:actions>
             <a href="{{ route('assets.show', $asset) }}" class="btn-ghost btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -21,7 +21,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3>Informasi Asset</h3>
+                <h3>Informasi Aset</h3>
             </div>
             <div class="card-body">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -93,7 +93,7 @@
                     {{-- Penanggung Jawab --}}
                     <div class="form-group">
                         <label class="form-label">Penanggung Jawab</label>
-                        <input type="text" name="penanggung_jawab" value="{{ old('penanggung_jawab', $asset->penanggung_jawab) }}" class="form-input" placeholder="Nama PIC / pengelola asset">
+                        <input type="text" name="penanggung_jawab" value="{{ old('penanggung_jawab', $asset->penanggung_jawab) }}" class="form-input" placeholder="Nama PIC / pengelola aset">
                     </div>
 
                     {{-- Kategori --}}
@@ -143,7 +143,7 @@
                     <div class="lg:col-span-2">
                         <div class="card">
                             <div class="card-body">
-                                <label class="form-label">Foto Asset</label>
+                                <label class="form-label">Foto Aset</label>
                                 <div class="flex items-start gap-6">
                                     <div class="flex-1">
                                         <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
@@ -241,7 +241,7 @@ document.getElementById('foto_input').addEventListener('change', function(e) {
 document.getElementById('deleteFotoBtn')?.addEventListener('click', function() {
     Swal.fire({
         title: 'Hapus Foto?',
-        text: 'Foto asset akan dihapus permanen.',
+        text: 'Foto aset akan dihapus permanen.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',

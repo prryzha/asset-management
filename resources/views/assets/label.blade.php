@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Label Asset - {{ $asset->kode_barang }}</title>
+    <title>Label Aset - {{ $asset->kode_barang }}</title>
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -136,7 +136,7 @@
         <div class="cut-br"></div>
 
         <div class="header">
-            <h1>Inventory Asset</h1>
+            <h1>Inventaris Aset</h1>
         </div>
 
         <div class="qr-wrap">
@@ -165,7 +165,7 @@
         </div>
     </div>
 
-    <div class="hint">Tempelkan label ini pada asset yang sesuai.</div>
+    <div class="hint">Tempelkan label ini pada aset yang sesuai.</div>
 
 </body>
 </html>

@@ -65,13 +65,13 @@ class MaintenanceScheduleController extends Controller
         AssetLog::create([
             'asset_id' => $maintenance->asset_id,
             'tipe' => 'perawatan',
-            'deskripsi' => "Dijadwalkan maintenance: {$maintenance->jenis_perawatan} pada {$maintenance->tanggal_jadwal->format('d/m/Y')}",
+            'deskripsi' => "Dijadwalkan perawatan: {$maintenance->jenis_perawatan} pada {$maintenance->tanggal_jadwal->format('d/m/Y')}",
             'user_id' => auth()->id(),
         ]);
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Jadwal maintenance berhasil dibuat.');
+            ->with('success', 'Jadwal perawatan berhasil dibuat.');
     }
 
     public function edit(MaintenanceSchedule $maintenanceSchedule): View|RedirectResponse
@@ -114,13 +114,13 @@ class MaintenanceScheduleController extends Controller
         ActivityLog::record(
             $maintenanceSchedule,
             'maintenance.updated',
-            "Memperbarui jadwal maintenance {$maintenanceSchedule->asset->kode_barang}",
+            "Memperbarui jadwal perawatan {$maintenanceSchedule->asset->kode_barang}",
             $maintenanceSchedule->getChanges()
         );
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Jadwal maintenance berhasil diperbarui.');
+            ->with('success', 'Jadwal perawatan berhasil diperbarui.');
     }
 
     public function start(MaintenanceSchedule $maintenanceSchedule): RedirectResponse
@@ -154,20 +154,20 @@ class MaintenanceScheduleController extends Controller
             ActivityLog::record(
                 $schedule,
                 'maintenance.started',
-                "Memulai maintenance {$asset->kode_barang}"
+                "Memulai perawatan {$asset->kode_barang}"
             );
 
             AssetLog::create([
                 'asset_id' => $asset->id,
                 'tipe' => 'perawatan',
-                'deskripsi' => "Maintenance dimulai: {$schedule->jenis_perawatan}",
+                'deskripsi' => "Perawatan dimulai: {$schedule->jenis_perawatan}",
                 'user_id' => auth()->id(),
             ]);
         });
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Maintenance berhasil dimulai.');
+            ->with('success', 'Perawatan berhasil dimulai.');
     }
 
     public function completeForm(MaintenanceSchedule $maintenanceSchedule): View|RedirectResponse
@@ -175,7 +175,7 @@ class MaintenanceScheduleController extends Controller
         if ($maintenanceSchedule->status !== 'Dikerjakan') {
             return redirect()
                 ->route('maintenance.index')
-                ->with('error', 'Hanya maintenance aktif yang dapat diselesaikan.');
+                ->with('error', 'Hanya perawatan aktif yang dapat diselesaikan.');
         }
 
         $maintenanceSchedule->load('asset');
@@ -220,7 +220,7 @@ class MaintenanceScheduleController extends Controller
             ActivityLog::record(
                 $schedule,
                 'maintenance.completed',
-                "Menyelesaikan maintenance {$asset->kode_barang}",
+                "Menyelesaikan perawatan {$asset->kode_barang}",
                 [
                     'kondisi' => $validated['kondisi'],
                     'status_aset' => $assetStatus,
@@ -230,14 +230,14 @@ class MaintenanceScheduleController extends Controller
             AssetLog::create([
                 'asset_id' => $asset->id,
                 'tipe' => 'perawatan',
-                'deskripsi' => "Maintenance selesai. Kondisi: {$validated['kondisi']}. " . ($validated['catatan_selesai'] ? "Catatan: {$validated['catatan_selesai']}" : ''),
+                'deskripsi' => "Perawatan selesai. Kondisi: {$validated['kondisi']}. " . ($validated['catatan_selesai'] ? "Catatan: {$validated['catatan_selesai']}" : ''),
                 'user_id' => auth()->id(),
             ]);
         });
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Maintenance berhasil diselesaikan.');
+            ->with('success', 'Perawatan berhasil diselesaikan.');
     }
 
     public function cancel(MaintenanceSchedule $maintenanceSchedule): RedirectResponse
@@ -257,18 +257,18 @@ class MaintenanceScheduleController extends Controller
         ActivityLog::record(
             $maintenanceSchedule,
             'maintenance.cancelled',
-            "Membatalkan jadwal maintenance {$maintenanceSchedule->asset->kode_barang}"
+            "Membatalkan jadwal perawatan {$maintenanceSchedule->asset->kode_barang}"
         );
 
         AssetLog::create([
             'asset_id' => $maintenanceSchedule->asset_id,
             'tipe' => 'perawatan',
-            'deskripsi' => "Maintenance dibatalkan: {$maintenanceSchedule->jenis_perawatan}",
+            'deskripsi' => "Perawatan dibatalkan: {$maintenanceSchedule->jenis_perawatan}",
             'user_id' => auth()->id(),
         ]);
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Jadwal maintenance berhasil dibatalkan.');
+            ->with('success', 'Jadwal perawatan berhasil dibatalkan.');
     }
 }

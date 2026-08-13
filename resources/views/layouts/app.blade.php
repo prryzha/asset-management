@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Sistem Informasi Asset') - Asset Management</title>
+    <title>@yield('title', 'Sistem Informasi Aset') - Manajemen Aset</title>
 
     @vite(['resources/css/app.css','resources/js/app.js'])
 
@@ -28,8 +28,8 @@
                     </svg>
                 </div>
                 <div>
-                    <div class="app-header-title">Sistem Informasi Asset</div>
-                    <div class="app-header-subtitle">Asset Management Diskominfo</div>
+                    <div class="app-header-title">Sistem Informasi Aset</div>
+                    <div class="app-header-subtitle">Manajemen Aset</div>
                 </div>
             </div>
 
@@ -87,7 +87,7 @@
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
-                    <span>@yield('title', 'Sistem Informasi Asset')</span>
+                    <span>@yield('title', 'Sistem Informasi Aset')</span>
                 </div>
                 <div id="liveClock" class="content-topbar-clock"></div>
             </div>

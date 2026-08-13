@@ -75,7 +75,7 @@
     <div class="page">
         <div class="label">
             <div class="head">
-                <h1>Inventory Asset</h1>
+                <h1>Inventaris Aset</h1>
             </div>
             <div class="qr-wrap">
                 <img src="{{ $qrDataUri }}" alt="QR {{ $asset->kode_barang }}" width="100" height="100">

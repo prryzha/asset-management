@@ -6,12 +6,12 @@
 <div class="p-8">
 
     {{-- ===== PAGE HEADER ===== --}}
-    <x-ui.page-header title="Dashboard" subtitle="Overview status asset dan aktivitas sekolah." />
+    <x-ui.page-header title="Dashboard" subtitle="Overview status aset dan aktivitas sekolah." />
 
     {{-- ===== BARIS 1: SUMMARY CARDS ===== --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
 
-        {{-- Total Asset --}}
+        {{-- Total Aset --}}
         <div class="stat-card">
             <div class="flex items-start gap-4">
                 <div class="stat-icon bg-primary-50 dark:bg-primary-900/30">
@@ -20,7 +20,7 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="stat-label">Total Asset</p>
+                    <p class="stat-label">Total Aset</p>
                     <h2 class="stat-value">{{ $totalAsset }}</h2>
                     <p class="stat-detail">Nilai: Rp {{ number_format($totalNilai, 0, ',', '.') }}</p>
                 </div>
@@ -86,12 +86,12 @@
             {{-- Charts Grid --}}
             @include('components.dashboard.charts')
 
-            {{-- Maintenance Schedule --}}
+            {{-- Jadwal Perawatan --}}
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <h3>Jadwal Pemeliharaan</h3>
-                        <p class="text-xs text-secondary mt-0.5">Daftar jadwal maintenance aset</p>
+                        <h3>Jadwal Perawatan</h3>
+                        <p class="text-xs text-secondary mt-0.5">Daftar jadwal perawatan aset</p>
                     </div>
                     @if(auth()->user()->isAdmin())
                     <a href="{{ route('maintenance.create') }}" class="btn-primary btn-sm">
@@ -138,7 +138,7 @@
                             @empty
                             <tr>
                                 <td colspan="5" class="text-center py-10">
-                                    <span class="text-sm text-secondary">Tidak ada jadwal maintenance.</span>
+                                    <span class="text-sm text-secondary">Tidak ada jadwal perawatan.</span>
                                 </td>
                             </tr>
                             @endforelse
@@ -161,10 +161,10 @@
             {{-- Alert Cards / Info Highlights --}}
             @include('components.dashboard.alerts')
 
-            {{-- Kondisi Asset Progress Bars --}}
+            {{-- Kondisi Aset Progress Bars --}}
             <div class="card">
                 <div class="card-header">
-                    <h3>Kondisi Asset</h3>
+                    <h3>Kondisi Aset</h3>
                 </div>
                 <div class="card-body space-y-4">
                     <div>
@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: @json($lokasiLabels),
                 datasets: [{
-                    label: 'Jumlah Asset',
+                    label: 'Jumlah Aset',
                     data: @json($lokasiData),
                     backgroundColor: '#2563EB',
                     borderRadius: 4,

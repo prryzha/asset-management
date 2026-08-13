@@ -110,13 +110,13 @@ class AssetController extends Controller
 
         $asset->load('category', 'location');
 
-        ActivityLog::record($asset, 'asset.created', "Menambahkan asset {$asset->kode_barang}");
+        ActivityLog::record($asset, 'asset.created', "Menambahkan aset {$asset->kode_barang}");
 
         // Auto-log ke AssetLog
         AssetLog::create([
             'asset_id' => $asset->id,
             'tipe' => 'lainnya',
-            'deskripsi' => "Asset baru: {$asset->nama_barang} ({$asset->kode_barang})",
+            'deskripsi' => "Aset baru: {$asset->nama_barang} ({$asset->kode_barang})",
             'user_id' => auth()->id(),
         ]);
 
@@ -125,7 +125,7 @@ class AssetController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Asset berhasil ditambahkan.');
+            ->with('success', 'Aset berhasil ditambahkan.');
     }
 
     public function show(Asset $asset): View
@@ -209,14 +209,14 @@ class AssetController extends Controller
 
         $asset->update($validated);
 
-        ActivityLog::record($asset, 'asset.updated', "Mengubah asset {$asset->kode_barang}");
+        ActivityLog::record($asset, 'asset.updated', "Mengubah aset {$asset->kode_barang}");
 
         // Hapus cache setelah data berubah
         $this->clearCache();
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Asset berhasil diperbarui.');
+            ->with('success', 'Aset berhasil diperbarui.');
     }
 
     public function reportDamage(Request $request, Asset $asset): RedirectResponse
@@ -259,11 +259,11 @@ class AssetController extends Controller
             }
             $asset->update(['foto' => null]);
 
-            ActivityLog::record($asset, 'asset.photo-deleted', "Menghapus foto asset {$asset->kode_barang}");
+            ActivityLog::record($asset, 'asset.photo-deleted', "Menghapus foto aset {$asset->kode_barang}");
 
             return redirect()
                 ->route('assets.edit', $asset)
-                ->with('success', 'Foto asset berhasil dihapus.');
+                ->with('success', 'Foto aset berhasil dihapus.');
         }
 
         return redirect()

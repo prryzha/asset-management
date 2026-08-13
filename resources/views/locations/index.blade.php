@@ -24,7 +24,7 @@
                         <th>Kode</th>
                         <th>Nama Lokasi</th>
                         <th>Gedung / Lantai</th>
-                        <th class="text-center">Jumlah Asset</th>
+                        <th class="text-center">Jumlah Aset</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>

@@ -12,7 +12,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
-                Kembali ke Data Asset
+                Kembali ke Data Aset
             </a>
             <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100 mt-1">{{ $asset->kode_barang }}</h1>
             <p class="text-gray-500 dark:text-gray-400 mt-0.5">{{ $asset->nama_barang }}</p>
@@ -47,10 +47,10 @@
         {{-- Main Content --}}
         <div class="xl:col-span-2 space-y-6">
 
-            {{-- Detail Asset --}}
+            {{-- Detail Aset --}}
             <div class="card">
                 <div class="card-header">
-                    <h3>Detail Asset</h3>
+                    <h3>Detail Aset</h3>
                 </div>
                 <div class="card-body">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -258,7 +258,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.586-9.414a2 2 0 112.828 2.828L12 14l-4 1 1-4 8.414-8.414z"/>
                         </svg>
-                        Edit Asset
+                        Edit Aset
                     </a>
                     <a href="{{ route('transactions.create') }}?asset_id={{ $asset->id }}"
                        class="flex items-center gap-2 w-full px-3 py-2 rounded bg-warning-50 text-warning-700 hover:bg-warning-100 dark:bg-amber-900/30 dark:text-amber-300 dark:hover:bg-amber-900/50 transition text-sm font-medium">
@@ -273,7 +273,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
-                        Jadwalkan Maintenance
+                        Jadwalkan Perawatan
                     </a>                            <form action="{{ route('assets.report-damage', $asset) }}" method="POST" id="reportDamageForm" class="hidden">
                                 @csrf
                                 <input type="hidden" name="kondisi" id="damage_kondisi">
@@ -293,7 +293,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
-                                    Hapus Asset
+                                    Hapus Aset
                                 </button>
                             </form>
                 </div>
@@ -307,7 +307,7 @@
 <div id="manualLogModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded shadow-xl max-w-md w-full p-6 mx-4">
         <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">Tambah Catatan Manual</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Tambahkan catatan aktivitas untuk asset ini.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Tambahkan catatan aktivitas untuk aset ini.</p>
         <form action="{{ route('assets.logs.store', $asset) }}" method="POST">
             @csrf
             <div class="form-group mb-4">
@@ -377,7 +377,7 @@ document.querySelectorAll('.delete-form').forEach(form => {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         Swal.fire({
-            title: 'Hapus Asset?',
+            title: 'Hapus Aset?',
             text: 'Data yang dihapus tidak dapat dikembalikan.',
             icon: 'warning',
             showCancelButton: true,

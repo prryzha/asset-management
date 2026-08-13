@@ -23,7 +23,7 @@
                     <tr>
                         <th>Kode</th>
                         <th>Nama Kategori</th>
-                        <th class="text-center">Jumlah Asset</th>
+                        <th class="text-center">Jumlah Aset</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>

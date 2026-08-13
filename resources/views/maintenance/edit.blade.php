@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Jadwal Maintenance')
+@section('title', 'Edit Jadwal Perawatan')
 
 @section('content')
 <div class="p-8 max-w-2xl mx-auto">
 
-    <x-ui.page-header title="Edit Jadwal Maintenance" subtitle="Perbarui jadwal maintenance.">
+    <x-ui.page-header title="Edit Jadwal Perawatan" subtitle="Perbarui jadwal perawatan.">
         <x-slot:actions>
             <a href="{{ route('maintenance.index') }}" class="btn-ghost btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,7 +18,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>Detail Maintenance</h3>
+            <h3>Detail Perawatan</h3>
         </div>
         <div class="card-body">
             <form action="{{ route('maintenance.update', $maintenanceSchedule) }}" method="POST">
@@ -31,7 +31,7 @@
 
                 <div class="space-y-5">
                     <div class="form-group">
-                        <label class="form-label">Asset <span class="text-danger">*</span></label>
+                        <label class="form-label">Aset <span class="text-danger">*</span></label>
                         <select name="asset_id" required class="form-input @error('asset_id') is-invalid @enderror">
                             @if($damagedAssets->count())
                             <optgroup label="🔴 Perlu Perbaikan ({{ $damagedAssets->count() }})">
@@ -42,7 +42,7 @@
                                 @endforeach
                             </optgroup>
                             @endif
-                            <optgroup label="✅ Asset Lainnya">
+                            <optgroup label="✅ Aset Lainnya">
                                 @foreach($normalAssets as $asset)
                                     <option value="{{ $asset->id }}" {{ old('asset_id', $maintenanceSchedule->asset_id)==$asset->id ? 'selected' : '' }}>
                                         {{ $asset->kode_barang }} - {{ $asset->nama_barang }}
