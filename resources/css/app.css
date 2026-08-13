@@ -206,6 +206,10 @@
         @apply pr-8;
     }
 
+    .form-input-sm {
+        @apply px-2.5 py-1.5 text-xs;
+    }
+
     textarea.form-input {
         @apply resize-y min-h-[100px];
     }
@@ -428,8 +432,22 @@
 
     /* ── Confirmation Dialog Overrides ── */
     .swal2-popup {
+        --swal2-width: 24em;
+        --swal2-icon-zoom: 0.65;
+        --swal2-padding: 0 0 1em;
+        --swal2-title-padding: 0.6em 1em 0;
+        --swal2-html-container-padding: 0.5em 1.4em 0.2em;
+        --swal2-actions-margin: 1em auto 0;
         border-radius: 10px !important;
         font-family: 'Poppins', system-ui, sans-serif !important;
+    }
+
+    .swal2-title {
+        font-size: 1.25em !important;
+    }
+
+    .swal2-html-container {
+        font-size: 0.95em !important;
     }
 
     .swal2-styled,
@@ -437,6 +455,12 @@
     .swal2-textarea,
     .swal2-select {
         border-radius: 6px !important;
+    }
+
+    .swal2-styled.swal2-confirm,
+    .swal2-styled.swal2-cancel {
+        padding: 0.5em 1.2em !important;
+        font-size: 0.95em !important;
     }
 
     /* ── Scrollbar Styling ── */

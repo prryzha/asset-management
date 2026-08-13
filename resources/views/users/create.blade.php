@@ -3,7 +3,7 @@
 @section('title', 'Tambah User')
 
 @section('content')
-<div class="p-8 max-w-2xl">
+<div class="p-8 max-w-2xl mx-auto">
 
     <x-ui.page-header title="Tambah User" subtitle="Buat akun baru untuk admin atau staff.">
         <x-slot:actions>

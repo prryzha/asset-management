@@ -3,7 +3,7 @@
 @section('title', 'Edit Kategori')
 
 @section('content')
-<div class="p-8 max-w-2xl">
+<div class="p-8 max-w-2xl mx-auto">
 
     <x-ui.page-header title="Edit Kategori" subtitle="Perbarui informasi kategori.">
         <x-slot:actions>

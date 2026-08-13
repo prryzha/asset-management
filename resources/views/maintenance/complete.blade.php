@@ -3,7 +3,7 @@
 @section('title', 'Selesaikan Maintenance')
 
 @section('content')
-<div class="p-8 max-w-2xl">
+<div class="p-8 max-w-2xl mx-auto">
 
     <x-ui.page-header title="Selesaikan Maintenance" subtitle="Laporkan hasil penyelesaian maintenance.">
         <x-slot:actions>
@@ -24,11 +24,11 @@
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
                     <span class="text-xs text-secondary block mb-1">Kode Asset</span>
-                    <span class="font-medium">{{ $maintenanceSchedule->asset->kode_barang }}</span>
+                    <span class="font-medium">{{ $maintenanceSchedule->asset->kode_barang ?? '-' }}</span>
                 </div>
                 <div>
                     <span class="text-xs text-secondary block mb-1">Nama Asset</span>
-                    <span class="font-medium">{{ $maintenanceSchedule->asset->nama_barang }}</span>
+                    <span class="font-medium">{{ $maintenanceSchedule->asset->nama_barang ?? 'Aset sudah dihapus' }}</span>
                 </div>
                 <div>
                     <span class="text-xs text-secondary block mb-1">Jenis Perawatan</span>

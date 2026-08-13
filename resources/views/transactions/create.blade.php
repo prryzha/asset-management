@@ -3,7 +3,7 @@
 @section('title', 'Form Peminjaman Barang')
 
 @section('content')
-<div class="p-8 max-w-2xl">
+<div class="p-8 max-w-2xl mx-auto">
 
     <x-ui.page-header title="Form Peminjaman Barang" subtitle="Catat peminjaman asset oleh guru atau siswa.">
         <x-slot:actions>

@@ -3,7 +3,7 @@
 @section('title', 'Edit Lokasi')
 
 @section('content')
-<div class="p-8 max-w-2xl">
+<div class="p-8 max-w-2xl mx-auto">
 
     <x-ui.page-header title="Edit Lokasi" subtitle="Perbarui informasi lokasi.">
         <x-slot:actions>

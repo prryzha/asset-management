@@ -3,7 +3,7 @@
 @section('title', 'Tambah Kategori')
 
 @section('content')
-<div class="p-8 max-w-2xl">
+<div class="p-8 max-w-2xl mx-auto">
 
     <x-ui.page-header title="Tambah Kategori" subtitle="Tambahkan kategori aset baru.">
         <x-slot:actions>

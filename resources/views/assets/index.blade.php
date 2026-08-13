@@ -20,49 +20,36 @@
 
     {{-- Search & Filter Card --}}
     <div class="card mb-6">
-        <div class="card-body">
-            <form action="{{ route('assets.index') }}" method="GET" class="flex flex-wrap items-end gap-3">
-                <div class="form-group mb-0">
-                    <label class="form-label mb-1">Cari</label>
-                    <div class="relative">
-                        <input type="text" name="search" value="{{ request('search') }}"
-                               placeholder="Kode, nama atau merk..."
-                               class="form-input w-64 pl-9">
-                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
-                        </svg>
-                    </div>
+        <div class="card-body py-2.5">
+            <form action="{{ route('assets.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+                <div class="relative">
+                    <input type="text" name="search" value="{{ request('search') }}"
+                           placeholder="Kode, nama atau merk..."
+                           class="form-input form-input-sm w-56 pl-8">
+                    <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
+                    </svg>
                 </div>
-                <div class="form-group mb-0">
-                    <label class="form-label mb-1">Kategori</label>
-                    <select name="category_id" onchange="this.form.submit()" class="form-input">
-                        <option value="">Semua</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <label class="form-label mb-1">Lokasi</label>
-                    <select name="location_id" onchange="this.form.submit()" class="form-input">
-                        <option value="">Semua</option>
-                        @foreach($locations as $loc)
-                            <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>{{ $loc->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <button type="submit" class="btn-primary">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
-                        </svg>
-                        Cari
-                    </button>
-                </div>
+                <select name="category_id" onchange="this.form.submit()" class="form-input form-input-sm w-auto">
+                    <option value="">Semua Kategori</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->nama }}</option>
+                    @endforeach
+                </select>
+                <select name="location_id" onchange="this.form.submit()" class="form-input form-input-sm w-auto">
+                    <option value="">Semua Lokasi</option>
+                    @foreach($locations as $loc)
+                        <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>{{ $loc->nama }}</option>
+                    @endforeach
+                </select>
+                <button type="submit" class="btn-primary btn-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
+                    </svg>
+                    Cari
+                </button>
                 @if(request()->hasAny(['search','category_id','location_id','kondisi','status']))
-                <div class="form-group mb-0">
-                    <a href="{{ route('assets.index') }}" class="btn-ghost btn-sm">Reset Filter</a>
-                </div>
+                <a href="{{ route('assets.index') }}" class="btn-ghost btn-sm">Reset Filter</a>
                 @endif
             </form>
         </div>

@@ -21,11 +21,11 @@
     </x-ui.page-header>
 
     <div class="card mb-6">
-        <div class="card-body">
+        <div class="card-body py-2.5">
             <form method="GET" action="{{ route('transactions.index') }}">
-                <div class="flex items-center gap-3">
-                    <label class="form-label mb-0 whitespace-nowrap">Filter Status:</label>
-                    <select name="status" onchange="this.form.submit()" class="form-input w-auto">
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Filter Status:</label>
+                    <select name="status" onchange="this.form.submit()" class="form-input form-input-sm w-auto">
                         <option value="">Semua Status</option>
                         <option value="Menunggu Persetujuan" {{ request('status')=='Menunggu Persetujuan'?'selected':'' }}>Menunggu Persetujuan</option>
                         <option value="Dipinjam" {{ request('status')=='Dipinjam'?'selected':'' }}>Dipinjam</option>
@@ -72,7 +72,7 @@
                                         Setujui
                                     </button>
                                 </form>
-                                <button type="button" onclick="showRejectModal({{ $trx->id }}, '{{ $trx->asset->kode_barang }}', '{{ $trx->nama_peminjam }}')" class="btn-danger btn-sm px-2 py-1 text-xs">
+                                <button type="button" onclick="showRejectModal({{ $trx->id }}, '{{ $trx->asset->kode_barang ?? '-' }}', '{{ $trx->nama_peminjam }}')" class="btn-danger btn-sm px-2 py-1 text-xs">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                     Tolak
                                 </button>

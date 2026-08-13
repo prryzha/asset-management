@@ -3,7 +3,7 @@
 @section('title', 'Edit Jadwal Maintenance')
 
 @section('content')
-<div class="p-8 max-w-2xl">
+<div class="p-8 max-w-2xl mx-auto">
 
     <x-ui.page-header title="Edit Jadwal Maintenance" subtitle="Perbarui jadwal maintenance.">
         <x-slot:actions>

@@ -3,7 +3,7 @@
 @section('title', 'Profile')
 
 @section('content')
-<div class="p-8 max-w-3xl">
+<div class="p-8 max-w-3xl mx-auto">
 
     <x-ui.page-header title="Profile" subtitle="Kelola informasi akun anda." />
 

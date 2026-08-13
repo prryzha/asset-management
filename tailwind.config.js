@@ -11,6 +11,14 @@ export default {
 
     darkMode: 'class',
 
+    // SweetAlert2 menyuntikkan elemen & class-nya sendiri lewat JavaScript saat
+    // runtime, jadi nama class-nya (swal2-*) tidak pernah muncul secara harfiah
+    // di file blade manapun — tanpa safelist ini, Tailwind akan membuang semua
+    // custom styling untuk popup SweetAlert2 di resources/css/app.css.
+    safelist: [
+        { pattern: /^swal2-/ },
+    ],
+
     theme: {
         extend: {
             fontFamily: {

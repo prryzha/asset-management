@@ -17,11 +17,11 @@
     </x-ui.page-header>
 
     <div class="card mb-6">
-        <div class="card-body">
+        <div class="card-body py-2.5">
             <form method="GET" action="{{ route('maintenance.index') }}">
-                <div class="flex items-center gap-3">
-                    <label class="form-label mb-0 whitespace-nowrap">Filter Status:</label>
-                    <select name="status" onchange="this.form.submit()" class="form-input w-auto">
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Filter Status:</label>
+                    <select name="status" onchange="this.form.submit()" class="form-input form-input-sm w-auto">
                         <option value="">Semua Status</option>
                         <option value="Dijadwalkan" {{ request('status')=='Dijadwalkan'?'selected':'' }}>Dijadwalkan</option>
                         <option value="Dikerjakan" {{ request('status')=='Dikerjakan'?'selected':'' }}>Dikerjakan</option>
@@ -49,8 +49,13 @@
                     @forelse($maintenanceSchedules as $maintenance)
                     <tr>
                         <td>
-                            <div class="font-medium">{{ $maintenance->asset->kode_barang }}</div>
-                            <div class="text-xs text-secondary">{{ $maintenance->asset->nama_barang }}</div>
+                            <div class="font-medium">{{ $maintenance->asset->kode_barang ?? '-' }}</div>
+                            <div class="text-xs text-secondary">
+                                {{ $maintenance->asset->nama_barang ?? 'Aset sudah dihapus' }}
+                                @if($maintenance->asset?->trashed())
+                                    <span class="text-danger">(Dihapus)</span>
+                                @endif
+                            </div>
                         </td>
                         <td>{{ $maintenance->jenis_perawatan }}</td>
                         <td class="text-center">{{ \Carbon\Carbon::parse($maintenance->tanggal_jadwal)->format('d M Y') }}</td>

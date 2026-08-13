@@ -9,10 +9,10 @@
 
     {{-- Filter --}}
     <div class="card mb-6">
-        <div class="card-body">
-            <form method="GET" class="flex items-center gap-3">
-                <label class="form-label mb-0 whitespace-nowrap">Filter Aktivitas:</label>
-                <select name="event" onchange="this.form.submit()" class="form-input">
+        <div class="card-body py-2.5">
+            <form method="GET" class="flex items-center gap-2">
+                <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Filter Aktivitas:</label>
+                <select name="event" onchange="this.form.submit()" class="form-input form-input-sm w-auto">
                     <option value="">Semua Aktivitas</option>
                     @foreach($events as $event)
                         <option value="{{ $event }}" {{ request('event') == $event ? 'selected' : '' }}>{{ $event }}</option>
