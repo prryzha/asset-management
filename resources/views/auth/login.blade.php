@@ -1,7 +1,8 @@
 <x-guest-layout>
 
     @if(session('status'))
-        <div class="mb-5 p-4 bg-primary-50 text-primary-700 text-sm">
+        <div class="alert alert-success mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {{ session('status') }}
         </div>
     @endif
@@ -10,10 +11,8 @@
         @csrf
 
         {{-- Email --}}
-        <div>
-            <label class="block font-semibold mb-2 text-gray-700">
-                Email
-            </label>
+        <div class="form-group">
+            <label class="form-label">Email</label>
             <input
                 type="email"
                 name="email"
@@ -21,28 +20,20 @@
                 required
                 autofocus
                 autocomplete="username"
-                class="w-full rounded border-gray-300">
-
-            @error('email')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
+                class="form-input @error('email') is-invalid @enderror">
+            @error('email')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
         {{-- Password --}}
-        <div class="mt-5">
-            <label class="block font-semibold mb-2 text-gray-700">
-                Password
-            </label>
+        <div class="form-group mt-5">
+            <label class="form-label">Password</label>
             <input
                 type="password"
                 name="password"
                 required
                 autocomplete="current-password"
-                class="w-full rounded border-gray-300">
-
-            @error('password')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
+                class="form-input @error('password') is-invalid @enderror">
+            @error('password')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
         {{-- Remember Me --}}
@@ -52,14 +43,14 @@
                 <input
                     type="checkbox"
                     name="remember"
-                    class="border-gray-300 text-primary-600 focus:ring-primary-500"
+                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                     id="remember_me">
-                <span class="text-sm text-gray-600">Remember me</span>
+                <span class="text-sm text-gray-600">Ingat saya</span>
             </label>
 
             @if(Route::has('password.request'))
                 <a href="{{ route('password.request') }}"
-                   class="text-sm text-primary-600 hover:text-primary-800 underline">
+                   class="text-sm font-medium text-primary-600 hover:text-primary-700">
                     Lupa password?
                 </a>
             @endif
@@ -68,8 +59,7 @@
 
         {{-- Submit --}}
         <div class="mt-8">
-            <button
-                class="w-full px-3 py-2.5 bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors duration-100 text-sm">
+            <button class="btn-primary w-full">
                 Login
             </button>
         </div>
