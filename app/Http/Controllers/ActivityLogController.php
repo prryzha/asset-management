@@ -12,8 +12,17 @@ class ActivityLogController extends Controller
     public function index(Request $request): View
     {
         $logs = ActivityLog::with('user')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->where('description', 'like', '%'.$request->input('search').'%');
+            })
             ->when($request->filled('event'), function ($query) use ($request) {
                 $query->where('event', $request->input('event'));
+            })
+            ->when($request->filled('tanggal_dari'), function ($query) use ($request) {
+                $query->whereDate('created_at', '>=', $request->input('tanggal_dari'));
+            })
+            ->when($request->filled('tanggal_sampai'), function ($query) use ($request) {
+                $query->whereDate('created_at', '<=', $request->input('tanggal_sampai'));
             })
             ->latest()
             ->paginate(20)

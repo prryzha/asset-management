@@ -20,8 +20,24 @@ class TransactionController extends Controller
     public function index(Request $request): View
     {
         $transactions = Transaction::with(['asset', 'approver'])
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $search = $request->input('search');
+                $q->where(function ($q) use ($search) {
+                    $q->where('nama_peminjam', 'like', "%{$search}%")
+                        ->orWhereHas('asset', function ($q) use ($search) {
+                            $q->where('kode_barang', 'like', "%{$search}%")
+                                ->orWhere('nama_barang', 'like', "%{$search}%");
+                        });
+                });
+            })
             ->when($request->filled('status'), function ($q) use ($request) {
                 $q->where('status_peminjaman', $request->status);
+            })
+            ->when($request->filled('tanggal_dari'), function ($q) use ($request) {
+                $q->whereDate('tanggal_pinjam', '>=', $request->input('tanggal_dari'));
+            })
+            ->when($request->filled('tanggal_sampai'), function ($q) use ($request) {
+                $q->whereDate('tanggal_pinjam', '<=', $request->input('tanggal_sampai'));
             })
             ->latest()
             ->paginate(10)
@@ -137,12 +153,19 @@ class TransactionController extends Controller
 
     public function exportPdf(Request $request): Response
     {
+        $ids = $request->input('ids', []);
+
         $transactions = Transaction::with('asset')
-            ->when($request->filled('status'), fn($q, $v) => $q->where('status_peminjaman', $v))
+            ->when($ids, fn($q) => $q->whereIn('id', $ids))
+            ->when(!$ids && $request->filled('status'), fn($q) => $q->where('status_peminjaman', $request->status))
+            ->when(!$ids && $request->filled('tanggal_dari'), fn($q) => $q->whereDate('tanggal_pinjam', '>=', $request->input('tanggal_dari')))
+            ->when(!$ids && $request->filled('tanggal_sampai'), fn($q) => $q->whereDate('tanggal_pinjam', '<=', $request->input('tanggal_sampai')))
             ->latest()
             ->get();
 
-        $pdf = Pdf::loadView('pdf.transactions', compact('transactions'));
+        $isSelection = !empty($ids);
+
+        $pdf = Pdf::loadView('pdf.transactions', compact('transactions', 'isSelection'));
 
         return $pdf->download('laporan-peminjaman.pdf');
     }

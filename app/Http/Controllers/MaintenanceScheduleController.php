@@ -6,20 +6,38 @@ use App\Models\ActivityLog;
 use App\Models\Asset;
 use App\Models\AssetLog;
 use App\Models\MaintenanceSchedule;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class MaintenanceScheduleController extends Controller
 {
     public function index(Request $request): View
     {
         $maintenanceSchedules = MaintenanceSchedule::with(['asset', 'creator'])
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->input('search');
+                $query->where(function ($query) use ($search) {
+                    $query->where('jenis_perawatan', 'like', "%{$search}%")
+                        ->orWhereHas('asset', function ($query) use ($search) {
+                            $query->where('kode_barang', 'like', "%{$search}%")
+                                ->orWhere('nama_barang', 'like', "%{$search}%");
+                        });
+                });
+            })
             ->when($request->filled('status'), function ($query) use ($request) {
                 $query->where('status', $request->status);
+            })
+            ->when($request->filled('tanggal_dari'), function ($query) use ($request) {
+                $query->whereDate('tanggal_jadwal', '>=', $request->input('tanggal_dari'));
+            })
+            ->when($request->filled('tanggal_sampai'), function ($query) use ($request) {
+                $query->whereDate('tanggal_jadwal', '<=', $request->input('tanggal_sampai'));
             })
             ->orderBy('tanggal_jadwal')
             ->paginate(10)
@@ -270,5 +288,24 @@ class MaintenanceScheduleController extends Controller
         return redirect()
             ->route('maintenance.index')
             ->with('success', 'Jadwal perawatan berhasil dibatalkan.');
+    }
+
+    public function exportPdf(Request $request): Response
+    {
+        $ids = $request->input('ids', []);
+
+        $maintenanceSchedules = MaintenanceSchedule::with('asset')
+            ->when($ids, fn($q) => $q->whereIn('id', $ids))
+            ->when(!$ids && $request->filled('status'), fn($q) => $q->where('status', $request->status))
+            ->when(!$ids && $request->filled('tanggal_dari'), fn($q) => $q->whereDate('tanggal_jadwal', '>=', $request->input('tanggal_dari')))
+            ->when(!$ids && $request->filled('tanggal_sampai'), fn($q) => $q->whereDate('tanggal_jadwal', '<=', $request->input('tanggal_sampai')))
+            ->orderBy('tanggal_jadwal')
+            ->get();
+
+        $isSelection = !empty($ids);
+
+        $pdf = Pdf::loadView('pdf.maintenance', compact('maintenanceSchedules', 'isSelection'));
+
+        return $pdf->download('laporan-perawatan.pdf');
     }
 }

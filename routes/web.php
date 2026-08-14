@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/locations/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');
 
     Route::get('/maintenance', [MaintenanceScheduleController::class, 'index'])->name('maintenance.index');
+    Route::get('/maintenance/export-pdf', [MaintenanceScheduleController::class, 'exportPdf'])->name('maintenance.export-pdf');
     Route::get('/maintenance/create', [MaintenanceScheduleController::class, 'create'])->name('maintenance.create');
     Route::post('/maintenance', [MaintenanceScheduleController::class, 'store'])->name('maintenance.store');
     Route::get('/maintenance/{maintenanceSchedule}/edit', [MaintenanceScheduleController::class, 'edit'])->name('maintenance.edit');

@@ -3,13 +3,16 @@
 @section('title', 'Data Aset')
 
 @section('content')
-<div class="p-8">
+<div class="p-8" x-data="{ selected: [] }">
 
     <x-ui.page-header title="Data Aset" subtitle="Kelola seluruh aset yang dimiliki sekolah.">
         <x-slot:actions>
-            <a href="{{ route('assets.export-pdf', request()->only(['category_id','location_id'])) }}" class="btn-secondary btn-sm">
+            <a :href="selected.length > 0
+                    ? '{{ route('assets.export-pdf') }}?' + selected.map(id => 'ids[]=' + id).join('&')
+                    : '{{ route('assets.export-pdf', request()->only(['category_id','location_id'])) }}'"
+               class="btn-secondary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                Export PDF
+                <span x-text="selected.length > 0 ? 'Export Terpilih (' + selected.length + ')' : 'Export PDF'"></span>
             </a>
             <a href="{{ route('assets.create') }}" class="btn-primary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
@@ -61,6 +64,12 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th class="w-8">
+                            <input type="checkbox"
+                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                   :checked="selected.length > 0 && selected.length === {{ $assets->count() }}"
+                                   @change="selected = ($event.target.checked ? {{ $assets->pluck('id')->values() }} : []).map(String)">
+                        </th>
                         <th>Barang</th>
                         <th>Kategori</th>
                         <th>Lokasi</th>
@@ -73,6 +82,10 @@
                 <tbody>
                     @forelse($assets as $asset)
                     <tr class="cursor-pointer asset-row" data-url="{{ route('assets.show', $asset) }}">
+                        <td>
+                            <input type="checkbox" value="{{ $asset->id }}" x-model="selected"
+                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                        </td>
                         <td>
                             <div class="flex items-center gap-3">
                                 @if($asset->foto)
@@ -133,7 +146,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center py-16">
+                        <td colspan="8" class="text-center py-16">
                             <x-ui.empty-state
                                 icon="package"
                                 title="Belum Ada Data Aset"
@@ -158,7 +171,7 @@
 // Row click to detail
 document.querySelectorAll('.asset-row').forEach(row => {
     row.addEventListener('click', function(e) {
-        if (e.target.closest('a') || e.target.closest('button') || e.target.closest('form')) return;
+        if (e.target.closest('a') || e.target.closest('button') || e.target.closest('form') || e.target.closest('input')) return;
         window.location = this.dataset.url;
     });
 });

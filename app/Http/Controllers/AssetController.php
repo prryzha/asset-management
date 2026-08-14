@@ -326,19 +326,22 @@ class AssetController extends Controller
 
     public function exportPdf(Request $request): Response
     {
+        $ids = $request->input('ids', []);
         $categoryId = $request->input('category_id');
         $locationId = $request->input('location_id');
 
         $assets = Asset::with(['category', 'location'])
-            ->when($categoryId, fn($q, $v) => $q->where('category_id', $v))
-            ->when($locationId, fn($q, $v) => $q->where('location_id', $v))
+            ->when($ids, fn($q) => $q->whereIn('id', $ids))
+            ->when(!$ids && $categoryId, fn($q, $v) => $q->where('category_id', $categoryId))
+            ->when(!$ids && $locationId, fn($q, $v) => $q->where('location_id', $locationId))
             ->orderBy('kode_barang')
             ->get();
 
-        $filterCategory = $categoryId ? Category::find($categoryId)?->nama : null;
-        $filterLocation = $locationId ? Location::find($locationId)?->nama : null;
+        $isSelection = !empty($ids);
+        $filterCategory = (!$isSelection && $categoryId) ? Category::find($categoryId)?->nama : null;
+        $filterLocation = (!$isSelection && $locationId) ? Location::find($locationId)?->nama : null;
 
-        $pdf = Pdf::loadView('pdf.assets', compact('assets', 'filterCategory', 'filterLocation'));
+        $pdf = Pdf::loadView('pdf.assets', compact('assets', 'filterCategory', 'filterLocation', 'isSelection'));
 
         return $pdf->download('laporan-aset.pdf');
     }

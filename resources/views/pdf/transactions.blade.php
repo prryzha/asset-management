@@ -14,7 +14,12 @@
 </head>
 <body>
     <h1>LAPORAN PEMINJAMAN ASET</h1>
-    <p class="subtitle">Dicetak pada: {{ now()->format('d/m/Y H:i') }}</p>
+    <p class="subtitle">
+        Dicetak pada: {{ now()->format('d/m/Y H:i') }}
+        @if($isSelection ?? false)
+            &mdash; {{ $transactions->count() }} data terpilih
+        @endif
+    </p>
     <table>
         <thead>
             <tr>
