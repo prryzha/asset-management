@@ -66,7 +66,7 @@
                         <th>Lokasi</th>
                         <th>Kondisi</th>
                         <th class="text-center">Status</th>
-                        <th class="text-right">Nilai</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -110,7 +110,7 @@
                         <td class="text-center">
                             <x-ui.badge-status :status="$asset->status" />
                         </td>
-                        <td class="text-right font-medium">{{ $asset->nilai_total ? 'Rp '.number_format($asset->nilai_total,0,',','.') : '—' }}</td>
+                        <td class="text-center font-medium">{{ $asset->nilai_perolehan ? 'Rp '.number_format($asset->nilai_perolehan,0,',','.') : '—' }}</td>
                         <td class="text-center">
                             <div class="flex items-center justify-center gap-1">
                                 <a href="{{ route('assets.edit', $asset) }}" class="btn-ghost btn-sm px-2 py-1 text-xs">

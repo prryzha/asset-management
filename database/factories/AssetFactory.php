@@ -13,15 +13,28 @@ class AssetFactory extends Factory
 
     public function definition(): array
     {
+        $items = [
+            ['nama' => 'Laptop', 'merk' => ['Lenovo', 'Asus', 'HP', 'Acer', 'Dell']],
+            ['nama' => 'Komputer PC', 'merk' => ['Lenovo', 'HP', 'Dell']],
+            ['nama' => 'Proyektor', 'merk' => ['Epson', 'BenQ', 'ViewSonic']],
+            ['nama' => 'Printer', 'merk' => ['Canon', 'Epson', 'HP']],
+            ['nama' => 'Meja Kerja', 'merk' => ['Olympic', 'Informa']],
+            ['nama' => 'Kursi Kantor', 'merk' => ['Chairman', 'Ergotec']],
+            ['nama' => 'AC Split', 'merk' => ['Daikin', 'Panasonic', 'LG']],
+            ['nama' => 'Whiteboard', 'merk' => ['Sakana', 'Keiko']],
+            ['nama' => 'Lemari Arsip', 'merk' => ['Lion', 'Brother']],
+            ['nama' => 'Mikroskop', 'merk' => ['Olympus', 'Zeiss']],
+        ];
+        $item = fake()->randomElement($items);
+
         return [
             'kode_barang' => fake()->unique()->bothify('???-####'),
-            'nama_barang' => fake()->words(3, true),
-            'merk' => fake()->company(),
+            'nama_barang' => $item['nama'],
+            'merk' => fake()->randomElement($item['merk']),
             'category_id' => Category::factory(),
             'location_id' => Location::factory(),
             'kondisi' => fake()->randomElement(['Baik', 'Kurang Baik', 'Rusak Berat']),
             'status' => fake()->randomElement(['Tersedia', 'Dipinjam', 'Perbaikan']),
-            'jumlah' => fake()->numberBetween(1, 20),
             'catatan' => fake()->optional()->sentence(),
             'foto' => null,
         ];

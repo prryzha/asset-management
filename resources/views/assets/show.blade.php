@@ -61,25 +61,12 @@
                             'Kategori' => $asset->category?->nama ?? '-',
                             'Lokasi' => $asset->location?->nama ?? '-',
                             'Penanggung Jawab' => $asset->penanggung_jawab ?? '-',
-                            'Jumlah' => $asset->jumlah . ' ' . ($asset->satuan ?? 'Unit'),
                         ] as $label => $value)
                         <div>
                             <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $label }}</p>
                             <p class="font-semibold text-gray-900 dark:text-gray-100 mt-1">{{ $value }}</p>
                         </div>
                         @endforeach
-                        @if($asset->kode_bmd)
-                        <div>
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Kode BMD</p>
-                            <p class="font-semibold text-gray-900 dark:text-gray-100 mt-1 font-mono text-sm">{{ $asset->kode_bmd }}</p>
-                        </div>
-                        @endif
-                        @if($asset->kib)
-                        <div>
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">KIB</p>
-                            <p class="font-semibold text-gray-900 dark:text-gray-100 mt-1">{{ $asset->kib_list[$asset->kib] ?? 'KIB '.$asset->kib }}</p>
-                        </div>
-                        @endif
                         <div>
                             <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Kondisi</p>
                             <div class="mt-1"><x-ui.badge-status :status="$asset->kondisi" /></div>
@@ -239,12 +226,8 @@
                         <span class="font-medium text-gray-900 dark:text-gray-100">{{ $asset->tahun_perolehan ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-gray-400 dark:text-gray-500">Nilai Perolehan / Unit</span>
-                        <span class="font-medium text-gray-900 dark:text-gray-100">{{ $asset->nilai_perolehan ? 'Rp '.number_format($asset->nilai_perolehan,0,',','.') : '—' }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400 dark:text-gray-500">Total Nilai ({{ $asset->jumlah }} {{ $asset->satuan ?? 'Unit' }})</span>
-                        <span class="font-semibold text-gray-900 dark:text-gray-100">{{ $asset->nilai_total ? 'Rp '.number_format($asset->nilai_total,0,',','.') : '—' }}</span>
+                        <span class="text-gray-400 dark:text-gray-500">Nilai Perolehan</span>
+                        <span class="font-semibold text-gray-900 dark:text-gray-100">{{ $asset->nilai_perolehan ? 'Rp '.number_format($asset->nilai_perolehan,0,',','.') : '—' }}</span>
                     </div>
                 </div>
             </div>

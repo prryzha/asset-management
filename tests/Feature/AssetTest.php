@@ -72,7 +72,6 @@ class AssetTest extends TestCase
                 'location_id' => $location->id,
                 'kondisi' => 'Baik',
                 'status' => 'Tersedia',
-                'jumlah' => 5,
                 'catatan' => 'Test',
             ]);
 
@@ -97,7 +96,6 @@ class AssetTest extends TestCase
                 'location_id' => $asset->location_id,
                 'kondisi' => 'Baik',
                 'status' => 'Tersedia',
-                'jumlah' => 3,
             ]);
 
         $response->assertRedirect();

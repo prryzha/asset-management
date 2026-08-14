@@ -105,17 +105,11 @@
                         @error('category_id')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
 
-                    {{-- Jumlah & Satuan --}}
+                    {{-- Jumlah Unit (bulk create) --}}
                     <div class="form-group">
-                        <label class="form-label">Jumlah</label>
-                        <div class="flex gap-2">
-                            <input type="number" min="1" name="jumlah" value="{{ old('jumlah', 1) }}" class="form-input flex-1">
-                            <select name="satuan" class="form-input w-32">
-                                @foreach(['Unit','Buah','Set','Paket','Pcs','Box'] as $satuanOption)
-                                    <option value="{{ $satuanOption }}" {{ old('satuan', 'Unit') == $satuanOption ? 'selected' : '' }}>{{ $satuanOption }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <label class="form-label">Jumlah Unit Ditambahkan</label>
+                        <input type="number" min="1" max="50" name="jumlah_unit" value="{{ old('jumlah_unit', 1) }}" class="form-input">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Kalau ada beberapa unit identik (mis. 5 kursi), isi jumlahnya di sini — sistem otomatis membuat unit terpisah dengan kode barang berurutan.</p>
                     </div>
 
                     {{-- Tahun Perolehan --}}
@@ -127,7 +121,7 @@
 
                     {{-- Nilai Perolehan --}}
                     <div class="form-group">
-                        <label class="form-label">Nilai Perolehan per Unit (Rp)</label>
+                        <label class="form-label">Nilai Perolehan (Rp)</label>
                         <input type="number" min="0" name="nilai_perolehan" value="{{ old('nilai_perolehan', 0) }}" class="form-input">
                     </div>
 

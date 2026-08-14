@@ -75,8 +75,6 @@ class AssetController extends Controller
     {
         $validated = $request->validate([
             'kode_barang' => ['nullable', 'string', Rule::unique('assets', 'kode_barang')->whereNull('deleted_at')],
-            'kode_bmd' => 'nullable|string|max:50',
-            'kib' => 'nullable|in:A,B,C,D,E,F',
             'nama_barang' => 'required|string|max:255',
             'merk' => 'nullable|string|max:255',
             'nomor_seri' => 'nullable|string|max:100',
@@ -85,8 +83,7 @@ class AssetController extends Controller
             'penanggung_jawab' => 'nullable|string|max:255',
             'kondisi' => 'required|in:Baik,Kurang Baik,Rusak Berat',
             'status' => 'required|in:Tersedia,Dipinjam,Perbaikan',
-            'jumlah' => 'required|integer|min:1',
-            'satuan' => 'nullable|string|max:20',
+            'jumlah_unit' => 'nullable|integer|min:1|max:50',
 
             'tahun_perolehan' => 'nullable|integer|min:1900|max:' . date('Y'),
 
@@ -96,14 +93,53 @@ class AssetController extends Controller
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        $jumlahUnit = (int) ($validated['jumlah_unit'] ?? 1);
+        unset($validated['jumlah_unit']);
+
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('assets', 'public');
+        }
+
+        // Tambah banyak unit identik sekaligus — tiap unit jadi baris tersendiri
+        // dengan kode barang berurutan (mis. PLP-001, PLP-002, ...).
+        if ($jumlahUnit > 1) {
+            $baseKode = $validated['kode_barang'] ?? null;
+            if (! $baseKode) {
+                $category = Category::findOrFail($validated['category_id']);
+                $baseKode = Asset::generateKodeBarang($category);
+            }
+            $prefix = Str::beforeLast($baseKode, '-');
+            $codes = Asset::nextSequentialCodes($prefix, $jumlahUnit);
+            unset($validated['kode_barang']);
+
+            $assets = collect();
+            DB::transaction(function () use (&$assets, $codes, $validated) {
+                foreach ($codes as $kode) {
+                    $assets->push(Asset::create(array_merge($validated, ['kode_barang' => $kode])));
+                }
+            });
+
+            foreach ($assets as $asset) {
+                ActivityLog::record($asset, 'asset.created', "Menambahkan aset {$asset->kode_barang}");
+                AssetLog::create([
+                    'asset_id' => $asset->id,
+                    'tipe' => 'lainnya',
+                    'deskripsi' => "Aset baru: {$asset->nama_barang} ({$asset->kode_barang})",
+                    'user_id' => auth()->id(),
+                ]);
+            }
+
+            $this->clearCache();
+
+            return redirect()
+                ->route('assets.index')
+                ->with('success', "{$jumlahUnit} unit aset berhasil ditambahkan.");
+        }
+
         // Auto-generate kode barang jika tidak diisi
         if (empty($validated['kode_barang'])) {
             $category = Category::findOrFail($validated['category_id']);
             $validated['kode_barang'] = Asset::generateKodeBarang($category);
-        }
-
-        if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('assets', 'public');
         }
 
         $asset = Asset::create($validated);
@@ -157,8 +193,6 @@ class AssetController extends Controller
     {
         $validated = $request->validate([
             'kode_barang' => ['required', Rule::unique('assets', 'kode_barang')->ignore($asset->id)->whereNull('deleted_at')],
-            'kode_bmd' => 'nullable|string|max:50',
-            'kib' => 'nullable|in:A,B,C,D,E,F',
             'nama_barang' => 'required|string|max:255',
             'merk' => 'nullable|string|max:255',
             'nomor_seri' => 'nullable|string|max:100',
@@ -167,8 +201,6 @@ class AssetController extends Controller
             'penanggung_jawab' => 'nullable|string|max:255',
             'kondisi' => 'required|in:Baik,Kurang Baik,Rusak Berat',
             'status' => 'required|in:Tersedia,Dipinjam,Perbaikan',
-            'jumlah' => 'required|integer|min:1',
-            'satuan' => 'nullable|string|max:20',
 
             'tahun_perolehan' => 'nullable|integer|min:1900|max:' . date('Y'),
 
@@ -326,11 +358,6 @@ class AssetController extends Controller
         ]);
     }
 
-    public function label(Asset $asset): View
-    {
-        return view('assets.label', compact('asset'));
-    }
-
     public function labelPdf(Asset $asset): Response
     {
         $svg = QrCode::format('svg')
@@ -365,7 +392,7 @@ class AssetController extends Controller
             */
             $assetStats = Asset::selectRaw('
                 COUNT(*) as total_asset,
-                COALESCE(SUM(nilai_perolehan * jumlah), 0) as total_nilai,
+                COALESCE(SUM(nilai_perolehan), 0) as total_nilai,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as tersedia,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as dipinjam,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as perbaikan,

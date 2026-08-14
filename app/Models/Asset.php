@@ -16,8 +16,6 @@ class Asset extends Model
 
     protected $fillable = [
         'kode_barang',
-        'kode_bmd',
-        'kib',
         'nama_barang',
         'merk',
         'nomor_seri',
@@ -26,8 +24,6 @@ class Asset extends Model
         'penanggung_jawab',
         'kondisi',
         'status',
-        'jumlah',
-        'satuan',
         'tahun_perolehan',
         'nilai_perolehan',
         'catatan',
@@ -39,23 +35,6 @@ class Asset extends Model
         return [
             'tahun_perolehan' => 'integer',
             'nilai_perolehan' => 'decimal:2',
-        ];
-    }
-
-    public function getNilaiTotalAttribute(): float
-    {
-        return (float) $this->nilai_perolehan * $this->jumlah;
-    }
-
-    public function getKibListAttribute(): array
-    {
-        return [
-            'A' => 'KIB A: Tanah',
-            'B' => 'KIB B: Peralatan & Mesin',
-            'C' => 'KIB C: Gedung & Bangunan',
-            'D' => 'KIB D: Jalan, Irigasi & Jaringan',
-            'E' => 'KIB E: Aset Tetap Lainnya',
-            'F' => 'KIB F: Konstruksi Dalam Pengerjaan',
         ];
     }
 
@@ -112,6 +91,28 @@ class Asset extends Model
         }
 
         return $prefix . '-' . str_pad($next, 3, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Generate $count kode barang berurutan untuk fitur tambah banyak unit sekaligus.
+     * Mulai dari slot kosong pertama (reuse findNextKodeBarang), lalu jalan berurutan.
+     */
+    public static function nextSequentialCodes(string $prefix, int $count): array
+    {
+        $start = (int) substr(self::findNextKodeBarang($prefix), strlen($prefix) + 1);
+        $existing = self::where('kode_barang', 'like', $prefix . '-%')->pluck('kode_barang')->flip();
+
+        $codes = [];
+        $n = $start;
+        while (count($codes) < $count) {
+            $candidate = $prefix . '-' . str_pad($n, 3, '0', STR_PAD_LEFT);
+            if (! $existing->has($candidate)) {
+                $codes[] = $candidate;
+            }
+            $n++;
+        }
+
+        return $codes;
     }
 
     public static function generateKodeBarang(Category $category): string

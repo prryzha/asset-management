@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const kategoriCanvas = document.getElementById('kategoriChart');
     if (kategoriCanvas) {
         charts.push(new Chart(kategoriCanvas, {
-            type: 'pie',
+            type: 'doughnut',
             data: {
                 labels: @json($kategoriLabels),
                 datasets: [{
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     hoverOffset: 8
                 }]
             },
-            options: { ...buildChartDefaults() }
+            options: { ...buildChartDefaults(), cutout: '72%' }
         }));
     }
 

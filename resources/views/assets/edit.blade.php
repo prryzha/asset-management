@@ -107,19 +107,6 @@
                         @error('category_id')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
 
-                    {{-- Jumlah & Satuan --}}
-                    <div class="form-group">
-                        <label class="form-label">Jumlah</label>
-                        <div class="flex gap-2">
-                            <input type="number" min="1" name="jumlah" value="{{ old('jumlah', $asset->jumlah) }}" class="form-input flex-1">
-                            <select name="satuan" class="form-input w-32">
-                                @foreach(['Unit','Buah','Set','Paket','Pcs','Box'] as $satuanOption)
-                                    <option value="{{ $satuanOption }}" {{ old('satuan', $asset->satuan) == $satuanOption ? 'selected' : '' }}>{{ $satuanOption }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
                     {{-- Tahun Perolehan --}}
                     <div class="form-group">
                         <label class="form-label">Tahun Perolehan</label>
@@ -129,7 +116,7 @@
 
                     {{-- Nilai Perolehan --}}
                     <div class="form-group">
-                        <label class="form-label">Nilai Perolehan per Unit (Rp)</label>
+                        <label class="form-label">Nilai Perolehan (Rp)</label>
                         <input type="number" min="0" name="nilai_perolehan" value="{{ old('nilai_perolehan', $asset->nilai_perolehan) }}" class="form-input">
                     </div>
 

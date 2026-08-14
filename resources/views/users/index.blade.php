@@ -61,6 +61,7 @@
                                     </svg>
                                     Edit
                                 </a>
+                                <div class="w-[78px] flex justify-center">
                                 @if($user->id !== auth()->id())
                                 <form action="{{ route('users.destroy', $user) }}" method="POST" class="delete-user-form">
                                     @csrf @method('DELETE')
@@ -72,8 +73,14 @@
                                     </button>
                                 </form>
                                 @else
-                                <span class="text-xs text-secondary italic">Anda</span>
+                                <span class="inline-flex items-center gap-2 px-2 py-1 text-xs text-secondary/70 cursor-default" title="Ini akun Anda, tidak bisa dihapus sendiri">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    Anda
+                                </span>
                                 @endif
+                                </div>
                             </div>
                         </td>
                     </tr>
