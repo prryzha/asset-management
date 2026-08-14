@@ -5,7 +5,7 @@
             <h3>Asset Terbaru</h3>
             <p class="subtitle">5 asset yang terakhir ditambahkan.</p>
         </div>
-        <a href="{{ route('assets.index') }}" class="text-xs font-medium text-primary-600 hover:text-primary-700 transition-colors">
+        <a href="{{ route('assets.index') }}" class="text-xs font-normal text-primary-600 hover:text-primary-700 transition-colors">
             Lihat Semua &rarr;
         </a>
     </div>
@@ -26,12 +26,12 @@
                 </div>
                 @endif
                 <div>
-                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-sm">{{ $asset->nama_barang }}</h3>
+                    <h3 class="font-normal text-gray-800 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-sm">{{ $asset->nama_barang }}</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ $asset->kode_barang }}</p>
                 </div>
             </div>
             <div class="text-right flex items-center gap-3">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-normal
                     {{ $asset->status == 'Tersedia' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : '' }}
                     {{ $asset->status == 'Dipinjam' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : '' }}
                     {{ $asset->status == 'Perbaikan' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : '' }}">

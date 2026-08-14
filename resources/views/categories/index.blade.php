@@ -33,7 +33,7 @@
                         <td>
                             <span class="font-mono text-sm text-secondary">{{ $category->kode ?? '—' }}</span>
                         </td>
-                        <td class="font-medium">{{ $category->nama }}</td>
+                        <td class="font-normal">{{ $category->nama }}</td>
                         <td class="text-center">{{ $category->assets_count }}</td>
                         <td>
                             <div class="flex items-center justify-center gap-1">

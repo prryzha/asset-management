@@ -75,7 +75,8 @@
                     {{-- Nomor Seri --}}
                     <div class="form-group">
                         <label class="form-label">Nomor Seri</label>
-                        <input type="text" name="nomor_seri" value="{{ old('nomor_seri') }}" class="form-input" placeholder="SN-xxx">
+                        <input type="text" name="nomor_seri" id="nomor_seri_input" value="{{ old('nomor_seri') }}" class="form-input" placeholder="SN-xxx">
+                        <p id="nomor_seri_hint" class="text-xs text-gray-500 dark:text-gray-400 mt-1.5 hidden">Dikosongkan otomatis karena jumlah unit &gt; 1 — nomor seri tiap unit fisik biasanya berbeda, isi belakangan lewat halaman Edit per unit kalau perlu.</p>
                     </div>
 
                     {{-- Status --}}
@@ -108,7 +109,7 @@
                     {{-- Jumlah Unit (bulk create) --}}
                     <div class="form-group">
                         <label class="form-label">Jumlah Unit Ditambahkan</label>
-                        <input type="number" min="1" max="50" name="jumlah_unit" value="{{ old('jumlah_unit', 1) }}" class="form-input">
+                        <input type="number" min="1" max="50" name="jumlah_unit" id="jumlah_unit_input" value="{{ old('jumlah_unit', 1) }}" class="form-input">
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Kalau ada beberapa unit identik (mis. 5 kursi), isi jumlahnya di sini — sistem otomatis membuat unit terpisah dengan kode barang berurutan.</p>
                     </div>
 
@@ -136,7 +137,7 @@
                         <label class="form-label">Foto Aset</label>
                         <div class="flex items-start gap-6">
                             <div class="flex-1">
-                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
+                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-normal file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Format: JPG, JPEG, PNG. Maks: 2MB</p>
                                 @error('foto')<p class="form-error">{{ $message }}</p>@enderror
                             </div>
@@ -218,6 +219,22 @@ document.getElementById('foto_input').addEventListener('change', function(e) {
         previewImg.src = '';
     }
 });
+
+// Nonaktifkan Nomor Seri saat bikin banyak unit sekaligus — nomor seri fisik
+// tiap unit biasanya beda, jadi jangan sampai satu nilai ke-copy ke semua unit.
+const jumlahUnitInput = document.getElementById('jumlah_unit_input');
+const nomorSeriInput = document.getElementById('nomor_seri_input');
+const nomorSeriHint = document.getElementById('nomor_seri_hint');
+function toggleNomorSeri() {
+    const isBulk = parseInt(jumlahUnitInput.value, 10) > 1;
+    nomorSeriInput.disabled = isBulk;
+    nomorSeriInput.classList.toggle('bg-gray-50', isBulk);
+    nomorSeriInput.classList.toggle('dark:bg-gray-700', isBulk);
+    nomorSeriHint.classList.toggle('hidden', !isBulk);
+    if (isBulk) nomorSeriInput.value = '';
+}
+jumlahUnitInput.addEventListener('input', toggleNomorSeri);
+toggleNomorSeri();
 
 // Prevent double submit
 const assetForm = document.getElementById('assetForm');

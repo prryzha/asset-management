@@ -25,9 +25,9 @@
                         <option value="{{ $event }}" {{ request('event') == $event ? 'selected' : '' }}>{{ $event }}</option>
                     @endforeach
                 </select>
-                <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Dari:</label>
+                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Dari:</label>
                 <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}" class="form-input form-input-sm w-auto">
-                <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Sampai:</label>
+                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
                 <button type="submit" class="btn-primary btn-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,13 +61,13 @@
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center justify-between gap-2">
-                        <h4 class="font-semibold text-sm">{{ $log->user?->name ?? 'System' }}</h4>
+                        <h4 class="font-normal text-sm">{{ $log->user?->name ?? 'System' }}</h4>
                         <span class="text-xs text-secondary whitespace-nowrap">{{ $log->created_at->diffForHumans() }}</span>
                     </div>
                     <p class="text-sm text-secondary mt-0.5">{{ $log->description }}</p>
                 </div>
             </div>
-            <span class="ml-3 inline-flex items-center px-2.5 py-1 text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-secondary whitespace-nowrap">
+            <span class="ml-3 inline-flex items-center px-2.5 py-1 text-xs font-normal bg-gray-100 dark:bg-gray-700 text-secondary whitespace-nowrap">
                 {{ $log->event }}
             </span>
         </div>

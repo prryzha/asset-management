@@ -41,9 +41,9 @@
                     <option value="Selesai" {{ request('status')=='Selesai'?'selected':'' }}>Selesai</option>
                     <option value="Dibatalkan" {{ request('status')=='Dibatalkan'?'selected':'' }}>Dibatalkan</option>
                 </select>
-                <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Dari:</label>
+                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Dari:</label>
                 <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}" class="form-input form-input-sm w-auto">
-                <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Sampai:</label>
+                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
                 <button type="submit" class="btn-primary btn-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +84,7 @@
                                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                         </td>
                         <td>
-                            <div class="font-medium">{{ $maintenance->asset->kode_barang ?? '-' }}</div>
+                            <div class="font-normal">{{ $maintenance->asset->kode_barang ?? '-' }}</div>
                             <div class="text-xs text-secondary">
                                 {{ $maintenance->asset->nama_barang ?? 'Aset sudah dihapus' }}
                                 @if($maintenance->asset?->trashed())

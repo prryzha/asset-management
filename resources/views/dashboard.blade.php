@@ -114,9 +114,9 @@
                         <tbody>
                             @forelse(($maintenanceUpcoming ?? collect()) as $ms)
                             <tr>
-                                <td class="font-medium">{{ \Carbon\Carbon::parse($ms->tanggal_jadwal)->format('d M Y') }}</td>
+                                <td class="font-normal">{{ \Carbon\Carbon::parse($ms->tanggal_jadwal)->format('d M Y') }}</td>
                                 <td>
-                                    <span class="font-semibold">{{ $ms->asset?->kode_barang ?? '-' }}</span>
+                                    <span class="font-normal">{{ $ms->asset?->kode_barang ?? '-' }}</span>
                                     <span class="text-xs text-secondary block">{{ $ms->asset?->nama_barang ?? 'Aset Dihapus' }}</span>
                                 </td>
                                 <td class="text-secondary">{{ $ms->jenis_perawatan }}</td>
@@ -145,7 +145,7 @@
                 </div>
                 @if(($maintenanceUpcoming ?? collect())->count() > 0)
                 <div class="px-5 py-3 border-t border-[#E5E7EB] dark:border-gray-700">
-                    <a href="{{ route('maintenance.index') }}" class="text-xs font-medium text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                    <a href="{{ route('maintenance.index') }}" class="text-xs font-normal text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
                         Lihat Semua Jadwal &rarr;
                     </a>
                 </div>
@@ -168,7 +168,7 @@
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="text-sm text-gray-900 dark:text-gray-100">Baik</span>
-                            <span class="text-sm font-bold">{{ $baik }}</span>
+                            <span class="text-sm font-normal">{{ $baik }}</span>
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-gray-700 h-2">
                             <div class="bg-success h-2 transition-all duration-500" style="width: {{ $totalAsset > 0 ? ($baik/$totalAsset)*100 : 0 }}%"></div>
@@ -177,7 +177,7 @@
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="text-sm text-gray-900 dark:text-gray-100">Kurang Baik</span>
-                            <span class="text-sm font-bold">{{ $kurangBaik }}</span>
+                            <span class="text-sm font-normal">{{ $kurangBaik }}</span>
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-gray-700 h-2">
                             <div class="bg-warning h-2 transition-all duration-500" style="width: {{ $totalAsset > 0 ? ($kurangBaik/$totalAsset)*100 : 0 }}%"></div>
@@ -186,7 +186,7 @@
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="text-sm text-gray-900 dark:text-gray-100">Rusak Berat</span>
-                            <span class="text-sm font-bold">{{ $rusakBerat }}</span>
+                            <span class="text-sm font-normal">{{ $rusakBerat }}</span>
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-gray-700 h-2">
                             <div class="bg-danger h-2 transition-all duration-500" style="width: {{ $totalAsset > 0 ? ($rusakBerat/$totalAsset)*100 : 0 }}%"></div>
@@ -202,7 +202,7 @@
                         <h3>Log Transaksi</h3>
                         <p class="text-xs text-secondary mt-0.5">Riwayat peminjaman terbaru</p>
                     </div>
-                    <a href="{{ route('transactions.index') }}" class="text-xs font-medium text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                    <a href="{{ route('transactions.index') }}" class="text-xs font-normal text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
                         Lihat Semua &rarr;
                     </a>
                 </div>
@@ -218,7 +218,7 @@
                         <tbody>
                             @forelse(($recentTransactions ?? collect()) as $trx)
                             <tr>
-                                <td class="font-medium">{{ $trx->nama_peminjam }}</td>
+                                <td class="font-normal">{{ $trx->nama_peminjam }}</td>
                                 <td class="text-secondary">{{ $trx->asset?->kode_barang ?? '-' }}</td>
                                 <td class="text-center">
                                     <x-ui.badge-status :status="$trx->status_peminjaman" />
@@ -245,7 +245,7 @@
                 <h3>Aktivitas Terbaru</h3>
                 <p class="text-xs text-secondary mt-0.5">Log sistem dan riwayat aktivitas pengguna</p>
             </div>
-            <a href="{{ route('activity-logs.index') }}" class="text-xs font-medium text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+            <a href="{{ route('activity-logs.index') }}" class="text-xs font-normal text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
                 Lihat Semua &rarr;
             </a>
         </div>
@@ -269,7 +269,7 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex justify-between items-start gap-2">
                         <div class="min-w-0">
-                            <h4 class="font-semibold text-sm">{{ $activity->user->name ?? 'System' }}</h4>
+                            <h4 class="font-normal text-sm">{{ $activity->user->name ?? 'System' }}</h4>
                             <p class="text-secondary text-xs mt-0.5">{{ $activity->description }}</p>
                         </div>
                         <span class="text-xs text-secondary whitespace-nowrap flex-shrink-0 mt-0.5">{{ $activity->created_at->diffForHumans() }}</span>

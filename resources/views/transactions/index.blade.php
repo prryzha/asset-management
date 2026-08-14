@@ -39,9 +39,9 @@
                     <option value="Ditolak" {{ request('status')=='Ditolak'?'selected':'' }}>Ditolak</option>
                     <option value="Dikembalikan" {{ request('status')=='Dikembalikan'?'selected':'' }}>Dikembalikan</option>
                 </select>
-                <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Dari:</label>
+                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Dari:</label>
                 <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}" class="form-input form-input-sm w-auto">
-                <label class="text-xs font-medium text-gray-500 whitespace-nowrap">Sampai:</label>
+                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
                 <button type="submit" class="btn-primary btn-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,10 +83,10 @@
                                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                         </td>
                         <td>
-                            <span class="font-semibold">{{ $trx->asset->kode_barang ?? 'Barang Dihapus' }}</span>
+                            <span class="font-normal">{{ $trx->asset->kode_barang ?? 'Barang Dihapus' }}</span>
                             <span class="text-xs text-secondary block">{{ $trx->asset->nama_barang ?? '-' }}</span>
                         </td>
-                        <td class="font-medium">{{ $trx->nama_peminjam }}</td>
+                        <td class="font-normal">{{ $trx->nama_peminjam }}</td>
                         <td class="text-secondary text-sm">{{ $trx->keperluan ?? '-' }}</td>
                         <td class="text-sm text-secondary">{{ \Carbon\Carbon::parse($trx->tanggal_pinjam)->format('d/m/Y') }}</td>
                         <td class="text-center">

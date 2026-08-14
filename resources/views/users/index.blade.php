@@ -33,10 +33,10 @@
                     <tr>
                         <td>
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary dark:text-primary-300 flex items-center justify-center font-bold text-xs">
+                                <div class="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary dark:text-primary-300 flex items-center justify-center font-normal text-xs">
                                     {{ substr($user->name, 0, 1) }}
                                 </div>
-                                <span class="font-medium">{{ $user->name }}</span>
+                                <span class="font-normal">{{ $user->name }}</span>
                             </div>
                         </td>
                         <td class="text-secondary">{{ $user->email }}</td>
@@ -47,7 +47,7 @@
                                     'staff' => 'bg-primary-50 text-primary dark:bg-primary-900/30 dark:text-primary-300',
                                 ];
                             @endphp
-                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold {{ $roleBadge[$user->role] ?? 'bg-gray-100 text-secondary dark:bg-gray-700' }}">
+                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-normal {{ $roleBadge[$user->role] ?? 'bg-gray-100 text-secondary dark:bg-gray-700' }}">
                                 {{ $user->role }}
                             </span>
                         </td>

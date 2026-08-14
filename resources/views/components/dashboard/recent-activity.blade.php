@@ -7,7 +7,7 @@
             <h3>Aktivitas Terbaru</h3>
             <p class="subtitle">Riwayat aktivitas terbaru sistem.</p>
         </div>
-        <a href="{{ route('activity-logs.index') }}" class="text-xs font-medium text-primary-600 hover:text-primary-700 transition-colors">
+        <a href="{{ route('activity-logs.index') }}" class="text-xs font-normal text-primary-600 hover:text-primary-700 transition-colors">
             Lihat Semua &rarr;
         </a>
     </div>
@@ -29,7 +29,7 @@
             <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-start gap-2">
                     <div class="min-w-0">
-                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 text-sm">{{ $activity->user->name ?? 'System' }}</h3>
+                        <h3 class="font-normal text-gray-800 dark:text-gray-200 text-sm">{{ $activity->user->name ?? 'System' }}</h3>
                         <p class="text-gray-600 dark:text-gray-400 text-sm mt-0.5 truncate">{{ $activity->description }}</p>
                     </div>
                     <span class="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap flex-shrink-0">{{ $activity->created_at->diffForHumans() }}</span>

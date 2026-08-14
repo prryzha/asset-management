@@ -25,6 +25,7 @@
     <div class="card mb-6">
         <div class="card-body py-2.5">
             <form action="{{ route('assets.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+                <input type="hidden" name="f" value="1">
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Kode, nama atau merk..."
@@ -100,7 +101,7 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0">
-                                    <span class="font-semibold">{{ $asset->kode_barang }}</span>
+                                    <span class="font-normal">{{ $asset->kode_barang }}</span>
                                     <div class="text-sm text-secondary truncate">{{ $asset->nama_barang }}</div>
                                     <div class="text-xs text-secondary truncate">{{ $asset->merk }}</div>
                                 </div>
@@ -116,14 +117,14 @@
                                     'Rusak Berat' => 'bg-danger-50 text-danger dark:bg-red-900/30 dark:text-red-300',
                                 ];
                             @endphp
-                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold {{ $kondisiBadge[$asset->kondisi] ?? 'bg-gray-100 text-secondary dark:bg-gray-700' }}">
+                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-normal {{ $kondisiBadge[$asset->kondisi] ?? 'bg-gray-100 text-secondary dark:bg-gray-700' }}">
                                 {{ $asset->kondisi }}
                             </span>
                         </td>
                         <td class="text-center">
                             <x-ui.badge-status :status="$asset->status" />
                         </td>
-                        <td class="text-center font-medium">{{ $asset->nilai_perolehan ? 'Rp '.number_format($asset->nilai_perolehan,0,',','.') : '—' }}</td>
+                        <td class="text-center font-normal">{{ $asset->nilai_perolehan ? 'Rp '.number_format($asset->nilai_perolehan,0,',','.') : '—' }}</td>
                         <td class="text-center">
                             <div class="flex items-center justify-center gap-1">
                                 <a href="{{ route('assets.edit', $asset) }}" class="btn-ghost btn-sm px-2 py-1 text-xs">
@@ -147,10 +148,17 @@
                     @empty
                     <tr>
                         <td colspan="8" class="text-center py-16">
+                            @if(!$hasFilter)
+                            <x-ui.empty-state
+                                icon="search"
+                                title="Gunakan Filter untuk Menampilkan Data"
+                                description="Isi kata kunci pencarian atau pilih kategori/lokasi, lalu klik Cari untuk menampilkan daftar aset." />
+                            @else
                             <x-ui.empty-state
                                 icon="package"
-                                title="Belum Ada Data Aset"
-                                description="Belum ada aset yang terdaftar. Silakan tambah aset baru." />
+                                title="Tidak Ada Aset Ditemukan"
+                                description="Tidak ada aset yang cocok dengan filter ini." />
+                            @endif
                         </td>
                     </tr>
                     @endforelse

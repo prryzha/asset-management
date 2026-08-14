@@ -13,7 +13,7 @@
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body class="bg-[#F5F7FA]">
 
@@ -54,7 +54,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                             </svg>
                             @if($headerNotifications['total'] > 0)
-                            <span class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-danger-600 text-white text-[10px] font-semibold leading-none">
+                            <span class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-danger-600 text-white text-[10px] font-normal leading-none">
                                 {{ $headerNotifications['total'] > 9 ? '9+' : $headerNotifications['total'] }}
                             </span>
                             @endif
@@ -77,19 +77,19 @@
 
                                 @foreach($headerNotifications['sections'] as $section)
                                 <div>
-                                    <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">{{ $section['title'] }} ({{ $section['count'] }})</p>
+                                    <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">{{ $section['title'] }} ({{ $section['count'] }})</p>
                                     <div class="space-y-2">
                                         @foreach($section['items'] as $item)
                                         @if($item['url'])
                                         <a href="{{ $item['url'] }}" class="block text-sm hover:bg-gray-50 dark:hover:bg-gray-700 -mx-2 px-2 py-1.5">
-                                            <span class="font-medium text-gray-900 dark:text-gray-100">{{ $item['label'] }}</span>
+                                            <span class="font-normal text-gray-900 dark:text-gray-100">{{ $item['label'] }}</span>
                                             @if($item['sublabel'])
                                             <span class="block text-xs text-secondary">{{ $item['sublabel'] }}</span>
                                             @endif
                                         </a>
                                         @else
                                         <div class="text-sm -mx-2 px-2 py-1.5">
-                                            <span class="font-medium text-gray-900 dark:text-gray-100">{{ $item['label'] }}</span>
+                                            <span class="font-normal text-gray-900 dark:text-gray-100">{{ $item['label'] }}</span>
                                             @if($item['sublabel'])
                                             <span class="block text-xs text-secondary">{{ $item['sublabel'] }}</span>
                                             @endif
@@ -98,7 +98,7 @@
                                         @endforeach
                                     </div>
                                     @if($section['moreUrl'])
-                                    <a href="{{ $section['moreUrl'] }}" class="text-xs font-medium text-primary-600 hover:text-primary-700">Lihat Semua →</a>
+                                    <a href="{{ $section['moreUrl'] }}" class="text-xs font-normal text-primary-600 hover:text-primary-700">Lihat Semua →</a>
                                     @endif
                                 </div>
                                 @endforeach

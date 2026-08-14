@@ -37,7 +37,7 @@
                             @if($damagedAssets->count())
                             <optgroup label="🔴 Perlu Perbaikan ({{ $damagedAssets->count() }})">
                                 @foreach($damagedAssets as $asset)
-                                    <option value="{{ $asset->id }}" class="font-medium" {{ old('asset_id')==$asset->id ? 'selected' : '' }}>
+                                    <option value="{{ $asset->id }}" class="font-normal" {{ old('asset_id')==$asset->id ? 'selected' : '' }}>
                                         🛠️ {{ $asset->kode_barang }} - {{ $asset->nama_barang }} ({{ $asset->kondisi }})
                                     </option>
                                 @endforeach

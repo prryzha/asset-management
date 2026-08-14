@@ -31,7 +31,14 @@ class AssetController extends Controller
         $kondisi = $request->input('kondisi');
         $status = $request->input('status');
 
+        // Data baru ditampilkan setelah tombol "Cari" diklik (form filter dikirim) — tabel
+        // kosong di kunjungan awal. Hidden input "f" menandai form pernah dikirim, supaya klik
+        // "Cari" dengan semua kolom dibiarkan default (Semua Kategori/Semua Lokasi) tetap
+        // menampilkan semua data, bukan dianggap "belum difilter".
+        $hasFilter = $request->has('f') || $search || $categoryId || $locationId || $kondisi || $status;
+
         $assets = Asset::with(['category', 'location'])
+            ->when(!$hasFilter, fn($q) => $q->whereIn('id', []))
             ->when($search, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('kode_barang', 'like', "%{$search}%")
@@ -56,7 +63,7 @@ class AssetController extends Controller
             return Location::orderBy('nama')->get();
         });
 
-        return view('assets.index', compact('assets', 'search', 'categories', 'locations', 'categoryId', 'locationId', 'kondisi', 'status'));
+        return view('assets.index', compact('assets', 'search', 'categories', 'locations', 'categoryId', 'locationId', 'kondisi', 'status', 'hasFilter'));
     }
 
     public function create(): View
@@ -103,6 +110,10 @@ class AssetController extends Controller
         // Tambah banyak unit identik sekaligus — tiap unit jadi baris tersendiri
         // dengan kode barang berurutan (mis. PLP-001, PLP-002, ...).
         if ($jumlahUnit > 1) {
+            // Nomor seri fisik tiap unit biasanya beda — jangan sampai satu nilai
+            // ke-copy identik ke semua unit yang dibuat sekaligus.
+            unset($validated['nomor_seri']);
+
             $baseKode = $validated['kode_barang'] ?? null;
             if (! $baseKode) {
                 $category = Category::findOrFail($validated['category_id']);

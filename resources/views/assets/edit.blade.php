@@ -131,7 +131,7 @@
                         <label class="form-label">Foto Aset</label>
                         <div class="flex items-start gap-6">
                             <div class="flex-1">
-                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
+                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-normal file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Format: JPG, JPEG, PNG. Maks: 2MB</p>
                                 @error('foto')<p class="form-error">{{ $message }}</p>@enderror
                                 @if($asset->foto)
@@ -145,7 +145,7 @@
                             </div>
                             <div class="flex-shrink-0">
                                 <div id="foto_current" class="{{ $asset->foto ? '' : 'hidden' }}">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-1.5 font-medium">Foto Saat Ini</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-1.5 font-normal">Foto Saat Ini</p>
                                     <img src="{{ $asset->foto ? asset('storage/'.$asset->foto) : '' }}" id="foto_current_img"
                                          class="w-32 h-32 object-cover border border-[#E5E7EB] dark:border-gray-600">
                                 </div>

@@ -11,10 +11,10 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Perawatan Terlambat</p>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $maintenanceTertunda }}</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-normal">Perawatan Terlambat</p>
+                <h3 class="text-xl font-normal text-gray-900 dark:text-gray-100">{{ $maintenanceTertunda }}</h3>
             </div>
-            <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300">Kritis</span>
+            <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-normal rounded bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300">Kritis</span>
         </div>
     </a>
     @endif
@@ -29,10 +29,10 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Barang Dipinjam</p>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $borrowedCount }}</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-normal">Barang Dipinjam</p>
+                <h3 class="text-xl font-normal text-gray-900 dark:text-gray-100">{{ $borrowedCount }}</h3>
             </div>
-            <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">Perhatian</span>
+            <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-normal rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">Perhatian</span>
         </div>
     </a>
     @endif
@@ -48,10 +48,10 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Dalam Perbaikan</p>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $perbaikan }}</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-normal">Dalam Perbaikan</p>
+                <h3 class="text-xl font-normal text-gray-900 dark:text-gray-100">{{ $perbaikan }}</h3>
             </div>
-            <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded bg-blue-100 text-blue-700 dark:bg-primary-900/30 dark:text-primary-300">Info</span>
+            <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-normal rounded bg-blue-100 text-blue-700 dark:bg-primary-900/30 dark:text-primary-300">Info</span>
         </div>
     </a>
     @endif

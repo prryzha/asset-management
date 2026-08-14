@@ -24,19 +24,19 @@
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
                     <span class="text-xs text-secondary block mb-1">Kode Aset</span>
-                    <span class="font-medium">{{ $maintenanceSchedule->asset->kode_barang ?? '-' }}</span>
+                    <span class="font-normal">{{ $maintenanceSchedule->asset->kode_barang ?? '-' }}</span>
                 </div>
                 <div>
                     <span class="text-xs text-secondary block mb-1">Nama Aset</span>
-                    <span class="font-medium">{{ $maintenanceSchedule->asset->nama_barang ?? 'Aset sudah dihapus' }}</span>
+                    <span class="font-normal">{{ $maintenanceSchedule->asset->nama_barang ?? 'Aset sudah dihapus' }}</span>
                 </div>
                 <div>
                     <span class="text-xs text-secondary block mb-1">Jenis Perawatan</span>
-                    <span class="font-medium">{{ $maintenanceSchedule->jenis_perawatan }}</span>
+                    <span class="font-normal">{{ $maintenanceSchedule->jenis_perawatan }}</span>
                 </div>
                 <div>
                     <span class="text-xs text-secondary block mb-1">Tanggal</span>
-                    <span class="font-medium">{{ \Carbon\Carbon::parse($maintenanceSchedule->tanggal_jadwal)->format('d M Y') }}</span>
+                    <span class="font-normal">{{ \Carbon\Carbon::parse($maintenanceSchedule->tanggal_jadwal)->format('d M Y') }}</span>
                 </div>
             </div>
         </div>

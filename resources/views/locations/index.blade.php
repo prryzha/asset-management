@@ -34,7 +34,7 @@
                         <td>
                             <span class="font-mono text-sm text-secondary">{{ $location->kode ?? '—' }}</span>
                         </td>
-                        <td class="font-medium">{{ $location->nama }}</td>
+                        <td class="font-normal">{{ $location->nama }}</td>
                         <td class="text-secondary">{{ $location->gedung ?? '—' }}</td>
                         <td class="text-center">{{ $location->assets_count }}</td>
                         <td>

@@ -25,7 +25,7 @@ class ActivityLogController extends Controller
                 $query->whereDate('created_at', '<=', $request->input('tanggal_sampai'));
             })
             ->latest()
-            ->paginate(20)
+            ->paginate(10)
             ->withQueryString();
 
         /*
