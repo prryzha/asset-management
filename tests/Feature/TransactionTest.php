@@ -19,8 +19,8 @@ class TransactionTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = User::factory()->create(['role' => 'admin']);
-        $this->kepsek = User::factory()->create(['role' => 'staff']);
+        $this->admin = User::factory()->create(['role' => 'staff']);
+        $this->kepsek = User::factory()->create(['role' => 'admin']);
     }
 
     public function test_authenticated_user_can_view_transactions(): void

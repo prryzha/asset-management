@@ -40,13 +40,72 @@
                     <div class="app-header-module-title">Manajemen Aset</div>
                 </div>
 
-                <div class="flex items-center gap-4 pl-6 border-l border-gray-200">
+                <div class="flex items-center gap-4 pl-6 border-l border-gray-200 dark:border-gray-700">
                     {{-- Notifications --}}
-                    <button class="flex items-center justify-center w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors" title="Notifikasi">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                    </button>
+                    @if($headerNotifications !== null)
+                    <div class="relative" x-data="{ open: false }" x-on:keydown.escape.window="open = false">
+                        <button
+                            type="button"
+                            class="relative flex items-center justify-center w-5 h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                            title="Notifikasi"
+                            x-on:click="open = !open"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                            @if($headerNotifications['total'] > 0)
+                            <span class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-danger-600 text-white text-[10px] font-semibold leading-none">
+                                {{ $headerNotifications['total'] > 9 ? '9+' : $headerNotifications['total'] }}
+                            </span>
+                            @endif
+                        </button>
+
+                        <div
+                            x-show="open"
+                            x-on:click.outside="open = false"
+                            x-transition
+                            class="card absolute right-0 mt-3 w-80 max-h-96 overflow-y-auto z-50 text-left"
+                            style="display: none;"
+                        >
+                            <div class="card-header">
+                                <h3>Notifikasi</h3>
+                            </div>
+                            <div class="card-body space-y-4">
+                                @if($headerNotifications['total'] === 0)
+                                    <p class="text-sm text-secondary text-center py-2">Tidak ada notifikasi baru.</p>
+                                @endif
+
+                                @foreach($headerNotifications['sections'] as $section)
+                                <div>
+                                    <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">{{ $section['title'] }} ({{ $section['count'] }})</p>
+                                    <div class="space-y-2">
+                                        @foreach($section['items'] as $item)
+                                        @if($item['url'])
+                                        <a href="{{ $item['url'] }}" class="block text-sm hover:bg-gray-50 dark:hover:bg-gray-700 -mx-2 px-2 py-1.5">
+                                            <span class="font-medium text-gray-900 dark:text-gray-100">{{ $item['label'] }}</span>
+                                            @if($item['sublabel'])
+                                            <span class="block text-xs text-secondary">{{ $item['sublabel'] }}</span>
+                                            @endif
+                                        </a>
+                                        @else
+                                        <div class="text-sm -mx-2 px-2 py-1.5">
+                                            <span class="font-medium text-gray-900 dark:text-gray-100">{{ $item['label'] }}</span>
+                                            @if($item['sublabel'])
+                                            <span class="block text-xs text-secondary">{{ $item['sublabel'] }}</span>
+                                            @endif
+                                        </div>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                    @if($section['moreUrl'])
+                                    <a href="{{ $section['moreUrl'] }}" class="text-xs font-medium text-primary-600 hover:text-primary-700">Lihat Semua →</a>
+                                    @endif
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    @endif
 
                     {{-- Dark Mode Toggle --}}
                     <button id="darkModeToggle" class="flex items-center justify-center w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors" title="Mode Gelap">

@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\ActivityLog;
 use App\Observers\ActivityLogObserver;
+use App\View\Composers\HeaderNotificationComposer;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -32,5 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Register observer untuk auto-invalidate cache activity events
         ActivityLog::observe(ActivityLogObserver::class);
+
+        View::composer('layouts.app', HeaderNotificationComposer::class);
     }
 }

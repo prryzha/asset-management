@@ -16,14 +16,14 @@ class AssetTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
-    private User $kepsek;
+    private User $staff;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->admin = User::factory()->create(['role' => 'admin']);
-        $this->kepsek = User::factory()->create(['role' => 'staff']);
+        $this->staff = User::factory()->create(['role' => 'staff']);
     }
 
     public function test_guest_cannot_access_asset_index(): void
@@ -36,7 +36,7 @@ class AssetTest extends TestCase
     {
         Asset::factory(3)->create();
 
-        $response = $this->actingAs($this->kepsek)
+        $response = $this->actingAs($this->staff)
             ->get(route('assets.index'));
 
         $response->assertStatus(200);
@@ -50,12 +50,12 @@ class AssetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_kepsek_cannot_view_create_form(): void
+    public function test_staff_can_view_create_form(): void
     {
-        $response = $this->actingAs($this->kepsek)
+        $response = $this->actingAs($this->staff)
             ->get(route('assets.create'));
 
-        $response->assertStatus(403);
+        $response->assertStatus(200);
     }
 
     public function test_admin_can_store_asset(): void
@@ -137,7 +137,7 @@ class AssetTest extends TestCase
     {
         Asset::factory()->create(['nama_barang' => 'Proyektor XYZ']);
 
-        $response = $this->actingAs($this->kepsek)
+        $response = $this->actingAs($this->staff)
             ->get(route('assets.index', ['search' => 'Proyektor']));
 
         $response->assertStatus(200);

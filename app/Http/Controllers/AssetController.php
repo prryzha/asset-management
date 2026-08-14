@@ -169,9 +169,7 @@ class AssetController extends Controller
         $asset->load(['category', 'location']);
         $transactions = $asset->transactions()->latest()->take(5)->get();
         $maintenanceSchedules = $asset->maintenanceSchedules()->latest('tanggal_jadwal')->get();
-        $activityLogs = auth()->user()->isAdmin()
-            ? $asset->activityLogs()->with('user')->latest()->take(10)->get()
-            : collect();
+        $activityLogs = $asset->activityLogs()->with('user')->latest()->take(10)->get();
         $assetLogs = $asset->assetLogs()->with('user')->latest()->take(20)->get();
 
         return view('assets.show', compact('asset', 'transactions', 'maintenanceSchedules', 'activityLogs', 'assetLogs'));

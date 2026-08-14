@@ -68,7 +68,6 @@
         </div>
 
         {{-- Transaksi --}}
-        @if(auth()->user()->isAdmin())
         <div class="sidebar-section">
             <div class="sidebar-section-title">Transaksi</div>
 
@@ -89,14 +88,12 @@
                 Perawatan
             </a>
         </div>
-        @endif
 
         {{-- Pengaturan --}}
-        @if(auth()->user()->isAdmin())
         <div class="sidebar-section">
             <div class="sidebar-section-title">Pengaturan</div>
 
-            @if(auth()->user()->isSuperAdmin())
+            @if(auth()->user()->isAdmin())
             <a href="{{ route('users.index') }}"
                class="sidebar-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,6 +111,5 @@
                 Aktivitas
             </a>
         </div>
-        @endif
     </nav>
 </aside>

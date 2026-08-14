@@ -12,7 +12,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::middleware('auth')->group(function () {
@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::middleware('role:super_admin')->group(function () {
+    Route::middleware('role:admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -41,48 +41,46 @@ Route::middleware('auth')->group(function () {
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 
-    Route::middleware('role:super_admin,admin')->group(function () {
-        Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
-        Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
-        Route::get('/assets/{asset}/edit', [AssetController::class, 'edit'])->name('assets.edit');
-        Route::put('/assets/{asset}', [AssetController::class, 'update'])->name('assets.update');
-        Route::delete('/assets/{asset}', [AssetController::class, 'destroy'])->name('assets.destroy');
-        Route::delete('/assets/{asset}/foto', [AssetController::class, 'deleteFoto'])->name('assets.delete-foto');
-        Route::post('/assets/{asset}/report-damage', [AssetController::class, 'reportDamage'])->name('assets.report-damage');
-        Route::get('/assets/{asset}/label/pdf', [AssetController::class, 'labelPdf'])->name('assets.label-pdf');
+    // Fitur operasional — semua role yang login (admin & staff) berhak akses,
+    // bedanya cuma manajemen user (di atas) yang dikunci role admin saja.
+    Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
+    Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
+    Route::get('/assets/{asset}/edit', [AssetController::class, 'edit'])->name('assets.edit');
+    Route::put('/assets/{asset}', [AssetController::class, 'update'])->name('assets.update');
+    Route::delete('/assets/{asset}', [AssetController::class, 'destroy'])->name('assets.destroy');
+    Route::delete('/assets/{asset}/foto', [AssetController::class, 'deleteFoto'])->name('assets.delete-foto');
+    Route::post('/assets/{asset}/report-damage', [AssetController::class, 'reportDamage'])->name('assets.report-damage');
+    Route::get('/assets/{asset}/label/pdf', [AssetController::class, 'labelPdf'])->name('assets.label-pdf');
 
-        Route::post('/transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
-        Route::post('/transactions/{transaction}/reject', [TransactionController::class, 'reject'])->name('transactions.reject');
-        Route::post('/transactions/{transaction}/return', [TransactionController::class, 'returnItem'])->name('transactions.return');
+    Route::post('/transactions/{transaction}/return', [TransactionController::class, 'returnItem'])->name('transactions.return');
 
-        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-        Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-        Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-        Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-        Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
-        Route::get('/locations/create', [LocationController::class, 'create'])->name('locations.create');
-        Route::post('/locations', [LocationController::class, 'store'])->name('locations.store');
-        Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
-        Route::put('/locations/{location}', [LocationController::class, 'update'])->name('locations.update');
-        Route::delete('/locations/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');
+    Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+    Route::get('/locations/create', [LocationController::class, 'create'])->name('locations.create');
+    Route::post('/locations', [LocationController::class, 'store'])->name('locations.store');
+    Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
+    Route::put('/locations/{location}', [LocationController::class, 'update'])->name('locations.update');
+    Route::delete('/locations/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');
 
-        Route::get('/maintenance', [MaintenanceScheduleController::class, 'index'])->name('maintenance.index');
-        Route::get('/maintenance/create', [MaintenanceScheduleController::class, 'create'])->name('maintenance.create');
-        Route::post('/maintenance', [MaintenanceScheduleController::class, 'store'])->name('maintenance.store');
-        Route::get('/maintenance/{maintenanceSchedule}/edit', [MaintenanceScheduleController::class, 'edit'])->name('maintenance.edit');
-        Route::put('/maintenance/{maintenanceSchedule}', [MaintenanceScheduleController::class, 'update'])->name('maintenance.update');
-        Route::patch('/maintenance/{maintenanceSchedule}/start', [MaintenanceScheduleController::class, 'start'])->name('maintenance.start');
-        Route::get('/maintenance/{maintenanceSchedule}/complete', [MaintenanceScheduleController::class, 'completeForm'])->name('maintenance.complete-form');
-        Route::put('/maintenance/{maintenanceSchedule}/complete', [MaintenanceScheduleController::class, 'complete'])->name('maintenance.complete');
-        Route::patch('/maintenance/{maintenanceSchedule}/cancel', [MaintenanceScheduleController::class, 'cancel'])->name('maintenance.cancel');
+    Route::get('/maintenance', [MaintenanceScheduleController::class, 'index'])->name('maintenance.index');
+    Route::get('/maintenance/create', [MaintenanceScheduleController::class, 'create'])->name('maintenance.create');
+    Route::post('/maintenance', [MaintenanceScheduleController::class, 'store'])->name('maintenance.store');
+    Route::get('/maintenance/{maintenanceSchedule}/edit', [MaintenanceScheduleController::class, 'edit'])->name('maintenance.edit');
+    Route::put('/maintenance/{maintenanceSchedule}', [MaintenanceScheduleController::class, 'update'])->name('maintenance.update');
+    Route::patch('/maintenance/{maintenanceSchedule}/start', [MaintenanceScheduleController::class, 'start'])->name('maintenance.start');
+    Route::get('/maintenance/{maintenanceSchedule}/complete', [MaintenanceScheduleController::class, 'completeForm'])->name('maintenance.complete-form');
+    Route::put('/maintenance/{maintenanceSchedule}/complete', [MaintenanceScheduleController::class, 'complete'])->name('maintenance.complete');
+    Route::patch('/maintenance/{maintenanceSchedule}/cancel', [MaintenanceScheduleController::class, 'cancel'])->name('maintenance.cancel');
 
-        Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 
-        Route::post('/assets/{asset}/logs', [AssetLogController::class, 'store'])->name('assets.logs.store');
-    });
+    Route::post('/assets/{asset}/logs', [AssetLogController::class, 'store'])->name('assets.logs.store');
 
     Route::get('/assets/{asset}', [AssetController::class, 'show'])->name('assets.show');
 });

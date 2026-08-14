@@ -13,6 +13,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'asset_id',
+        'created_by',
         'nama_peminjam',
         'keperluan',
         'tanggal_pinjam',
@@ -31,5 +32,10 @@ class Transaction extends Model
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

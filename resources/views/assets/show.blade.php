@@ -18,7 +18,6 @@
             <p class="text-gray-500 dark:text-gray-400 mt-0.5">{{ $asset->nama_barang }}</p>
         </div>
 
-        @if(auth()->user()->isAdmin())
         <div class="flex gap-2 flex-wrap">
             <a href="{{ route('assets.edit', $asset) }}" class="btn-secondary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +38,6 @@
                 PDF Label
             </a>
         </div>
-        @endif
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -159,7 +157,6 @@
                     <h3>Log Aktivitas Aset</h3>
                 </div>
                 <div class="card-body">
-                    @if(auth()->user()->isAdmin())
                     <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Log aktivitas dicatat secara otomatis oleh sistem. Kamu juga bisa menambahkan catatan manual.</p>
                         <button type="button" onclick="openManualLog()"
@@ -170,7 +167,6 @@
                             Tambah Catatan Manual
                         </button>
                     </div>
-                    @endif
                     @if($assetLogs->count())
                     <div class="space-y-4">
                         @foreach($assetLogs as $log)
@@ -232,7 +228,6 @@
                 </div>
             </div>
 
-            @if(auth()->user()->isAdmin())
             <div class="card p-6">
                 <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4 text-sm uppercase tracking-wider text-gray-400 dark:text-gray-500">Aksi Cepat</h3>
                 <div class="space-y-2">
@@ -281,7 +276,6 @@
                             </form>
                 </div>
             </div>
-            @endif
         </div>
     </div>
 </div>
