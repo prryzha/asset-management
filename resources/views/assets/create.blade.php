@@ -30,10 +30,10 @@
                     <div class="form-group">
                         <label class="form-label">Kode Barang</label>
                         <div class="flex gap-2">
-                            <input type="text" id="prefix_input" placeholder="Prefix (contoh: MON)"
+                            <input type="text" id="prefix_input" placeholder="Awalan (contoh: MON)"
                                    class="form-input w-40 uppercase" maxlength="10">
                             <input type="text" name="kode_barang" id="kode_barang_input"
-                                   value="{{ old('kode_barang') }}"                                   class="form-input flex-1 bg-gray-50 dark:bg-gray-700" readonly placeholder="Auto - isi prefix">
+                                   value="{{ old('kode_barang') }}"                                   class="form-input flex-1 bg-gray-50 dark:bg-gray-700" readonly placeholder="Terisi otomatis dari awalan">
                         </div>
                         @error('kode_barang')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
@@ -76,7 +76,7 @@
                     <div class="form-group">
                         <label class="form-label">Nomor Seri</label>
                         <input type="text" name="nomor_seri" id="nomor_seri_input" value="{{ old('nomor_seri') }}" class="form-input" placeholder="SN-xxx">
-                        <p id="nomor_seri_hint" class="text-xs text-gray-500 dark:text-gray-400 mt-1.5 hidden">Dikosongkan otomatis karena jumlah unit &gt; 1 — nomor seri tiap unit fisik biasanya berbeda, isi belakangan lewat halaman Edit per unit kalau perlu.</p>
+                        <p id="nomor_seri_hint" class="text-xs text-gray-500 dark:text-gray-400 mt-1.5 hidden">Dikosongkan otomatis karena jumlah unit &gt; 1 — nomor seri tiap unit fisik biasanya berbeda, isi belakangan lewat halaman Ubah per unit kalau perlu.</p>
                     </div>
 
                     {{-- Penanggung Jawab --}}

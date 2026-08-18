@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Lokasi')
+@section('title', 'Ubah Lokasi')
 
 @section('content')
 <div class="p-8 max-w-2xl mx-auto">
 
-    <x-ui.page-header title="Edit Lokasi" subtitle="Perbarui informasi lokasi.">
+    <x-ui.page-header title="Ubah Lokasi" subtitle="Perbarui informasi lokasi.">
         <x-slot:actions>
             <a href="{{ route('locations.index') }}" class="btn-ghost btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

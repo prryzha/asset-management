@@ -29,7 +29,7 @@
             <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-start gap-2">
                     <div class="min-w-0">
-                        <h3 class="font-normal text-gray-800 dark:text-gray-200 text-sm">{{ $activity->user->name ?? 'System' }}</h3>
+                        <h3 class="font-normal text-gray-800 dark:text-gray-200 text-sm">{{ $activity->user->name ?? 'Sistem' }}</h3>
                         <p class="text-gray-600 dark:text-gray-400 text-sm mt-0.5 truncate">{{ $activity->description }}</p>
                     </div>
                     <span class="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap flex-shrink-0">{{ $activity->created_at->diffForHumans() }}</span>

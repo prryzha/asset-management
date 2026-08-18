@@ -38,7 +38,7 @@
                 <td>{{ $log->asset->kode_barang ?? '-' }}</td>
                 <td>{{ $log->asset->nama_barang ?? '-' }}</td>
                 <td>{{ $log->deskripsi }}</td>
-                <td>{{ $log->user->name ?? 'System' }}</td>
+                <td>{{ $log->user->name ?? 'Sistem' }}</td>
                 <td>{{ $log->created_at->format('d/m/Y H:i') }}</td>
             </tr>
             @endforeach

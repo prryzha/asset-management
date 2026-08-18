@@ -411,4 +411,18 @@ class AssetTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Proyektor XYZ');
     }
+
+    public function test_manual_log_cannot_use_workflow_type(): void
+    {
+        $asset = Asset::factory()->tersedia()->create();
+
+        $response = $this->actingAs($this->staff)
+            ->post(route('assets.logs.store', $asset), [
+                'tipe' => 'mutasi',
+                'deskripsi' => 'Percobaan log mutasi manual.',
+            ]);
+
+        $response->assertSessionHasErrors('tipe');
+        $this->assertDatabaseCount('asset_logs', 0);
+    }
 }

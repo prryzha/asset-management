@@ -42,11 +42,19 @@
             <div class="sidebar-section-title">Master Data</div>
 
             <a href="{{ route('assets.index') }}"
-               class="sidebar-link {{ request()->routeIs('assets.*') && !request()->routeIs('assets.create') && !request()->routeIs('assets.edit') ? 'active' : '' }}">
+               class="sidebar-link {{ request()->routeIs('assets.*') && !request()->routeIs('assets.create') && !request()->routeIs('assets.edit') && !request()->routeIs('assets.archive*') && !request()->routeIs('assets.hilang*') ? 'active' : '' }}">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
                 Aset
+            </a>
+
+            <a href="{{ route('assets.hilang') }}"
+               class="sidebar-link {{ request()->routeIs('assets.hilang*') ? 'active' : '' }}">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM13 10H7"/>
+                </svg>
+                Laporan Aset Hilang
             </a>
 
             <a href="{{ route('categories.index') }}"
@@ -72,11 +80,19 @@
             <div class="sidebar-section-title">Transaksi</div>
 
             <a href="{{ route('transactions.index') }}"
-               class="sidebar-link {{ request()->routeIs('transactions.*') ? 'active' : '' }}">
+               class="sidebar-link {{ request()->routeIs('transactions.*') && !request()->routeIs('transactions.report*') ? 'active' : '' }}">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                 </svg>
                 Peminjaman
+            </a>
+
+            <a href="{{ route('transactions.report') }}"
+               class="sidebar-link {{ request()->routeIs('transactions.report*') ? 'active' : '' }}">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Laporan Peminjaman
             </a>
 
             <a href="{{ route('maintenance.index') }}"
@@ -95,6 +111,19 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3-3 3 3m-3-3v8"/>
                 </svg>
                 Riwayat Mutasi
+            </a>
+        </div>
+
+        {{-- Arsip --}}
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Arsip</div>
+
+            <a href="{{ route('assets.archive') }}"
+               class="sidebar-link {{ request()->routeIs('assets.archive*') ? 'active' : '' }}">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                </svg>
+                Arsip Aset
             </a>
         </div>
 

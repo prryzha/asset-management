@@ -18,20 +18,47 @@
         </include>
     </source>
     <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="BROADCAST_CONNECTION" value="null"/>
-        <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
-        <env name="DB_URL" value=""/>
-        <env name="MAIL_MAILER" value="array"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="PULSE_ENABLED" value="false"/>
-        <env name="TELESCOPE_ENABLED" value="false"/>
-        <env name="NIGHTWATCH_ENABLED" value="false"/>
-        <env name="APP_URL" value="http://localhost"/>
+        <!-- Semua var di-force (bukan default PHPUnit yang cuma set kalau var belum ada).
+             Kalau shell session mengekspor isi .env (mis. `set -a; source .env`), tanpa
+             force=true PHPUnit menganggap var sudah terisi dan mengabaikan nilai test di
+             bawah — akibatnya test memakai DB MySQL asli + APP_URL subdirektori XAMPP dan
+             semua request gagal 404 (lihat sesi audit 2026-08-18). -->
+        <!-- CATATAN PENTING: var <env> saja TIDAK cukup. PHPUnit cuma mengisi putenv()
+             dan $_ENV — TIDAK $_SERVER — sedangkan dotenv (ServerConstAdapter) membaca
+             $_SERVER lebih dulu. Kalau shell mengekspor isi .env (mis. `set -a; source
+             .env`), nilai .env tetap menang lewat $_SERVER dan test memakai DB MySQL asli
+             + APP_URL subdirektori XAMPP → semua request 404 (dan RefreshDatabase
+             menjalankan migrate:fresh di DB asli!). Karena itu tiap var di-set dua kali:
+             <env force="true"> (putenv + $_ENV) dan <server> ($_SERVER). -->
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file" force="true"/>
+        <env name="BCRYPT_ROUNDS" value="4" force="true"/>
+        <env name="BROADCAST_CONNECTION" value="null" force="true"/>
+        <env name="CACHE_STORE" value="array" force="true"/>
+        <env name="DB_CONNECTION" value="sqlite" force="true"/>
+        <env name="DB_DATABASE" value=":memory:" force="true"/>
+        <env name="DB_URL" value="" force="true"/>
+        <env name="MAIL_MAILER" value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="SESSION_DRIVER" value="array" force="true"/>
+        <env name="PULSE_ENABLED" value="false" force="true"/>
+        <env name="TELESCOPE_ENABLED" value="false" force="true"/>
+        <env name="NIGHTWATCH_ENABLED" value="false" force="true"/>
+        <env name="APP_URL" value="http://localhost" force="true"/>
+        <server name="APP_ENV" value="testing"/>
+        <server name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <server name="BCRYPT_ROUNDS" value="4"/>
+        <server name="BROADCAST_CONNECTION" value="null"/>
+        <server name="CACHE_STORE" value="array"/>
+        <server name="DB_CONNECTION" value="sqlite"/>
+        <server name="DB_DATABASE" value=":memory:"/>
+        <server name="DB_URL" value=""/>
+        <server name="MAIL_MAILER" value="array"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
+        <server name="SESSION_DRIVER" value="array"/>
+        <server name="PULSE_ENABLED" value="false"/>
+        <server name="TELESCOPE_ENABLED" value="false"/>
+        <server name="NIGHTWATCH_ENABLED" value="false"/>
+        <server name="APP_URL" value="http://localhost"/>
     </php>
 </phpunit>

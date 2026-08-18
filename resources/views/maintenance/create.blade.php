@@ -26,7 +26,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3>Detail Perawatan</h3>
+                <h3>Rincian Perawatan</h3>
             </div>
             <div class="card-body">
                 <div class="space-y-5">

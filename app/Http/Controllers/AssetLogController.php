@@ -15,7 +15,10 @@ class AssetLogController extends Controller
     public function store(Request $request, Asset $asset): RedirectResponse
     {
         $validated = $request->validate([
-            'tipe' => ['required', 'in:mutasi,perawatan,kondisi,lainnya'],
+            // Catatan manual tidak boleh menyamar sebagai event workflow. Mutasi,
+            // perawatan, peminjaman, pengembalian, hilang, ditemukan, dan penghapusan
+            // semuanya harus dibuat oleh proses bisnis masing-masing.
+            'tipe' => ['required', 'in:lainnya'],
             'deskripsi' => ['required', 'string', 'max:500'],
         ]);
 
@@ -95,7 +98,7 @@ class AssetLogController extends Controller
                     $log->asset->kode_barang ?? '-',
                     $log->asset->nama_barang ?? '-',
                     $log->deskripsi,
-                    $log->user->name ?? 'System',
+                    $log->user->name ?? 'Sistem',
                     $log->created_at->format('Y-m-d H:i'),
                 ]);
             }

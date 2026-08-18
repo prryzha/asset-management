@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Asset;
 use App\Models\AssetLog;
 use App\Models\MaintenanceSchedule;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -309,9 +310,72 @@ class DisposalAssetTest extends TestCase
         ]);
     }
 
+    public function test_disposed_asset_location_cannot_be_mutated_via_direct_request(): void
+    {
+        $asset = Asset::factory()->disposed()->create();
+        $newLocation = \App\Models\Location::factory()->create();
+
+        $response = $this->actingAs($this->admin)
+            ->put(route('assets.update', $asset), [
+                'kode_barang' => $asset->kode_barang,
+                'nama_barang' => $asset->nama_barang,
+                'category_id' => $asset->category_id,
+                'location_id' => $newLocation->id,
+                'kondisi' => $asset->kondisi,
+            ]);
+
+        $response->assertSessionHasErrors('location_id');
+        $this->assertDatabaseHas('assets', [
+            'id' => $asset->id,
+            'location_id' => $asset->location_id,
+            'status' => 'Disposed',
+        ]);
+        $this->assertDatabaseMissing('asset_logs', [
+            'asset_id' => $asset->id,
+            'tipe' => 'mutasi',
+        ]);
+    }
+
+    public function test_disposed_asset_cannot_be_soft_deleted_from_archive(): void
+    {
+        $asset = Asset::factory()->disposed()->create();
+
+        $response = $this->actingAs($this->admin)
+            ->delete(route('assets.destroy', $asset));
+
+        $response->assertRedirect(route('assets.archive'));
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('assets', ['id' => $asset->id, 'status' => 'Disposed', 'deleted_at' => null]);
+    }
+
+    public function test_disposed_asset_cannot_be_returned_from_legacy_active_transaction(): void
+    {
+        $asset = Asset::factory()->disposed()->create();
+        $transaction = Transaction::factory()->create([
+            'asset_id' => $asset->id,
+            'status_peminjaman' => 'Dipinjam',
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->post(route('transactions.return', $transaction));
+
+        $response->assertSessionHasErrors('transaction');
+        $this->assertDatabaseHas('assets', ['id' => $asset->id, 'status' => 'Disposed']);
+        $this->assertDatabaseHas('transactions', ['id' => $transaction->id, 'status_peminjaman' => 'Dipinjam']);
+    }
+
     // G. Export/filter
 
-    public function test_disposed_status_can_be_filtered_in_index(): void
+    /**
+     * DIUBAH pada iterasi "Pemisahan Aset Aktif & Arsip": sebelumnya test ini
+     * memastikan aset Disposed MASIH bisa difilter/terlihat di Daftar Aset.
+     * Requirement itu sudah digantikan — Daftar Aset sekarang khusus aset aktif,
+     * dan aset Disposed pindah ke halaman Arsip Aset. Coverage-nya tidak hilang,
+     * cuma dipindah sasaran: dipastikan tetap bisa ditemukan lewat Arsip
+     * (lihat ArchiveAssetTest), dan di sini dipastikan sudah tidak bocor
+     * ke Daftar Aset walau di-request eksplisit lewat query string.
+     */
+    public function test_disposed_asset_is_not_visible_in_active_asset_index(): void
     {
         $asset = Asset::factory()->disposed()->create();
 
@@ -319,11 +383,22 @@ class DisposalAssetTest extends TestCase
             ->get(route('assets.index', ['status' => 'Disposed', 'f' => 1]));
 
         $response->assertStatus(200);
-        $response->assertSee($asset->kode_barang);
+        $response->assertDontSee($asset->kode_barang);
     }
 
-    public function test_export_csv_shows_indonesian_label_not_disposed(): void
+    /**
+     * DIUBAH pada iterasi "Export Daftar Aset hanya aset aktif": sebelumnya test ini
+     * membuat aset Disposed lalu memastikan export CSV Daftar Aset menampilkan label
+     * "Dihapuskan" (bukan "Disposed") — artinya aset Disposed ikut terbawa ke export
+     * aktif. Business rule sekarang: export Daftar Aset = halaman Daftar Aset = hanya
+     * aset aktif, jadi aset Disposed TIDAK boleh muncul sama sekali. Coverage label
+     * Indonesia tidak hilang — dipindah ke export Arsip (ArchiveAssetTest
+     * test_archive_csv_export_contains_only_disposed_assets: "Dihapuskan" ada,
+     * "Disposed" tidak ada).
+     */
+    public function test_export_csv_excludes_disposed_assets(): void
     {
+        $aktif = Asset::factory()->tersedia()->create(['kode_barang' => 'AKT-EXP-001']);
         Asset::factory()->disposed()->create(['kode_barang' => 'DSP-001']);
 
         $response = $this->actingAs($this->admin)->get(route('assets.export-csv'));
@@ -331,8 +406,8 @@ class DisposalAssetTest extends TestCase
         $response->assertStatus(200);
         $content = $response->streamedContent();
 
-        $this->assertStringContainsString('Dihapuskan', $content);
-        $this->assertStringNotContainsString('Disposed', $content);
+        $this->assertStringContainsString($aktif->kode_barang, $content);
+        $this->assertStringNotContainsString('DSP-001', $content);
     }
 
     // H. Duplicate

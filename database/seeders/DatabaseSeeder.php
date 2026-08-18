@@ -2,11 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Asset;
-use App\Models\Category;
-use App\Models\Location;
-use App\Models\MaintenanceSchedule;
-use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -14,72 +9,22 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Admin Sarpras',
-            'email' => 'superadmin@gmail.com',
-            'password' => bcrypt('password'),
-            'role' => 'admin',
-        ]);
+        // updateOrCreate (bukan factory create) supaya seeder aman dijalankan ulang —
+        // email user unique, jadi create biasa akan nabrak duplicate key di seed kedua.
+        User::updateOrCreate(
+            ['email' => 'superadmin@gmail.com'],
+            ['name' => 'Admin Sarpras', 'password' => bcrypt('password'), 'role' => 'admin']
+        );
 
-        User::factory()->create([
-            'name' => 'Staf Sarpras',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('password'),
-            'role' => 'staff',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            ['name' => 'Staf Sarpras', 'password' => bcrypt('password'), 'role' => 'staff']
+        );
 
-        Category::factory()->createMany([
-            ['nama' => 'Elektronik'],
-            ['nama' => 'Mebel'],
-            ['nama' => 'Buku'],
-            ['nama' => 'Olahraga'],
-            ['nama' => 'Laboratorium'],
-        ]);
-
-        Location::factory()->createMany([
-            ['nama' => 'Lab Komputer 1'],
-            ['nama' => 'Lab Komputer 2'],
-            ['nama' => 'Ruang Guru'],
-            ['nama' => 'Ruang Kelas'],
-            ['nama' => 'Perpustakaan'],
-        ]);
-
-        Asset::factory(20)
-            ->tersedia()
-            ->create()
-            ->each(function (Asset $asset) {
-                $asset->update([
-                    'category_id' => Category::inRandomOrder()->first()->id,
-                    'location_id' => Location::inRandomOrder()->first()->id,
-                ]);
-            });
-
-        Asset::factory(5)
-            ->dipinjam()
-            ->create()
-            ->each(function (Asset $asset) {
-                $asset->update([
-                    'category_id' => Category::inRandomOrder()->first()->id,
-                    'location_id' => Location::inRandomOrder()->first()->id,
-                ]);
-
-                Transaction::factory()->create([
-                    'asset_id' => $asset->id,
-                ]);
-            });
-
-        Asset::factory(3)
-            ->perbaikan()
-            ->create()
-            ->each(function (Asset $asset) {
-                $asset->update([
-                    'category_id' => Category::inRandomOrder()->first()->id,
-                    'location_id' => Location::inRandomOrder()->first()->id,
-                ]);
-
-                MaintenanceSchedule::factory()->dikerjakan()->create([
-                    'asset_id' => $asset->id,
-                ]);
-            });
+        // Data demo (kategori, lokasi, aset, peminjaman, perawatan) dibuat oleh
+        // DemoDataSeeder — master data EKSPLISIT dan realistis, bukan hasil random
+        // AssetFactory yang menciptakan kategori/lokasi baru untuk setiap aset
+        // (dulu: setelah migrate:fresh --seed muncul puluhan kategori/lokasi acak).
+        $this->call(DemoDataSeeder::class);
     }
 }

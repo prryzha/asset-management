@@ -9,17 +9,17 @@
         <x-slot:actions>
             <a :href="selected.length > 0
                     ? '{{ route('assets.export-pdf') }}?' + selected.map(id => 'ids[]=' + id).join('&')
-                    : '{{ route('assets.export-pdf', request()->only(['category_id','location_id'])) }}'"
+                    : '{{ route('assets.export-pdf', request()->only(['search','category_id','location_id','kondisi','status'])) }}'"
                class="btn-secondary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                <span x-text="selected.length > 0 ? 'Export PDF Terpilih (' + selected.length + ')' : 'Export PDF'"></span>
+                <span x-text="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'"></span>
             </a>
             <a :href="selected.length > 0
                     ? '{{ route('assets.export-csv') }}?' + selected.map(id => 'ids[]=' + id).join('&')
-                    : '{{ route('assets.export-csv', request()->only(['category_id','location_id'])) }}'"
+                    : '{{ route('assets.export-csv', request()->only(['search','category_id','location_id','kondisi','status'])) }}'"
                class="btn-secondary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                <span x-text="selected.length > 0 ? 'Export CSV Terpilih (' + selected.length + ')' : 'Export CSV'"></span>
+                <span x-text="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'"></span>
             </a>
             <a href="#" x-show="selected.length > 0" x-cloak @click.prevent="confirmBulkDelete()" class="btn-danger btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -56,6 +56,19 @@
                     @foreach($locations as $loc)
                         <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>{{ $loc->nama }}</option>
                     @endforeach
+                </select>
+                <select name="kondisi" class="form-input form-input-sm w-auto">
+                    <option value="">Semua Kondisi</option>
+                    <option value="Baik" {{ request('kondisi')=='Baik'?'selected':'' }}>Baik</option>
+                    <option value="Kurang Baik" {{ request('kondisi')=='Kurang Baik'?'selected':'' }}>Kurang Baik</option>
+                    <option value="Rusak Berat" {{ request('kondisi')=='Rusak Berat'?'selected':'' }}>Rusak Berat</option>
+                </select>
+                <select name="status" class="form-input form-input-sm w-auto">
+                    <option value="">Semua Status</option>
+                    <option value="Tersedia" {{ request('status')=='Tersedia'?'selected':'' }}>Tersedia</option>
+                    <option value="Dipinjam" {{ request('status')=='Dipinjam'?'selected':'' }}>Dipinjam</option>
+                    <option value="Perbaikan" {{ request('status')=='Perbaikan'?'selected':'' }}>Perbaikan</option>
+                    <option value="Hilang" {{ request('status')=='Hilang'?'selected':'' }}>Hilang</option>
                 </select>
                 <select name="sort" class="form-input form-input-sm w-auto">
                     <option value="kode_asc" {{ request('sort','kode_asc')=='kode_asc'?'selected':'' }}>Kode (A-Z)</option>
@@ -152,7 +165,7 @@
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
-                                    Edit
+                                    Ubah
                                 </a>
                                 <form action="{{ route('assets.destroy', $asset) }}" method="POST" class="delete-form">
                                     @csrf @method('DELETE')

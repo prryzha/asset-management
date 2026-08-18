@@ -60,7 +60,7 @@
         {{-- Submit --}}
         <div class="mt-8">
             <button class="btn-primary w-full">
-                Login
+                Masuk
             </button>
         </div>
 

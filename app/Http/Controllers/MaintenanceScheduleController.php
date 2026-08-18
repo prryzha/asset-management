@@ -19,8 +19,25 @@ class MaintenanceScheduleController extends Controller
 {
     public function index(Request $request): View
     {
-        $maintenanceSchedules = MaintenanceSchedule::with(['asset', 'creator'])
-            ->when($request->filled('search'), function ($query) use ($request) {
+        $maintenanceSchedules = $this->maintenanceListQuery($request)
+            ->with('creator')
+            ->orderBy('tanggal_jadwal')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('maintenance.index', compact('maintenanceSchedules'));
+    }
+
+    /**
+     * Query dasar Manajemen Perawatan — dipakai bareng index() dan export PDF/CSV
+     * supaya dataset tabel == dataset export untuk filter yang sama (termasuk
+     * search). $respectFilters dimatikan khusus export "data terpilih" (ids),
+     * perilaku export lama yang dipertahankan.
+     */
+    private function maintenanceListQuery(Request $request, bool $respectFilters = true)
+    {
+        return MaintenanceSchedule::with('asset')
+            ->when($respectFilters && $request->filled('search'), function ($query) use ($request) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
                     $query->where('jenis_perawatan', 'like', "%{$search}%")
@@ -30,26 +47,19 @@ class MaintenanceScheduleController extends Controller
                         });
                 });
             })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('status', $request->status);
-            })
-            ->when($request->filled('tanggal_dari'), function ($query) use ($request) {
-                $query->whereDate('tanggal_jadwal', '>=', $request->input('tanggal_dari'));
-            })
-            ->when($request->filled('tanggal_sampai'), function ($query) use ($request) {
-                $query->whereDate('tanggal_jadwal', '<=', $request->input('tanggal_sampai'));
-            })
-            ->orderBy('tanggal_jadwal')
-            ->paginate(10)
-            ->withQueryString();
-
-        return view('maintenance.index', compact('maintenanceSchedules'));
+            ->when($respectFilters && $request->filled('status'), fn($q) => $q->where('status', $request->input('status')))
+            ->when($respectFilters && $request->filled('tanggal_dari'), fn($q) => $q->whereDate('tanggal_jadwal', '>=', $request->input('tanggal_dari')))
+            ->when($respectFilters && $request->filled('tanggal_sampai'), fn($q) => $q->whereDate('tanggal_jadwal', '<=', $request->input('tanggal_sampai')));
     }
 
     public function create(): View
     {
-        $assets = Cache::remember('all_assets_v2', 3600, function () {
-            return Asset::orderBy('kode_barang')
+        // Aset yang sudah dihapuskan (Disposed) tidak boleh muncul di pilihan aset —
+        // aset arsip bukan bagian dari operasional. Cache key dinaikkan ke v3 supaya
+        // cache lama yang masih berisi aset Disposed tidak ikut kepakai.
+        $assets = Cache::remember('all_assets_v3', 3600, function () {
+            return Asset::whereIn('status', ['Tersedia', 'Perbaikan'])
+                ->orderBy('kode_barang')
                 ->get(['id', 'kode_barang', 'nama_barang', 'status', 'kondisi']);
         });
 
@@ -68,25 +78,28 @@ class MaintenanceScheduleController extends Controller
             'catatan'           => ['nullable', 'string'],
         ]);
 
-        $maintenance = MaintenanceSchedule::create([
-            ...$validated,
-            'created_by' => auth()->id(),
-        ]);
+        DB::transaction(function () use ($validated) {
+            $asset = Asset::lockForUpdate()->findOrFail($validated['asset_id']);
+            $this->ensureAssetCanBeScheduled($asset);
 
-        $maintenance->load('asset');
+            $maintenance = MaintenanceSchedule::create([
+                ...$validated,
+                'created_by' => auth()->id(),
+            ]);
 
-        ActivityLog::record(
-            $maintenance,
-            'maintenance.created',
-            "Menjadwalkan {$maintenance->jenis_perawatan} untuk {$maintenance->asset->kode_barang}"
-        );
+            ActivityLog::record(
+                $maintenance,
+                'maintenance.created',
+                "Menjadwalkan {$maintenance->jenis_perawatan} untuk {$asset->kode_barang}"
+            );
 
-        AssetLog::create([
-            'asset_id' => $maintenance->asset_id,
-            'tipe' => 'perawatan',
-            'deskripsi' => "Dijadwalkan perawatan: {$maintenance->jenis_perawatan} pada {$maintenance->tanggal_jadwal->format('d/m/Y')}",
-            'user_id' => auth()->id(),
-        ]);
+            AssetLog::create([
+                'asset_id' => $maintenance->asset_id,
+                'tipe' => 'perawatan',
+                'deskripsi' => "Dijadwalkan perawatan: {$maintenance->jenis_perawatan} pada {$maintenance->tanggal_jadwal->format('d/m/Y')}",
+                'user_id' => auth()->id(),
+            ]);
+        });
 
         return redirect()
             ->route('maintenance.index')
@@ -101,8 +114,12 @@ class MaintenanceScheduleController extends Controller
                 ->with('error', 'Hanya jadwal yang belum dimulai yang dapat diubah.');
         }
 
-        $assets = Cache::remember('all_assets_v2', 3600, function () {
-            return Asset::orderBy('kode_barang')
+        // Aset yang sudah dihapuskan (Disposed) tidak boleh muncul di pilihan aset —
+        // aset arsip bukan bagian dari operasional. Cache key dinaikkan ke v3 supaya
+        // cache lama yang masih berisi aset Disposed tidak ikut kepakai.
+        $assets = Cache::remember('all_assets_v3', 3600, function () {
+            return Asset::whereIn('status', ['Tersedia', 'Perbaikan'])
+                ->orderBy('kode_barang')
                 ->get(['id', 'kode_barang', 'nama_barang', 'status', 'kondisi']);
         });
 
@@ -127,16 +144,27 @@ class MaintenanceScheduleController extends Controller
             'catatan'           => ['nullable', 'string'],
         ]);
 
-        $maintenanceSchedule->update($validated);
+        DB::transaction(function () use ($maintenanceSchedule, $validated) {
+            $schedule = MaintenanceSchedule::lockForUpdate()->findOrFail($maintenanceSchedule->id);
 
-        $maintenanceSchedule->load('asset');
+            if ($schedule->status !== 'Dijadwalkan') {
+                throw ValidationException::withMessages([
+                    'maintenance' => 'Hanya jadwal yang belum dimulai yang dapat diubah.',
+                ]);
+            }
 
-        ActivityLog::record(
-            $maintenanceSchedule,
-            'maintenance.updated',
-            "Memperbarui jadwal perawatan {$maintenanceSchedule->asset->kode_barang}",
-            $maintenanceSchedule->getChanges()
-        );
+            $asset = Asset::lockForUpdate()->findOrFail($validated['asset_id']);
+            $this->ensureAssetCanBeScheduled($asset, $schedule->id);
+
+            $schedule->update($validated);
+
+            ActivityLog::record(
+                $schedule,
+                'maintenance.updated',
+                "Memperbarui jadwal perawatan {$asset->kode_barang}",
+                $schedule->getChanges()
+            );
+        });
 
         return redirect()
             ->route('maintenance.index')
@@ -162,7 +190,16 @@ class MaintenanceScheduleController extends Controller
             // "masuk maintenance normal" sama sekali (lihat AssetController::reportLost()).
             if (! in_array($asset->status, ['Tersedia', 'Perbaikan'])) {
                 throw ValidationException::withMessages([
-                    'maintenance' => 'Aset dengan status ' . $asset->status . ' tidak dapat masuk perbaikan.',
+                    'maintenance' => 'Aset dengan status ' . $this->statusLabel($asset->status) . ' tidak dapat masuk perbaikan.',
+                ]);
+            }
+
+            if ($asset->maintenanceSchedules()
+                ->where('status', 'Dikerjakan')
+                ->where('id', '!=', $schedule->id)
+                ->exists()) {
+                throw ValidationException::withMessages([
+                    'maintenance' => 'Aset ini sudah memiliki perawatan aktif.',
                 ]);
             }
 
@@ -225,6 +262,15 @@ class MaintenanceScheduleController extends Controller
             }
 
             $asset = Asset::lockForUpdate()->findOrFail($schedule->asset_id);
+
+            // Jalur normal tidak dapat mencapai kondisi ini karena penghapusan
+            // diblokir saat ada perawatan aktif. Guard tetap mencegah data lama
+            // yang tidak konsisten mengubah aset Dihapuskan kembali aktif.
+            if ($asset->status === 'Disposed') {
+                throw ValidationException::withMessages([
+                    'maintenance' => 'Aset yang sudah Dihapuskan tidak dapat diselesaikan perawatannya.',
+                ]);
+            }
 
             $assetStatus = $validated['kondisi'] === 'Rusak Berat'
                 ? 'Perbaikan'
@@ -297,15 +343,47 @@ class MaintenanceScheduleController extends Controller
             ->with('success', 'Jadwal perawatan berhasil dibatalkan.');
     }
 
+    /**
+     * Label Bahasa Indonesia untuk status internal — sama dengan pola
+     * AssetController::statusLabel(). Internal value tetap "Disposed" (enum DB),
+     * cuma tampilan ke user yang diterjemahkan jadi "Dihapuskan".
+     */
+    private function statusLabel(string $status): string
+    {
+        return $status === 'Disposed' ? 'Dihapuskan' : $status;
+    }
+
+    /**
+     * Penjadwalan hanya boleh dibuat untuk aset yang masih bisa ditangani oleh
+     * workflow perawatan. Guard ini dipakai oleh store() dan update(), bukan
+     * hanya start(), supaya raw request tidak meninggalkan jadwal tidak valid.
+     */
+    private function ensureAssetCanBeScheduled(Asset $asset, ?int $excludingScheduleId = null): void
+    {
+        if (! in_array($asset->status, ['Tersedia', 'Perbaikan'])) {
+            throw ValidationException::withMessages([
+                'asset_id' => 'Aset dengan status ' . $this->statusLabel($asset->status) . ' tidak dapat dijadwalkan untuk perawatan.',
+            ]);
+        }
+
+        $activeSchedule = $asset->maintenanceSchedules()
+            ->where('status', 'Dikerjakan')
+            ->when($excludingScheduleId, fn($query) => $query->where('id', '!=', $excludingScheduleId))
+            ->exists();
+
+        if ($activeSchedule) {
+            throw ValidationException::withMessages([
+                'asset_id' => 'Aset ini sudah memiliki perawatan aktif.',
+            ]);
+        }
+    }
+
     public function exportPdf(Request $request): Response
     {
         $ids = $request->input('ids', []);
 
-        $maintenanceSchedules = MaintenanceSchedule::with('asset')
+        $maintenanceSchedules = $this->maintenanceListQuery($request, empty($ids))
             ->when($ids, fn($q) => $q->whereIn('id', $ids))
-            ->when(!$ids && $request->filled('status'), fn($q) => $q->where('status', $request->status))
-            ->when(!$ids && $request->filled('tanggal_dari'), fn($q) => $q->whereDate('tanggal_jadwal', '>=', $request->input('tanggal_dari')))
-            ->when(!$ids && $request->filled('tanggal_sampai'), fn($q) => $q->whereDate('tanggal_jadwal', '<=', $request->input('tanggal_sampai')))
             ->orderBy('tanggal_jadwal')
             ->get();
 
@@ -320,11 +398,8 @@ class MaintenanceScheduleController extends Controller
     {
         $ids = $request->input('ids', []);
 
-        $maintenanceSchedules = MaintenanceSchedule::with('asset')
+        $maintenanceSchedules = $this->maintenanceListQuery($request, empty($ids))
             ->when($ids, fn($q) => $q->whereIn('id', $ids))
-            ->when(!$ids && $request->filled('status'), fn($q) => $q->where('status', $request->status))
-            ->when(!$ids && $request->filled('tanggal_dari'), fn($q) => $q->whereDate('tanggal_jadwal', '>=', $request->input('tanggal_dari')))
-            ->when(!$ids && $request->filled('tanggal_sampai'), fn($q) => $q->whereDate('tanggal_jadwal', '<=', $request->input('tanggal_sampai')))
             ->orderBy('tanggal_jadwal')
             ->get();
 

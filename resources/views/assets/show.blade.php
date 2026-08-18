@@ -23,7 +23,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.586-9.414a2 2 0 112.828 2.828L12 14l-4 1 1-4 8.414-8.414z"/>
                 </svg>
-                Edit
+                Ubah
             </a>
             <a href="{{ route('assets.qr-code', $asset) }}" target="_blank" class="btn-secondary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,7 +35,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                 </svg>
-                PDF Label
+                Label PDF
             </a>
         </div>
     </div>
@@ -48,7 +48,7 @@
             {{-- Detail Aset --}}
             <div class="card">
                 <div class="card-header">
-                    <h3>Detail Aset</h3>
+                    <h3>Rincian Aset</h3>
                 </div>
                 <div class="card-body">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,7 +93,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Dilaporkan Oleh</p>
-                            <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $lostLog->user?->name ?? 'System' }}</p>
+                            <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $lostLog->user?->name ?? 'Sistem' }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Waktu Laporan</p>
@@ -119,14 +119,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Diproses Oleh</p>
-                            <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $disposalLog->user?->name ?? 'System' }}</p>
+                            <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $disposalLog->user?->name ?? 'Sistem' }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Waktu Penghapusan</p>
                             <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $disposalLog->created_at->format('d/m/Y H:i') }}</p>
                         </div>
                         <div class="md:col-span-2">
-                            <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Detail</p>
+                            <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Rincian</p>
                             <p class="text-gray-900 dark:text-gray-100 mt-1 bg-gray-50 dark:bg-gray-700 rounded p-4 text-sm border border-gray-200 dark:border-gray-600">{{ $disposalLog->deskripsi }}</p>
                         </div>
                     </div>
@@ -244,7 +244,7 @@
                                     <span class="text-xs text-gray-400 dark:text-gray-500">{{ $log->created_at->diffForHumans() }}</span>
                                 </div>
                                 <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $log->deskripsi }}</p>
-                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">oleh {{ $log->user?->name ?? 'System' }}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">oleh {{ $log->user?->name ?? 'Sistem' }}</p>
                             </div>
                         </div>
                         @endforeach
@@ -299,7 +299,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.586-9.414a2 2 0 112.828 2.828L12 14l-4 1 1-4 8.414-8.414z"/>
                         </svg>
-                        Edit Aset
+                        Ubah Aset
                     </a>
                     @if($asset->status === 'Tersedia')
                     <a href="{{ route('transactions.create') }}?asset_id={{ $asset->id }}"
@@ -401,15 +401,7 @@
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Tambahkan catatan aktivitas untuk aset ini.</p>
         <form action="{{ route('assets.logs.store', $asset) }}" method="POST">
             @csrf
-            <div class="form-group mb-4">
-                <label class="form-label">Tipe</label>
-                <select name="tipe" class="form-input" required>
-                    <option value="lainnya">Lainnya</option>
-                    <option value="mutasi">Mutasi</option>
-                    <option value="perawatan">Perawatan</option>
-                    <option value="kondisi">Kondisi</option>
-                </select>
-            </div>
+            <input type="hidden" name="tipe" value="lainnya">
             <div class="form-group mb-4">
                 <label class="form-label">Deskripsi</label>
                 <textarea name="deskripsi" rows="3" class="form-input" required placeholder="Jelaskan aktivitas..."></textarea>

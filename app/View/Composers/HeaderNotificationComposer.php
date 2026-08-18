@@ -37,12 +37,18 @@ class HeaderNotificationComposer
                 ->whereDate('tanggal_jadwal', '<=', today())
                 ->count();
 
+            // Aset yang sudah dihapuskan (Disposed) dikecualikan — notifikasi ini
+            // adalah daftar tindak lanjut operasional, sedangkan aset arsip sudah
+            // tidak boleh masuk workflow operasional lagi. Tanpa ini, aset yang
+            // sudah di-write-off tetap menagih "segera dijadwalkan perbaikan".
             $damaged = Asset::where('kondisi', 'Rusak Berat')
-                ->where('status', '!=', 'Perbaikan')
+                ->whereNotIn('status', ['Perbaikan', 'Disposed'])
                 ->latest()
                 ->take(5)
                 ->get();
-            $damagedCount = Asset::where('kondisi', 'Rusak Berat')->where('status', '!=', 'Perbaikan')->count();
+            $damagedCount = Asset::where('kondisi', 'Rusak Berat')
+                ->whereNotIn('status', ['Perbaikan', 'Disposed'])
+                ->count();
 
             $sections = [];
 

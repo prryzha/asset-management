@@ -53,6 +53,20 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    /**
+     * True kalau user ini satu-satunya Admin yang tersisa.
+     *
+     * Dipakai sebagai rem terakhir supaya sistem tidak pernah sampai punya 0 Admin —
+     * kondisi itu mengunci Manajemen User dan Penghapusan Aset secara permanen,
+     * karena keduanya hanya bisa diakses role admin dan tidak ada jalur registrasi
+     * mandiri (route register sengaja dinonaktifkan).
+     */
+    public function isLastAdmin(): bool
+    {
+        return $this->isAdmin()
+            && static::where('role', 'admin')->where('id', '!=', $this->id)->doesntExist();
+    }
+
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);

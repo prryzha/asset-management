@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Aset')
+@section('title', 'Ubah Aset')
 
 @section('content')
 <div class="p-8">
 
-    <x-ui.page-header title="Edit Aset" subtitle="Perbarui informasi aset.">
+    <x-ui.page-header title="Ubah Aset" subtitle="Perbarui informasi aset.">
         <x-slot:actions>
             <a href="{{ route('assets.show', $asset) }}" class="btn-ghost btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@
                     <div class="form-group">
                         <label class="form-label">Kode Barang</label>
                         <div class="flex gap-2">
-                            <input type="text" id="prefix_input" placeholder="Prefix (contoh: MON)"
+                            <input type="text" id="prefix_input" placeholder="Awalan (contoh: MON)"
                                    class="form-input w-40 uppercase" maxlength="10"
                                    value="{{ explode('-', $asset->kode_barang)[0] ?? '' }}">
                             <input type="text" name="kode_barang" id="kode_barang_input"

@@ -21,6 +21,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
     Route::get('/assets/export-pdf', [AssetController::class, 'exportPdf'])->name('assets.export-pdf');
     Route::get('/assets/export-csv', [AssetController::class, 'exportCsv'])->name('assets.export-csv');
+    // Arsip Aset (status Disposed). Wajib didaftarkan sebelum route /assets/{asset}
+    // di bawah, kalau tidak "archive" akan ketangkap sebagai parameter {asset}.
+    Route::get('/assets/archive', [AssetController::class, 'archive'])->name('assets.archive');
+    Route::get('/assets/archive/export-pdf', [AssetController::class, 'archiveExportPdf'])->name('assets.archive-export-pdf');
+    Route::get('/assets/archive/export-csv', [AssetController::class, 'archiveExportCsv'])->name('assets.archive-export-csv');
+    // Laporan Aset Hilang. Sama seperti archive, wajib didaftarkan sebelum route
+    // /assets/{asset} — kalau tidak "hilang" akan ketangkap sebagai parameter {asset}.
+    Route::get('/assets/hilang', [AssetController::class, 'lostReport'])->name('assets.hilang');
+    Route::get('/assets/hilang/export-pdf', [AssetController::class, 'lostReportExportPdf'])->name('assets.hilang-export-pdf');
+    Route::get('/assets/hilang/export-csv', [AssetController::class, 'lostReportExportCsv'])->name('assets.hilang-export-csv');
     Route::get('/assets/next-code/{prefix}', [AssetController::class, 'nextCode'])->name('assets.next-code');
     Route::get('/assets/{asset}/qr-code', [AssetController::class, 'qrCode'])->name('assets.qr-code');
 
@@ -29,6 +39,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
     Route::get('/transactions/export-pdf', [TransactionController::class, 'exportPdf'])->name('transactions.export-pdf');
     Route::get('/transactions/export-csv', [TransactionController::class, 'exportCsv'])->name('transactions.export-csv');
+    // Laporan Peminjaman — laporan baca-saja terpisah dari Riwayat Peminjaman,
+    // dengan filter kategori/lokasi + ringkasan + ekspor PDF/CSV yang konsisten.
+    Route::get('/transactions/laporan', [TransactionController::class, 'report'])->name('transactions.report');
+    Route::get('/transactions/laporan/export-pdf', [TransactionController::class, 'reportExportPdf'])->name('transactions.report-export-pdf');
+    Route::get('/transactions/laporan/export-csv', [TransactionController::class, 'reportExportCsv'])->name('transactions.report-export-csv');
 
     Route::get('/mutasi', [AssetLogController::class, 'mutasi'])->name('mutasi.index');
     Route::get('/mutasi/export-pdf', [AssetLogController::class, 'mutasiExportPdf'])->name('mutasi.export-pdf');

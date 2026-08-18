@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Laporan Data Aset</title>
+    <title>Laporan Arsip Aset</title>
     <style>
         body { font-family: sans-serif; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -13,27 +13,10 @@
     </style>
 </head>
 <body>
-    <h1>LAPORAN DATA ASET</h1>
+    <h1>LAPORAN ARSIP ASET</h1>
     <p class="subtitle">
-        Dicetak pada: {{ now()->format('d/m/Y H:i') }}
-        @if($isSelection ?? false)
-            &mdash; {{ $assets->count() }} data terpilih
-        @endif
-        @if($filterCategory ?? false)
-            &mdash; Kategori: {{ $filterCategory }}
-        @endif
-        @if($filterLocation ?? false)
-            &mdash; Lokasi: {{ $filterLocation }}
-        @endif
-        @if($filterKondisi ?? false)
-            &mdash; Kondisi: {{ $filterKondisi }}
-        @endif
-        @if($filterStatus ?? false)
-            &mdash; Status: {{ $filterStatus }}
-        @endif
-        @if($filterSearch ?? false)
-            &mdash; Pencarian: {{ $filterSearch }}
-        @endif
+        Daftar aset yang sudah dihapuskan dari inventaris aktif &mdash;
+        dicetak pada: {{ now()->format('d/m/Y H:i') }}
     </p>
     <table>
         <thead>
@@ -43,24 +26,28 @@
                 <th>Nama Barang</th>
                 <th>Merk</th>
                 <th>Kategori</th>
-                <th>Lokasi</th>
+                <th>Lokasi Terakhir</th>
                 <th>Kondisi</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($assets as $i => $item)
+            @forelse($assets as $i => $item)
             <tr>
                 <td>{{ $i + 1 }}</td>
                 <td>{{ $item->kode_barang }}</td>
                 <td>{{ $item->nama_barang }}</td>
-                <td>{{ $item->merk }}</td>
+                <td>{{ $item->merk ?? '-' }}</td>
                 <td>{{ $item->category?->nama ?? '-' }}</td>
                 <td>{{ $item->location?->nama ?? '-' }}</td>
                 <td>{{ $item->kondisi }}</td>
                 <td>{{ $item->status === 'Disposed' ? 'Dihapuskan' : $item->status }}</td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="8" style="text-align: center; color: #777;">Belum ada aset di arsip.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </body>

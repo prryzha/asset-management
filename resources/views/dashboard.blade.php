@@ -20,9 +20,14 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="stat-label">Total Aset</p>
+                    <p class="stat-label">Total Aset Aktif</p>
                     <h2 class="stat-value">{{ $totalAsset }}</h2>
                     <p class="stat-detail">Nilai: Rp {{ number_format($totalNilai, 0, ',', '.') }}</p>
+                    @if($disposed > 0)
+                    <p class="stat-detail">
+                        <a href="{{ route('assets.archive') }}" class="hover:text-primary-600 transition-colors">{{ $disposed }} aset di arsip &rarr;</a>
+                    </p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -125,7 +130,7 @@
                                 </td>
                                 <td class="text-center">
                                     @if($ms->status == 'Dijadwalkan')
-                                        <a href="{{ route('maintenance.edit', $ms) }}" class="btn-ghost btn-sm px-2 py-1 text-xs">Edit</a>
+                                        <a href="{{ route('maintenance.edit', $ms) }}" class="btn-ghost btn-sm px-2 py-1 text-xs">Ubah</a>
                                     @elseif($ms->status == 'Dikerjakan')
                                         <a href="{{ route('maintenance.complete-form', $ms) }}" class="btn-primary btn-sm px-2 py-1 text-xs">Selesaikan</a>
                                     @else
@@ -269,7 +274,7 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex justify-between items-start gap-2">
                         <div class="min-w-0">
-                            <h4 class="font-normal text-sm">{{ $activity->user->name ?? 'System' }}</h4>
+                            <h4 class="font-normal text-sm">{{ $activity->user->name ?? 'Sistem' }}</h4>
                             <p class="text-secondary text-xs mt-0.5">{{ $activity->description }}</p>
                         </div>
                         <span class="text-xs text-secondary whitespace-nowrap flex-shrink-0 mt-0.5">{{ $activity->created_at->diffForHumans() }}</span>

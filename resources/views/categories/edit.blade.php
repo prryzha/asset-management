@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Kategori')
+@section('title', 'Ubah Kategori')
 
 @section('content')
 <div class="p-8 max-w-2xl mx-auto">
 
-    <x-ui.page-header title="Edit Kategori" subtitle="Perbarui informasi kategori.">
+    <x-ui.page-header title="Ubah Kategori" subtitle="Perbarui informasi kategori.">
         <x-slot:actions>
             <a href="{{ route('categories.index') }}" class="btn-ghost btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

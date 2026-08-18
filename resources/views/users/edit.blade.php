@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Edit User')
+@section('title', 'Ubah User')
 
 @section('content')
 <div class="p-8 max-w-2xl mx-auto">
 
-    <x-ui.page-header title="Edit User" subtitle="Perbarui data akun {{ $user->name }}.">
+    <x-ui.page-header title="Ubah User" subtitle="Perbarui data akun {{ $user->name }}.">
         <x-slot:actions>
             <a href="{{ route('users.index') }}" class="btn-ghost btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,10 +51,15 @@
                     <div class="form-group">
                         <label class="form-label">Role <span class="text-danger">*</span></label>
                         <select name="role" required class="form-input @error('role') is-invalid @enderror">
-                            <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }}>Staff (Sarpras/TU)</option>
+                            <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }} @disabled($user->isLastAdmin())>Staff (Sarpras/TU)</option>
                             <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin Sarpras</option>
                         </select>
                         @error('role')<p class="form-error">{{ $message }}</p>@enderror
+                        @if($user->isLastAdmin())
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+                            Ini satu-satunya akun Admin, rolenya tidak dapat diturunkan menjadi Staff. Buat Admin lain terlebih dahulu jika ingin mengubahnya.
+                        </p>
+                        @endif
                     </div>
                 </div>
             </div>

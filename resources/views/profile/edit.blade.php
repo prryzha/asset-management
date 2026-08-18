@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Profile')
+@section('title', 'Profil')
 
 @section('content')
 <div class="p-8 max-w-3xl mx-auto">
 
-    <x-ui.page-header title="Profile" subtitle="Kelola informasi akun anda." />
+    <x-ui.page-header title="Profil" subtitle="Kelola informasi akun Anda." />
 
     @if(session('status') === 'profile-updated')
         <div class="alert alert-success mb-6">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Profile berhasil diperbarui.
+            Profil berhasil diperbarui.
         </div>
     @endif
 
@@ -26,7 +26,7 @@
         {{-- Profile Information --}}
         <div class="card">
             <div class="card-header">
-                <h3>Informasi Profile</h3>
+                <h3>Informasi Profil</h3>
                 <p class="text-xs text-secondary mt-0.5">Perbarui informasi akun dan email anda.</p>
             </div>
             <form method="post" action="{{ route('profile.update') }}">

@@ -49,7 +49,11 @@ class DemoDataSeeder extends Seeder
 
     private function logActivity(?object $subject, string $event, string $description, array $properties, ?int $userId, int $daysAgo, int $hour = 9): void
     {
-        ActivityLog::create([
+        // forceCreate: created_at/updated_at sengaja di-backdate supaya riwayat
+        // aktivitas terlihat tersebar di beberapa hari terakhir, bukan semuanya
+        // "baru saja" — kolom timestamp tidak ada di $fillable model, jadi create
+        // biasa akan mengabaikannya diam-diam.
+        ActivityLog::forceCreate([
             'user_id' => $userId,
             'event' => $event,
             'subject_type' => $subject ? $subject::class : null,
@@ -64,7 +68,8 @@ class DemoDataSeeder extends Seeder
     /** Log per-aset ("Log Aktivitas Aset" di halaman detail) — tabel asset_logs, terpisah dari activity_logs. */
     private function logAsset(int $assetId, string $tipe, string $deskripsi, ?int $userId, int $daysAgo, int $hour = 9): void
     {
-        AssetLog::create([
+        // forceCreate: backdate created_at (tidak ada di $fillable AssetLog).
+        AssetLog::forceCreate([
             'asset_id' => $assetId,
             'tipe' => $tipe,
             'deskripsi' => $deskripsi,
@@ -147,7 +152,7 @@ class DemoDataSeeder extends Seeder
             $category = Category::where('nama', $categoryNama)->first();
             $location = Location::where('nama', $locationNama)->first();
 
-            $asset = Asset::create([
+            $asset = Asset::forceCreate([
                 'kode_barang' => Asset::findNextKodeBarang($category->kode),
                 'nama_barang' => $namaBarang,
                 'merk' => $merk,
@@ -169,7 +174,7 @@ class DemoDataSeeder extends Seeder
                 $pinjamDaysAgo = max(1, $daysAgo - rand(2, 6));
                 $nama = $peminjam[$peminjamIndex++ % count($peminjam)];
 
-                $transaction = Transaction::create([
+                $transaction = Transaction::forceCreate([
                     'asset_id' => $asset->id,
                     'created_by' => $this->staffId,
                     'nama_peminjam' => $nama,
@@ -193,7 +198,7 @@ class DemoDataSeeder extends Seeder
             if ($status === 'Perbaikan') {
                 $jadwalDaysAgo = max(1, $daysAgo - rand(2, 5));
 
-                $schedule = MaintenanceSchedule::create([
+                $schedule = MaintenanceSchedule::forceCreate([
                     'asset_id' => $asset->id,
                     'created_by' => $this->staffId,
                     'jenis_perawatan' => 'Servis berat',
@@ -274,7 +279,7 @@ class DemoDataSeeder extends Seeder
         $borrowDaysAgo = 7;
         $returnDaysAgo = 4;
 
-        $transaction = Transaction::create([
+        $transaction = Transaction::forceCreate([
             'asset_id' => $asset->id,
             'created_by' => $this->staffId,
             'nama_peminjam' => 'Wulan Sari (Guru)',
@@ -315,7 +320,7 @@ class DemoDataSeeder extends Seeder
         $jadwalDaysAgo = 6;
         $selesaiDaysAgo = 5;
 
-        $schedule = MaintenanceSchedule::create([
+        $schedule = MaintenanceSchedule::forceCreate([
             'asset_id' => $asset->id,
             'created_by' => $this->staffId,
             'jenis_perawatan' => 'Bersih berkala',

@@ -86,7 +86,7 @@
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center justify-between gap-2">
-                        <h4 class="font-normal text-sm">{{ $log->user?->name ?? 'System' }}</h4>
+                        <h4 class="font-normal text-sm">{{ $log->user?->name ?? 'Sistem' }}</h4>
                         <span class="text-xs text-secondary whitespace-nowrap">{{ $log->created_at->diffForHumans() }}</span>
                     </div>
                     <p class="text-sm text-secondary mt-0.5">{{ $log->description }}</p>

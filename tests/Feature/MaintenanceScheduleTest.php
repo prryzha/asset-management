@@ -95,4 +95,79 @@ class MaintenanceScheduleTest extends TestCase
             'kondisi' => 'Rusak Berat',
         ]);
     }
+
+    public function test_lost_asset_cannot_be_scheduled_for_maintenance_via_direct_request(): void
+    {
+        $asset = Asset::factory()->hilang()->create();
+
+        $response = $this->actingAs($this->admin)
+            ->post(route('maintenance.store'), [
+                'asset_id' => $asset->id,
+                'jenis_perawatan' => 'Servis',
+                'tanggal_jadwal' => now()->format('Y-m-d'),
+            ]);
+
+        $response->assertSessionHasErrors('asset_id');
+        $this->assertDatabaseCount('maintenance_schedules', 0);
+        $this->assertDatabaseCount('asset_logs', 0);
+    }
+
+    public function test_disposed_asset_cannot_be_scheduled_for_maintenance_via_direct_request(): void
+    {
+        $asset = Asset::factory()->disposed()->create();
+
+        $response = $this->actingAs($this->admin)
+            ->post(route('maintenance.store'), [
+                'asset_id' => $asset->id,
+                'jenis_perawatan' => 'Servis',
+                'tanggal_jadwal' => now()->format('Y-m-d'),
+            ]);
+
+        $response->assertSessionHasErrors('asset_id');
+        $this->assertDatabaseCount('maintenance_schedules', 0);
+    }
+
+    public function test_borrowed_asset_cannot_be_scheduled_for_maintenance_via_direct_request(): void
+    {
+        $asset = Asset::factory()->dipinjam()->create();
+
+        $response = $this->actingAs($this->admin)
+            ->post(route('maintenance.store'), [
+                'asset_id' => $asset->id,
+                'jenis_perawatan' => 'Servis',
+                'tanggal_jadwal' => now()->format('Y-m-d'),
+            ]);
+
+        $response->assertSessionHasErrors('asset_id');
+        $this->assertDatabaseCount('maintenance_schedules', 0);
+    }
+
+    public function test_second_active_maintenance_cannot_be_started_for_same_asset(): void
+    {
+        $asset = Asset::factory()->perbaikan()->create();
+        MaintenanceSchedule::factory()->dikerjakan()->create(['asset_id' => $asset->id]);
+        $scheduled = MaintenanceSchedule::factory()->dijadwalkan()->create(['asset_id' => $asset->id]);
+
+        $response = $this->actingAs($this->admin)
+            ->patch(route('maintenance.start', $scheduled));
+
+        $response->assertSessionHasErrors('maintenance');
+        $this->assertDatabaseHas('maintenance_schedules', [
+            'id' => $scheduled->id,
+            'status' => 'Dijadwalkan',
+        ]);
+    }
+
+    public function test_disposed_asset_cannot_complete_legacy_active_maintenance(): void
+    {
+        $asset = Asset::factory()->disposed()->create();
+        $schedule = MaintenanceSchedule::factory()->dikerjakan()->create(['asset_id' => $asset->id]);
+
+        $response = $this->actingAs($this->admin)
+            ->put(route('maintenance.complete', $schedule), ['kondisi' => 'Baik']);
+
+        $response->assertSessionHasErrors('maintenance');
+        $this->assertDatabaseHas('assets', ['id' => $asset->id, 'status' => 'Disposed']);
+        $this->assertDatabaseHas('maintenance_schedules', ['id' => $schedule->id, 'status' => 'Dikerjakan']);
+    }
 }

@@ -12,14 +12,14 @@
                     : '{{ route('maintenance.export-pdf', request()->only(['status','search','tanggal_dari','tanggal_sampai'])) }}'"
                class="btn-secondary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                <span x-text="selected.length > 0 ? 'Export PDF Terpilih (' + selected.length + ')' : 'Export PDF'"></span>
+                <span x-text="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'"></span>
             </a>
             <a :href="selected.length > 0
                     ? '{{ route('maintenance.export-csv') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('maintenance.export-csv', request()->only(['status','search','tanggal_dari','tanggal_sampai'])) }}'"
                class="btn-secondary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                <span x-text="selected.length > 0 ? 'Export CSV Terpilih (' + selected.length + ')' : 'Export CSV'"></span>
+                <span x-text="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'"></span>
             </a>
             <a href="{{ route('maintenance.create') }}" class="btn-primary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +111,7 @@
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                         </svg>
-                                        Edit
+                                        Ubah
                                     </a>
                                     <form action="{{ route('maintenance.start', $maintenance) }}" method="POST" class="inline">
                                         @csrf @method('PATCH')

@@ -57,13 +57,24 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
+        // Sistem tidak boleh sampai kehilangan seluruh Admin. Dicek di backend
+        // (bukan cuma disembunyikan di form) supaya request langsung pun ditolak.
+        if ($user->isAdmin() && $validated['role'] !== 'admin' && $user->isLastAdmin()) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', 'Akun Admin terakhir tidak dapat diubah menjadi Staff.');
+        }
+
         $data = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
         ];
 
-        if ($validated['password']) {
+        // "password" nullable — request yang tidak menyertakan field ini sama sekali
+        // (mis. lewat API/raw request) bikin key-nya tidak ada di $validated, jadi
+        // akses langsung $validated['password'] memicu "Undefined array key" → 500.
+        if (! empty($validated['password'])) {
             $data['password'] = Hash::make($validated['password']);
         }
 

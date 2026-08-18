@@ -49,20 +49,8 @@ class AssetController extends Controller
         ];
         $sort = $sortOptions[$request->input('sort')] ?? $sortOptions['kode_asc'];
 
-        $assets = Asset::with(['category', 'location'])
+        $assets = $this->activeAssetQuery($request)
             ->when(!$hasFilter, fn($q) => $q->whereIn('id', []))
-            ->when($search, function ($query, $search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('kode_barang', 'like', "%{$search}%")
-                        ->orWhere('nama_barang', 'like', "%{$search}%")
-                        ->orWhere('merk', 'like', "%{$search}%")
-                        ->orWhere('nomor_seri', 'like', "%{$search}%");
-                });
-            })
-            ->when($categoryId, fn($q, $v) => $q->where('category_id', $v))
-            ->when($locationId, fn($q, $v) => $q->where('location_id', $v))
-            ->when($kondisi, fn($q, $v) => $q->where('kondisi', $v))
-            ->when($status, fn($q, $v) => $q->where('status', $v))
             ->orderBy($sort[0], $sort[1])
             ->paginate(10)
             ->withQueryString();
@@ -76,6 +64,227 @@ class AssetController extends Controller
         });
 
         return view('assets.index', compact('assets', 'search', 'categories', 'locations', 'categoryId', 'locationId', 'kondisi', 'status', 'hasFilter'));
+    }
+
+    /**
+     * Query dasar Daftar Aset — ASET AKTIF saja (status != 'Disposed') dengan
+     * seluruh filter yang didukung: search, kategori, lokasi, kondisi, status.
+     * Dipakai bareng index() dan export PDF/CSV supaya dataset tabel == dataset
+     * export untuk filter yang sama (pola sama seperti archiveQuery()/
+     * lostReportQuery()/transactionReportQuery()).
+     *
+     * $respectFilters dimatikan khusus export "data terpilih" (ids): saat user
+     * mengekspor baris yang dicentang, filter halaman tidak ikut membatasi —
+     * perilaku export lama yang sengaja dipertahankan.
+     */
+    private function activeAssetQuery(Request $request, bool $respectFilters = true)
+    {
+        return Asset::with(['category', 'location'])
+            // Aset "Disposed" (label UI: Dihapuskan) dikecualikan di level query,
+            // bukan disembunyikan di view — supaya filter/search/paginate/export
+            // semuanya konsisten dan tidak bisa bocor lewat raw request
+            // (mis. ?status=Disposed).
+            ->where('status', '!=', 'Disposed')
+            // CATATAN: pakai ternary, bukan "&&" — di PHP, true && 'Baik' menghasilkan
+            // boolean true, bukan string 'Baik', sehingga when() akan melempar nilai
+            // true ke closure dan where('kondisi', true) tidak mencocokkan apa pun.
+            ->when($respectFilters ? $request->input('search') : null, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('kode_barang', 'like', "%{$search}%")
+                        ->orWhere('nama_barang', 'like', "%{$search}%")
+                        ->orWhere('merk', 'like', "%{$search}%")
+                        ->orWhere('nomor_seri', 'like', "%{$search}%");
+                });
+            })
+            ->when($respectFilters ? $request->input('category_id') : null, fn($q, $v) => $q->where('category_id', $v))
+            ->when($respectFilters ? $request->input('location_id') : null, fn($q, $v) => $q->where('location_id', $v))
+            ->when($respectFilters ? $request->input('kondisi') : null, fn($q, $v) => $q->where('kondisi', $v))
+            ->when($respectFilters ? $request->input('status') : null, fn($q, $v) => $q->where('status', $v));
+    }
+
+    /**
+     * Arsip Aset — kebalikan dari index(): HANYA aset berstatus "Disposed"
+     * (label UI: Dihapuskan). Ini murni pemisahan tampilan; datanya tetap di
+     * tabel `assets` yang sama, tidak ada tabel arsip terpisah.
+     *
+     * CATATAN: arsip di sini TIDAK ada hubungannya dengan SoftDeletes. Aset yang
+     * di-soft-delete lewat tombol "Hapus Aset" tetap tidak muncul di manapun
+     * (global scope Eloquent), sedangkan aset Dihapuskan adalah record aktif di
+     * DB yang statusnya administratif — dua konsep berbeda.
+     */
+    public function archive(Request $request): View
+    {
+        $search = $request->input('search');
+        $categoryId = $request->input('category_id');
+        $locationId = $request->input('location_id');
+
+        $assets = $this->archiveQuery($request)
+            // Log penghapusan di-eager-load (bukan query per baris) supaya tabel
+            // arsip bisa menampilkan tanggal/petugas penghapusan tanpa N+1.
+            ->with(['assetLogs' => fn($q) => $q->where('tipe', 'penghapusan')->with('user')->latest()])
+            ->orderBy('kode_barang')
+            ->paginate(10)
+            ->withQueryString();
+
+        $categories = Cache::remember('filter_categories', 60, function () {
+            return Category::orderBy('nama')->get();
+        });
+        $locations = Cache::remember('filter_locations', 60, function () {
+            return Location::orderBy('nama')->get();
+        });
+
+        return view('assets.archive', compact('assets', 'search', 'categories', 'locations', 'categoryId', 'locationId'));
+    }
+
+    /**
+     * Query dasar Arsip Aset — dipakai bareng halaman arsip & export-nya supaya
+     * filter status "Disposed" tidak mungkin kelewat di salah satu jalur.
+     */
+    private function archiveQuery(Request $request)
+    {
+        return Asset::with(['category', 'location'])
+            ->where('status', 'Disposed')
+            ->when($request->input('search'), function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('kode_barang', 'like', "%{$search}%")
+                        ->orWhere('nama_barang', 'like', "%{$search}%")
+                        ->orWhere('merk', 'like', "%{$search}%")
+                        ->orWhere('nomor_seri', 'like', "%{$search}%")
+                        ->orWhereHas('category', fn($q) => $q->where('nama', 'like', "%{$search}%"))
+                        ->orWhereHas('location', fn($q) => $q->where('nama', 'like', "%{$search}%"));
+                });
+            })
+            ->when($request->input('category_id'), fn($q, $v) => $q->where('category_id', $v))
+            ->when($request->input('location_id'), fn($q, $v) => $q->where('location_id', $v));
+    }
+
+    public function archiveExportPdf(Request $request): Response
+    {
+        $assets = $this->archiveQuery($request)->orderBy('kode_barang')->get();
+
+        $pdf = Pdf::loadView('pdf.assets-archive', compact('assets'));
+
+        return $pdf->download('laporan-arsip-aset.pdf');
+    }
+
+    public function archiveExportCsv(Request $request): Response
+    {
+        $assets = $this->archiveQuery($request)
+            ->with(['assetLogs' => fn($q) => $q->where('tipe', 'penghapusan')->with('user')->latest()])
+            ->orderBy('kode_barang')
+            ->get();
+
+        return response()->streamDownload(function () use ($assets) {
+            $out = fopen('php://output', 'w');
+            fputs($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['Kode Barang', 'Nama Barang', 'Merk', 'Kategori', 'Lokasi Terakhir', 'Kondisi', 'Status', 'Tanggal Penghapusan', 'Petugas', 'Keterangan Penghapusan']);
+            foreach ($assets as $asset) {
+                $log = $asset->assetLogs->first();
+                fputcsv($out, [
+                    $asset->kode_barang,
+                    $asset->nama_barang,
+                    $asset->merk,
+                    $asset->category?->nama,
+                    $asset->location?->nama,
+                    $asset->kondisi,
+                    $this->statusLabel($asset->status),
+                    $log?->created_at->format('Y-m-d H:i'),
+                    $log?->user?->name,
+                    $log?->deskripsi,
+                ]);
+            }
+            fclose($out);
+        }, 'arsip-aset-' . now()->format('Ymd-His') . '.csv', ['Content-Type' => 'text/csv']);
+    }
+
+    /**
+     * Laporan Aset Hilang — daftar aset yang masih berstatus "Hilang" beserta
+     * detail laporannya (tanggal, kronologi, petugas) yang diambil dari AssetLog
+     * tipe 'hilang'. Murni tampilan laporan baca-saja; tidak mengubah status.
+     *
+     * Aset yang sudah ditemukan kembali / Dihapuskan otomatis tidak muncul karena
+     * statusnya sudah berubah (Tersedia / Disposed) — query hanya menyentuh
+     * status 'Hilang' di level query, konsisten dengan pola archive().
+     */
+    public function lostReport(Request $request): View
+    {
+        $search = $request->input('search');
+        $categoryId = $request->input('category_id');
+
+        $assets = $this->lostReportQuery($request)
+            // Log kehilangan di-eager-load (bukan query per baris) supaya tabel
+            // laporan bisa menampilkan tanggal/petugas/kronologi tanpa N+1.
+            ->with(['assetLogs' => fn($q) => $q->where('tipe', 'hilang')->with('user')->latest()])
+            ->orderBy('kode_barang')
+            ->paginate(10)
+            ->withQueryString();
+
+        $categories = Cache::remember('filter_categories', 60, function () {
+            return Category::orderBy('nama')->get();
+        });
+
+        return view('assets.lost', compact('assets', 'search', 'categories', 'categoryId'));
+    }
+
+    /**
+     * Query dasar Laporan Aset Hilang — dipakai bareng halaman & export-nya supaya
+     * filter status "Hilang" tidak mungkin kelewat di salah satu jalur.
+     */
+    private function lostReportQuery(Request $request)
+    {
+        return Asset::with(['category', 'location'])
+            ->where('status', 'Hilang')
+            ->when($request->input('search'), function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('kode_barang', 'like', "%{$search}%")
+                        ->orWhere('nama_barang', 'like', "%{$search}%")
+                        ->orWhere('merk', 'like', "%{$search}%")
+                        ->orWhereHas('category', fn($q) => $q->where('nama', 'like', "%{$search}%"))
+                        ->orWhereHas('location', fn($q) => $q->where('nama', 'like', "%{$search}%"));
+                });
+            })
+            ->when($request->input('category_id'), fn($q, $v) => $q->where('category_id', $v));
+    }
+
+    public function lostReportExportPdf(Request $request): Response
+    {
+        $assets = $this->lostReportQuery($request)
+            ->with(['assetLogs' => fn($q) => $q->where('tipe', 'hilang')->with('user')->latest()])
+            ->orderBy('kode_barang')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.assets-lost', compact('assets'));
+
+        return $pdf->download('laporan-aset-hilang.pdf');
+    }
+
+    public function lostReportExportCsv(Request $request): Response
+    {
+        $assets = $this->lostReportQuery($request)
+            ->with(['assetLogs' => fn($q) => $q->where('tipe', 'hilang')->with('user')->latest()])
+            ->orderBy('kode_barang')
+            ->get();
+
+        return response()->streamDownload(function () use ($assets) {
+            $out = fopen('php://output', 'w');
+            fputs($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['Kode Barang', 'Nama Barang', 'Merk', 'Kategori', 'Lokasi Terakhir', 'Kondisi', 'Tanggal Laporan', 'Petugas', 'Keterangan']);
+            foreach ($assets as $asset) {
+                $log = $asset->assetLogs->first();
+                fputcsv($out, [
+                    $asset->kode_barang,
+                    $asset->nama_barang,
+                    $asset->merk,
+                    $asset->category?->nama,
+                    $asset->location?->nama,
+                    $asset->kondisi,
+                    $log?->created_at->format('Y-m-d H:i'),
+                    $log?->user?->name,
+                    $log?->deskripsi,
+                ]);
+            }
+            fclose($out);
+        }, 'laporan-aset-hilang-' . now()->format('Ymd-His') . '.csv', ['Content-Type' => 'text/csv']);
     }
 
     public function create(): View
@@ -260,6 +469,17 @@ class AssetController extends Controller
             'catatan' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        // Aset Dihapuskan tetap boleh diperbarui sebagai data master, tetapi tidak
+        // boleh dimutasi lagi. Ini menjaga arsip tetap sebagai catatan lokasi terakhir
+        // dan menutup bypass lewat raw request.
+        if ($asset->status === 'Disposed'
+            && array_key_exists('location_id', $validated)
+            && $validated['location_id'] != $asset->location_id) {
+            throw ValidationException::withMessages([
+                'location_id' => 'Lokasi aset yang sudah Dihapuskan tidak dapat diubah.',
+            ]);
+        }
 
         // Catat perubahan lokasi (mutasi). Pakai array_key_exists, bukan cuma "?? null"
         // — location_id "nullable" berarti raw request yang tidak menyertakan field ini
@@ -521,6 +741,10 @@ class AssetController extends Controller
 
     public function destroy(Asset $asset): RedirectResponse
     {
+        if ($asset->status === 'Disposed') {
+            return redirect()->route('assets.archive')->with('error', 'Aset yang sudah Dihapuskan harus tetap tersimpan di Arsip Aset untuk kebutuhan audit.');
+        }
+
         if ($asset->status === 'Dipinjam' || $asset->transactions()->where('status_peminjaman', 'Dipinjam')->exists()) {
             return redirect()->route('assets.index')->with('error', 'Tidak dapat menghapus aset yang sedang dipinjam.');
         }
@@ -553,7 +777,9 @@ class AssetController extends Controller
 
         DB::transaction(function () use ($assets, &$deletedCodes, &$skippedCodes, &$photosToDelete) {
             foreach ($assets as $asset) {
-                if ($asset->status === 'Dipinjam' || $asset->transactions()->where('status_peminjaman', 'Dipinjam')->exists()) {
+                if ($asset->status === 'Disposed'
+                    || $asset->status === 'Dipinjam'
+                    || $asset->transactions()->where('status_peminjaman', 'Dipinjam')->exists()) {
                     $skippedCodes[] = $asset->kode_barang;
                     continue;
                 }
@@ -593,19 +819,27 @@ class AssetController extends Controller
         $ids = $request->input('ids', []);
         $categoryId = $request->input('category_id');
         $locationId = $request->input('location_id');
+        $kondisi = $request->input('kondisi');
+        $status = $request->input('status');
+        $search = $request->input('search');
 
-        $assets = Asset::with(['category', 'location'])
+        // Export Daftar Aset memakai query dasar yang SAMA dengan halaman index()
+        // (activeAssetQuery) — dataset PDF selalu = dataset tabel untuk filter yang
+        // sama. Saat user mengekspor baris terpilih (ids), filter halaman dilewati
+        // (perilaku lama dipertahankan).
+        $assets = $this->activeAssetQuery($request, empty($ids))
             ->when($ids, fn($q) => $q->whereIn('id', $ids))
-            ->when(!$ids && $categoryId, fn($q, $v) => $q->where('category_id', $categoryId))
-            ->when(!$ids && $locationId, fn($q, $v) => $q->where('location_id', $locationId))
             ->orderBy('kode_barang')
             ->get();
 
         $isSelection = !empty($ids);
         $filterCategory = (!$isSelection && $categoryId) ? Category::find($categoryId)?->nama : null;
         $filterLocation = (!$isSelection && $locationId) ? Location::find($locationId)?->nama : null;
+        $filterKondisi = (!$isSelection && $kondisi) ? $kondisi : null;
+        $filterStatus = (!$isSelection && $status) ? $this->statusLabel($status) : null;
+        $filterSearch = (!$isSelection && $search) ? $search : null;
 
-        $pdf = Pdf::loadView('pdf.assets', compact('assets', 'filterCategory', 'filterLocation', 'isSelection'));
+        $pdf = Pdf::loadView('pdf.assets', compact('assets', 'filterCategory', 'filterLocation', 'filterKondisi', 'filterStatus', 'filterSearch', 'isSelection'));
 
         return $pdf->download('laporan-aset.pdf');
     }
@@ -613,13 +847,12 @@ class AssetController extends Controller
     public function exportCsv(Request $request): Response
     {
         $ids = $request->input('ids', []);
-        $categoryId = $request->input('category_id');
-        $locationId = $request->input('location_id');
 
-        $assets = Asset::with(['category', 'location'])
+        // Query dasar yang SAMA dengan halaman index() (activeAssetQuery) — isi CSV
+        // selalu = dataset tabel untuk filter yang sama, termasuk search/kondisi/
+        // status. Export "data terpilih" (ids) tetap melewati filter halaman.
+        $assets = $this->activeAssetQuery($request, empty($ids))
             ->when($ids, fn($q) => $q->whereIn('id', $ids))
-            ->when(!$ids && $categoryId, fn($q, $v) => $q->where('category_id', $categoryId))
-            ->when(!$ids && $locationId, fn($q, $v) => $q->where('location_id', $locationId))
             ->orderBy('kode_barang')
             ->get();
 
@@ -692,18 +925,33 @@ class AssetController extends Controller
             | Statistik Asset & Kondisi — di-group jadi 1 query
             |--------------------------------------------------------------------------
             */
+            /*
+             * Dashboard = monitoring aset AKTIF. "total_asset", "total_nilai", dan
+             * ketiga hitungan kondisi sengaja mengecualikan status "Disposed" supaya:
+             *  - persentase "x% dari total" pada tiap kartu benar-benar berjumlah 100%,
+             *  - bar kondisi tidak bisa melebihi 100% (baik/total),
+             *  - nilai inventaris tidak menghitung aset yang sudah dihapuskan.
+             * "disposed" tetap dihitung terpisah sebagai angka arsip (dipakai di chart
+             * status & keterangan kartu Total Aset) — jadi tidak ada double count.
+             */
             $assetStats = Asset::selectRaw('
-                COUNT(*) as total_asset,
-                COALESCE(SUM(nilai_perolehan), 0) as total_nilai,
+                SUM(CASE WHEN status != ? THEN 1 ELSE 0 END) as total_asset,
+                COALESCE(SUM(CASE WHEN status != ? THEN nilai_perolehan ELSE 0 END), 0) as total_nilai,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as tersedia,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as dipinjam,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as perbaikan,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as hilang,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as disposed,
-                SUM(CASE WHEN kondisi = ? THEN 1 ELSE 0 END) as baik,
-                SUM(CASE WHEN kondisi = ? THEN 1 ELSE 0 END) as kurang_baik,
-                SUM(CASE WHEN kondisi = ? THEN 1 ELSE 0 END) as rusak_berat
-            ', ['Tersedia', 'Dipinjam', 'Perbaikan', 'Hilang', 'Disposed', 'Baik', 'Kurang Baik', 'Rusak Berat'])
+                SUM(CASE WHEN kondisi = ? AND status != ? THEN 1 ELSE 0 END) as baik,
+                SUM(CASE WHEN kondisi = ? AND status != ? THEN 1 ELSE 0 END) as kurang_baik,
+                SUM(CASE WHEN kondisi = ? AND status != ? THEN 1 ELSE 0 END) as rusak_berat
+            ', [
+                'Disposed', 'Disposed',
+                'Tersedia', 'Dipinjam', 'Perbaikan', 'Hilang', 'Disposed',
+                'Baik', 'Disposed',
+                'Kurang Baik', 'Disposed',
+                'Rusak Berat', 'Disposed',
+            ])
             ->first();
 
             /*
@@ -723,7 +971,12 @@ class AssetController extends Controller
             | Statistik Kategori
             |--------------------------------------------------------------------------
             */
-            $kategori = Category::withCount('assets')
+            // Konsisten dengan kartu statistik: kategori/lokasi pada dashboard
+            // hanya menghitung aset AKTIF (status != 'Disposed'). Aset Dihapuskan
+            // dihitung terpisah sebagai angka arsip, bukan bagian dari statistik
+            // operasional — kalau ikut dihitung, chart kategori/lokasi bisa
+            // menampilkan aset yang sudah tidak menjadi inventaris aktif.
+            $kategori = Category::withCount(['assets' => fn($q) => $q->where('status', '!=', 'Disposed')])
                 ->orderBy('nama')
                 ->get();
 
@@ -735,7 +988,7 @@ class AssetController extends Controller
             | Statistik Lokasi
             |--------------------------------------------------------------------------
             */
-            $lokasi = Location::withCount('assets')
+            $lokasi = Location::withCount(['assets' => fn($q) => $q->where('status', '!=', 'Disposed')])
                 ->orderBy('nama')
                 ->get();
 
@@ -748,6 +1001,10 @@ class AssetController extends Controller
             |--------------------------------------------------------------------------
             */
             $recentAssets = Asset::with(['category', 'location'])
+                // "Aset Terbaru" = bagian dari statistik operasional dashboard, jadi
+                // konsisten dengan definisi aset aktif di seluruh dashboard: hanya
+                // status != 'Disposed'. Aset Dihapuskan hanya muncul di Arsip Aset.
+                ->where('status', '!=', 'Disposed')
                 ->latest()
                 ->take(5)
                 ->get();
@@ -845,5 +1102,10 @@ class AssetController extends Controller
         Cache::forget('available_assets');
         Cache::forget('all_assets');
         Cache::forget('all_assets_v2');
+        Cache::forget('all_assets_v3');
+        // Notifikasi header ikut bergantung pada status/kondisi aset (lihat
+        // HeaderNotificationComposer) — tanpa ini aset yang baru dihapuskan masih
+        // nongol sebagai "Aset Rusak Berat" sampai cache-nya expired sendiri.
+        Cache::forget('header_notifications');
     }
 }

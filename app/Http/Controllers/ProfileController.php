@@ -42,6 +42,14 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // UserController::destroy() sudah memblokir admin menghapus akunnya sendiri,
+        // tapi jalur /profile ini tidak lewat sana — tanpa guard di bawah, Admin
+        // terakhir masih bisa menghapus akunnya sendiri dan menyisakan 0 Admin.
+        if ($request->user()->isLastAdmin()) {
+            return Redirect::route('profile.edit')
+                ->with('error', 'Akun Admin terakhir tidak dapat dihapus.');
+        }
+
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
