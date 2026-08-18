@@ -83,6 +83,57 @@
                 </div>
             </div>
 
+            {{-- Informasi Kehilangan --}}
+            @if($asset->status === 'Hilang' && $lostLog)
+            <div class="card border-l-4 border-danger-500">
+                <div class="card-header">
+                    <h3>Informasi Kehilangan</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Dilaporkan Oleh</p>
+                            <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $lostLog->user?->name ?? 'System' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Waktu Laporan</p>
+                            <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $lostLog->created_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Kronologi</p>
+                            <p class="text-gray-900 dark:text-gray-100 mt-1 bg-gray-50 dark:bg-gray-700 rounded p-4 text-sm border border-gray-200 dark:border-gray-600">{{ $lostLog->deskripsi }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            {{-- Informasi Penghapusan --}}
+            @if($asset->status === 'Disposed' && $disposalLog)
+            <div class="card border-l-4 border-gray-500">
+                <div class="card-header">
+                    <h3>Informasi Penghapusan</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Aset ini sudah dihapuskan dari daftar aset aktif. Data dan histori tetap disimpan untuk kebutuhan audit dan laporan.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Diproses Oleh</p>
+                            <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $disposalLog->user?->name ?? 'System' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Waktu Penghapusan</p>
+                            <p class="font-normal text-gray-900 dark:text-gray-100 mt-1">{{ $disposalLog->created_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider">Detail</p>
+                            <p class="text-gray-900 dark:text-gray-100 mt-1 bg-gray-50 dark:bg-gray-700 rounded p-4 text-sm border border-gray-200 dark:border-gray-600">{{ $disposalLog->deskripsi }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             {{-- Riwayat Peminjaman --}}
             <div class="card">
                 <div class="card-header">
@@ -175,6 +226,9 @@
                             'kondisi' => ['border-purple-400 dark:border-purple-600', 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300'],
                             'peminjaman' => ['border-indigo-400 dark:border-indigo-600', 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'],
                             'pengembalian' => ['border-teal-400 dark:border-teal-600', 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'],
+                            'hilang' => ['border-red-400 dark:border-red-600', 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300'],
+                            'ditemukan' => ['border-green-400 dark:border-green-600', 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300'],
+                            'penghapusan' => ['border-gray-500 dark:border-gray-500', 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'],
                         ];
                         $logColorDefault = ['border-gray-400 dark:border-gray-600', 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'];
                     @endphp
@@ -247,6 +301,7 @@
                         </svg>
                         Edit Aset
                     </a>
+                    @if($asset->status === 'Tersedia')
                     <a href="{{ route('transactions.create') }}?asset_id={{ $asset->id }}"
                        class="flex items-center gap-2 w-full px-3 py-2 rounded bg-warning-50 text-warning-700 hover:bg-warning-100 dark:bg-amber-900/30 dark:text-amber-300 dark:hover:bg-amber-900/50 transition text-sm font-normal">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,6 +309,8 @@
                         </svg>
                         Catat Peminjaman
                     </a>
+                    @endif
+                    @if(! in_array($asset->status, ['Hilang', 'Disposed']))
                     <a href="{{ route('maintenance.create') }}?asset_id={{ $asset->id }}"
                        class="flex items-center gap-2 w-full px-3 py-2 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300 dark:hover:bg-orange-900/50 transition text-sm font-normal">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,7 +318,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                         Jadwalkan Perawatan
-                    </a>                            <form action="{{ route('assets.report-damage', $asset) }}" method="POST" id="reportDamageForm" class="hidden">
+                    </a>
+                    @endif
+                    @if(! in_array($asset->status, ['Hilang', 'Disposed']))
+                            <form action="{{ route('assets.report-damage', $asset) }}" method="POST" id="reportDamageForm" class="hidden">
                                 @csrf
                                 <input type="hidden" name="kondisi" id="damage_kondisi">
                                 <input type="hidden" name="deskripsi" id="damage_deskripsi">
@@ -273,6 +333,51 @@
                                 </svg>
                                 Laporkan Kerusakan
                             </button>
+                    @endif
+                    @if($asset->status === 'Tersedia')
+                            <form action="{{ route('assets.report-lost', $asset) }}" method="POST" id="reportLostForm" class="hidden">
+                                @csrf
+                                <input type="hidden" name="tanggal_kehilangan" id="lost_tanggal">
+                                <input type="hidden" name="keterangan" id="lost_keterangan">
+                            </form>
+                            <button type="button" onclick="openReportLost()"
+                                    class="flex items-center gap-2 w-full px-3 py-2 rounded bg-danger-50 text-danger-700 hover:bg-danger-100 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 transition text-sm font-normal">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM8.25 8.25l7.5 7.5m0-7.5l-7.5 7.5"/>
+                                </svg>
+                                Laporkan Hilang
+                            </button>
+                    @endif
+                    @if($asset->status === 'Hilang')
+                            <form action="{{ route('assets.mark-found', $asset) }}" method="POST" id="markFoundForm" class="hidden">
+                                @csrf
+                                <input type="hidden" name="tanggal_ditemukan" id="found_tanggal">
+                                <input type="hidden" name="lokasi_ditemukan" id="found_lokasi">
+                                <input type="hidden" name="catatan" id="found_catatan">
+                            </form>
+                            <button type="button" onclick="openMarkFound()"
+                                    class="flex items-center gap-2 w-full px-3 py-2 rounded bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50 transition text-sm font-normal">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Tandai Ditemukan
+                            </button>
+                    @endif
+                    @if(auth()->user()->isAdmin() && in_array($asset->status, ['Tersedia', 'Perbaikan', 'Hilang']) && ! $hasActiveMaintenance)
+                            <form action="{{ route('assets.process-disposal', $asset) }}" method="POST" id="processDisposalForm" class="hidden">
+                                @csrf
+                                <input type="hidden" name="tanggal_penghapusan" id="disposal_tanggal">
+                                <input type="hidden" name="alasan" id="disposal_alasan">
+                                <input type="hidden" name="keterangan" id="disposal_keterangan">
+                            </form>
+                            <button type="button" onclick="openProcessDisposal()"
+                                    class="flex items-center gap-2 w-full px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition text-sm font-normal">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                                </svg>
+                                Proses Penghapusan
+                            </button>
+                    @endif
                             <form action="{{ route('assets.destroy', $asset) }}" method="POST" class="delete-form">
                                 @csrf @method('DELETE')
                                 <button type="submit"
@@ -357,6 +462,123 @@ function openReportDamage() {
         }
     });
 }
+function openReportLost() {
+    const today = new Date().toISOString().split('T')[0];
+    Swal.fire({
+        title: 'Laporkan Aset Hilang',
+        html: `
+            <div class="text-left">
+                <label class="block text-sm font-normal text-gray-700 mb-1.5">Tanggal Kehilangan</label>
+                <input type="date" id="swal-tanggal-hilang" max="${today}" value="${today}" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4">
+                <label class="block text-sm font-normal text-gray-700 mb-1.5">Kronologi / Keterangan</label>
+                <textarea id="swal-keterangan-hilang" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" placeholder="Jelaskan kronologi kehilangan..."></textarea>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#DC2626',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Laporkan Hilang',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        preConfirm: () => {
+            const tanggal = document.getElementById('swal-tanggal-hilang').value;
+            const keterangan = document.getElementById('swal-keterangan-hilang').value;
+            if (!tanggal) { Swal.showValidationMessage('Tanggal kehilangan harus diisi'); return; }
+            if (!keterangan) { Swal.showValidationMessage('Kronologi harus diisi'); return; }
+            return { tanggal, keterangan };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('lost_tanggal').value = result.value.tanggal;
+            document.getElementById('lost_keterangan').value = result.value.keterangan;
+            document.getElementById('reportLostForm').submit();
+        }
+    });
+}
+
+function openMarkFound() {
+    const today = new Date().toISOString().split('T')[0];
+    Swal.fire({
+        title: 'Tandai Aset Ditemukan',
+        html: `
+            <div class="text-left">
+                <label class="block text-sm font-normal text-gray-700 mb-1.5">Tanggal Ditemukan</label>
+                <input type="date" id="swal-tanggal-ditemukan" max="${today}" value="${today}" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4">
+                <label class="block text-sm font-normal text-gray-700 mb-1.5">Lokasi Ditemukan</label>
+                <input type="text" id="swal-lokasi-ditemukan" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4" placeholder="mis. Lab Komputer">
+                <label class="block text-sm font-normal text-gray-700 mb-1.5">Catatan (opsional)</label>
+                <textarea id="swal-catatan-ditemukan" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" placeholder="Catatan tambahan..."></textarea>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#16A34A',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Tandai Ditemukan',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        preConfirm: () => {
+            const tanggal = document.getElementById('swal-tanggal-ditemukan').value;
+            const lokasi = document.getElementById('swal-lokasi-ditemukan').value;
+            const catatan = document.getElementById('swal-catatan-ditemukan').value;
+            if (!tanggal) { Swal.showValidationMessage('Tanggal ditemukan harus diisi'); return; }
+            if (!lokasi) { Swal.showValidationMessage('Lokasi ditemukan harus diisi'); return; }
+            return { tanggal, lokasi, catatan };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('found_tanggal').value = result.value.tanggal;
+            document.getElementById('found_lokasi').value = result.value.lokasi;
+            document.getElementById('found_catatan').value = result.value.catatan;
+            document.getElementById('markFoundForm').submit();
+        }
+    });
+}
+
+function openProcessDisposal() {
+    const today = new Date().toISOString().split('T')[0];
+    Swal.fire({
+        title: 'Proses Penghapusan Aset',
+        html: `
+            <div class="text-left">
+                <p class="text-xs text-gray-500 mb-4">Aset akan ditandai Dihapuskan dan tidak bisa dipinjam/dimaintenance lagi. Data dan histori tetap tersimpan.</p>
+                <label class="block text-sm font-normal text-gray-700 mb-1.5">Tanggal Penghapusan</label>
+                <input type="date" id="swal-tanggal-hapus" max="${today}" value="${today}" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4">
+                <label class="block text-sm font-normal text-gray-700 mb-1.5">Alasan Penghapusan</label>
+                <select id="swal-alasan-hapus" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4">
+                    <option value="Rusak Berat">Rusak Berat</option>
+                    <option value="Tidak Layak Digunakan">Tidak Layak Digunakan</option>
+                    <option value="Usia Aset">Usia Aset</option>
+                    <option value="Biaya Perbaikan Tidak Ekonomis">Biaya Perbaikan Tidak Ekonomis</option>
+                    <option value="Hilang/Tidak Ditemukan">Hilang/Tidak Ditemukan</option>
+                    <option value="Lainnya">Alasan Lainnya</option>
+                </select>
+                <label class="block text-sm font-normal text-gray-700 mb-1.5">Keterangan (opsional)</label>
+                <textarea id="swal-keterangan-hapus" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" placeholder="Penjelasan tambahan..."></textarea>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#DC2626',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Proses Penghapusan',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        preConfirm: () => {
+            const tanggal = document.getElementById('swal-tanggal-hapus').value;
+            const alasan = document.getElementById('swal-alasan-hapus').value;
+            const keterangan = document.getElementById('swal-keterangan-hapus').value;
+            if (!tanggal) { Swal.showValidationMessage('Tanggal penghapusan harus diisi'); return; }
+            return { tanggal, alasan, keterangan };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('disposal_tanggal').value = result.value.tanggal;
+            document.getElementById('disposal_alasan').value = result.value.alasan;
+            document.getElementById('disposal_keterangan').value = result.value.keterangan;
+            document.getElementById('processDisposalForm').submit();
+        }
+    });
+}
+
 document.getElementById('manualLogModal')?.addEventListener('click', function(e) { if (e.target === this) closeManualLog(); });
 
 document.querySelectorAll('.delete-form').forEach(form => {

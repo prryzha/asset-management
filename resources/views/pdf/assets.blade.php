@@ -49,7 +49,7 @@
                 <td>{{ $item->category?->nama ?? '-' }}</td>
                 <td>{{ $item->location?->nama ?? '-' }}</td>
                 <td>{{ $item->kondisi }}</td>
-                <td>{{ $item->status }}</td>
+                <td>{{ $item->status === 'Disposed' ? 'Dihapuskan' : $item->status }}</td>
             </tr>
             @endforeach
         </tbody>

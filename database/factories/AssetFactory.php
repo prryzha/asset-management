@@ -60,4 +60,18 @@ class AssetFactory extends Factory
             'status' => 'Perbaikan',
         ]);
     }
+
+    public function hilang(): static
+    {
+        return $this->state(fn(array $attrs) => [
+            'status' => 'Hilang',
+        ]);
+    }
+
+    public function disposed(): static
+    {
+        return $this->state(fn(array $attrs) => [
+            'status' => 'Disposed',
+        ]);
+    }
 }

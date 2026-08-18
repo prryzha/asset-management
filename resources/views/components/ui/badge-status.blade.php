@@ -3,6 +3,9 @@
 @php
 $dot = 'bg-gray-400';
 $classes = 'badge-gray';
+// Internal DB value tetap "Disposed" (lihat AssetController::statusLabel()) — cuma
+// label yang ditampilkan yang diterjemahkan, supaya tidak perlu migration/rename kolom.
+$label = $status === 'Disposed' ? 'Dihapuskan' : $status;
 
 switch($status) {
     case 'Tersedia':
@@ -40,5 +43,5 @@ switch($status) {
 
 <span class="{{ $classes }} gap-1.5">
     <span class="w-1.5 h-1.5 rounded-full {{ $dot }}"></span>
-    {{ $status }}
+    {{ $label }}
 </span>

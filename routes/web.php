@@ -57,6 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/assets/{asset}', [AssetController::class, 'destroy'])->name('assets.destroy');
     Route::delete('/assets/{asset}/foto', [AssetController::class, 'deleteFoto'])->name('assets.delete-foto');
     Route::post('/assets/{asset}/report-damage', [AssetController::class, 'reportDamage'])->name('assets.report-damage');
+    Route::post('/assets/{asset}/report-lost', [AssetController::class, 'reportLost'])->name('assets.report-lost');
+    Route::post('/assets/{asset}/mark-found', [AssetController::class, 'markFound'])->name('assets.mark-found');
+    Route::post('/assets/{asset}/process-disposal', [AssetController::class, 'processDisposal'])->name('assets.process-disposal')->middleware('role:admin');
     Route::get('/assets/{asset}/label/pdf', [AssetController::class, 'labelPdf'])->name('assets.label-pdf');
 
     Route::post('/transactions/{transaction}/return', [TransactionController::class, 'returnItem'])->name('transactions.return');

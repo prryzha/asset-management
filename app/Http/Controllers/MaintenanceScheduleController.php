@@ -157,9 +157,12 @@ class MaintenanceScheduleController extends Controller
 
             $asset = Asset::lockForUpdate()->findOrFail($schedule->asset_id);
 
-            if ($asset->status === 'Dipinjam') {
+            // Hanya aset Tersedia/Perbaikan yang boleh masuk maintenance normal.
+            // Dipinjam dimiliki TransactionController; Hilang/Disposed tidak boleh
+            // "masuk maintenance normal" sama sekali (lihat AssetController::reportLost()).
+            if (! in_array($asset->status, ['Tersedia', 'Perbaikan'])) {
                 throw ValidationException::withMessages([
-                    'maintenance' => 'Aset yang sedang dipinjam tidak dapat masuk perbaikan.',
+                    'maintenance' => 'Aset dengan status ' . $asset->status . ' tidak dapat masuk perbaikan.',
                 ]);
             }
 

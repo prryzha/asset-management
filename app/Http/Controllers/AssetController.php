@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Symfony\Component\HttpFoundation\Response;
@@ -200,7 +201,21 @@ class AssetController extends Controller
         $activityLogs = $asset->activityLogs()->with('user')->latest()->take(10)->get();
         $assetLogs = $asset->assetLogs()->with('user')->latest()->take(20)->get();
 
-        return view('assets.show', compact('asset', 'transactions', 'maintenanceSchedules', 'activityLogs', 'assetLogs'));
+        // Info kehilangan di kartu Detail Aset — hanya diperlukan saat status Hilang.
+        $lostLog = $asset->status === 'Hilang'
+            ? $asset->assetLogs()->with('user')->where('tipe', 'hilang')->latest()->first()
+            : null;
+
+        // Info penghapusan — hanya diperlukan saat status Disposed (label UI: Dihapuskan).
+        $disposalLog = $asset->status === 'Disposed'
+            ? $asset->assetLogs()->with('user')->where('tipe', 'penghapusan')->latest()->first()
+            : null;
+
+        // Dipakai untuk gating tombol "Proses Penghapusan" — aset Perbaikan yang masih
+        // punya maintenance aktif (Dikerjakan) belum boleh dihapuskan, lihat processDisposal().
+        $hasActiveMaintenance = $asset->maintenanceSchedules()->where('status', 'Dikerjakan')->exists();
+
+        return view('assets.show', compact('asset', 'transactions', 'maintenanceSchedules', 'activityLogs', 'assetLogs', 'lostLog', 'disposalLog', 'hasActiveMaintenance'));
     }
 
     public function edit(Asset $asset): View
@@ -317,6 +332,152 @@ class AssetController extends Controller
         return redirect()
             ->route('assets.show', $asset)
             ->with('success', 'Kerusakan berhasil dilaporkan.');
+    }
+
+    public function reportLost(Request $request, Asset $asset): RedirectResponse
+    {
+        $validated = $request->validate([
+            'tanggal_kehilangan' => ['required', 'date', 'before_or_equal:today'],
+            'keterangan' => ['required', 'string', 'max:500'],
+        ]);
+
+        DB::transaction(function () use ($validated, $asset) {
+            $locked = Asset::lockForUpdate()->findOrFail($asset->id);
+
+            // Hanya aset Tersedia yang boleh dilaporkan hilang — lihat catatan di
+            // reportDamage()/update() soal kenapa status hanya boleh disentuh satu
+            // "pemilik" workflow dalam satu waktu. Aset Dipinjam/Perbaikan sudah
+            // dimiliki Transaction/MaintenanceSchedule; melaporkan hilang di state
+            // itu akan meninggalkan transaksi/jadwal itu menggantung tanpa penutup.
+            if ($locked->status !== 'Tersedia') {
+                throw ValidationException::withMessages([
+                    'status' => 'Hanya aset berstatus Tersedia yang dapat dilaporkan hilang.',
+                ]);
+            }
+
+            $locked->update(['status' => 'Hilang']);
+
+            $tanggal = \Carbon\Carbon::parse($validated['tanggal_kehilangan'])->format('d/m/Y');
+            $lokasi = $locked->location?->nama ?? 'tidak diketahui';
+
+            AssetLog::create([
+                'asset_id' => $locked->id,
+                'tipe' => 'hilang',
+                'deskripsi' => "Dilaporkan hilang pada {$tanggal}. Lokasi terakhir: {$lokasi}. Kronologi: {$validated['keterangan']}",
+                'user_id' => auth()->id(),
+            ]);
+        });
+
+        ActivityLog::record($asset, 'asset.reported-lost', "Melaporkan aset {$asset->kode_barang} hilang");
+
+        $this->clearCache();
+
+        return redirect()
+            ->route('assets.show', $asset)
+            ->with('success', 'Aset berhasil dilaporkan hilang.');
+    }
+
+    public function markFound(Request $request, Asset $asset): RedirectResponse
+    {
+        $validated = $request->validate([
+            'tanggal_ditemukan' => ['required', 'date', 'before_or_equal:today'],
+            'lokasi_ditemukan' => ['required', 'string', 'max:255'],
+            'catatan' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        DB::transaction(function () use ($validated, $asset) {
+            $locked = Asset::lockForUpdate()->findOrFail($asset->id);
+
+            if ($locked->status !== 'Hilang') {
+                throw ValidationException::withMessages([
+                    'status' => 'Hanya aset berstatus Hilang yang dapat ditandai ditemukan.',
+                ]);
+            }
+
+            $locked->update(['status' => 'Tersedia']);
+
+            $tanggal = \Carbon\Carbon::parse($validated['tanggal_ditemukan'])->format('d/m/Y');
+            $deskripsi = "Aset ditemukan kembali di {$validated['lokasi_ditemukan']} pada {$tanggal}. Dikonfirmasi oleh " . (auth()->user()->name ?? 'petugas') . '.';
+            if (! empty($validated['catatan'])) {
+                $deskripsi .= " Catatan: {$validated['catatan']}";
+            }
+
+            AssetLog::create([
+                'asset_id' => $locked->id,
+                'tipe' => 'ditemukan',
+                'deskripsi' => $deskripsi,
+                'user_id' => auth()->id(),
+            ]);
+        });
+
+        ActivityLog::record($asset, 'asset.marked-found', "Menandai aset {$asset->kode_barang} ditemukan kembali");
+
+        $this->clearCache();
+
+        return redirect()
+            ->route('assets.show', $asset)
+            ->with('success', 'Aset berhasil ditandai ditemukan.');
+    }
+
+    public function processDisposal(Request $request, Asset $asset): RedirectResponse
+    {
+        $validated = $request->validate([
+            'tanggal_penghapusan' => ['required', 'date', 'before_or_equal:today'],
+            'alasan' => ['required', 'string', 'in:Rusak Berat,Tidak Layak Digunakan,Usia Aset,Biaya Perbaikan Tidak Ekonomis,Hilang/Tidak Ditemukan,Lainnya'],
+            'keterangan' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        DB::transaction(function () use ($validated, $asset) {
+            $locked = Asset::lockForUpdate()->findOrFail($asset->id);
+
+            // Dipinjam dapat penolakan pesan khusus — harus dikembalikan dulu lewat
+            // Pengembalian (TransactionController), bukan lewat sini, supaya Transaction
+            // yang masih aktif tidak menggantung tanpa penutup. Sama alasannya dengan
+            // guard di reportLost().
+            if ($locked->status === 'Dipinjam') {
+                throw ValidationException::withMessages([
+                    'status' => 'Aset yang sedang dipinjam harus dikembalikan terlebih dahulu sebelum diproses penghapusan.',
+                ]);
+            }
+
+            if (! in_array($locked->status, ['Tersedia', 'Perbaikan', 'Hilang'])) {
+                throw ValidationException::withMessages([
+                    'status' => 'Aset dengan status ' . $this->statusLabel($locked->status) . ' tidak dapat diproses penghapusan.',
+                ]);
+            }
+
+            // Perbaikan bisa terjadi tanpa MaintenanceSchedule aktif (lewat reportDamage()),
+            // tapi kalau memang ada schedule Dikerjakan, itu harus diselesaikan dulu — pola
+            // guard yang sama dipakai TransactionController::store().
+            if ($locked->maintenanceSchedules()->where('status', 'Dikerjakan')->exists()) {
+                throw ValidationException::withMessages([
+                    'status' => 'Aset sedang dalam perawatan aktif, selesaikan perawatan terlebih dahulu sebelum diproses penghapusan.',
+                ]);
+            }
+
+            $locked->update(['status' => 'Disposed']);
+
+            $tanggal = \Carbon\Carbon::parse($validated['tanggal_penghapusan'])->format('d/m/Y');
+            $deskripsi = "Aset dihapuskan pada {$tanggal} karena {$validated['alasan']}. Diproses oleh " . (auth()->user()->name ?? 'petugas') . '.';
+            if (! empty($validated['keterangan'])) {
+                $deskripsi .= " Keterangan: {$validated['keterangan']}";
+            }
+
+            AssetLog::create([
+                'asset_id' => $locked->id,
+                'tipe' => 'penghapusan',
+                'deskripsi' => $deskripsi,
+                'user_id' => auth()->id(),
+            ]);
+        });
+
+        ActivityLog::record($asset, 'asset.disposed', "Menghapuskan aset {$asset->kode_barang}");
+
+        $this->clearCache();
+
+        return redirect()
+            ->route('assets.show', $asset)
+            ->with('success', 'Aset berhasil diproses penghapusan.');
     }
 
     public function deleteFoto(Asset $asset): RedirectResponse
@@ -456,7 +617,7 @@ class AssetController extends Controller
                     $asset->category?->nama,
                     $asset->location?->nama,
                     $asset->kondisi,
-                    $asset->status,
+                    $this->statusLabel($asset->status),
                     $asset->tahun_perolehan,
                     $asset->nilai_perolehan,
                     $asset->penanggung_jawab,
@@ -642,6 +803,16 @@ class AssetController extends Controller
                 'rusakBerat' => $cached['assetStats']->rusak_berat,
             ]
         ));
+    }
+
+    /**
+     * Label Bahasa Indonesia untuk status internal. Internal value tetap "Disposed"
+     * (enum DB, dipakai di semua query/validasi) — cuma tampilan ke user yang
+     * diterjemahkan jadi "Dihapuskan", supaya tidak perlu migration/rename kolom.
+     */
+    private function statusLabel(string $status): string
+    {
+        return $status === 'Disposed' ? 'Dihapuskan' : $status;
     }
 
     /**
