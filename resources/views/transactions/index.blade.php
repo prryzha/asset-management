@@ -41,9 +41,7 @@
                 </div>
                 <select name="status" class="form-input form-input-sm w-auto">
                     <option value="">Semua Status</option>
-                    <option value="Menunggu Persetujuan" {{ request('status')=='Menunggu Persetujuan'?'selected':'' }}>Menunggu Persetujuan</option>
                     <option value="Dipinjam" {{ request('status')=='Dipinjam'?'selected':'' }}>Dipinjam</option>
-                    <option value="Ditolak" {{ request('status')=='Ditolak'?'selected':'' }}>Ditolak</option>
                     <option value="Dikembalikan" {{ request('status')=='Dikembalikan'?'selected':'' }}>Dikembalikan</option>
                 </select>
                 <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Dari:</label>
@@ -108,8 +106,6 @@
                                         Terima Pengembalian
                                     </button>
                                 </form>
-                            @elseif($trx->status_peminjaman == 'Ditolak' && $trx->rejection_reason)
-                                <span class="text-xs text-secondary cursor-help" title="{{ $trx->rejection_reason }}">Lihat Alasan</span>
                             @elseif($trx->status_peminjaman == 'Dikembalikan')
                                 <span class="text-sm text-secondary">Selesai</span>
                             @endif

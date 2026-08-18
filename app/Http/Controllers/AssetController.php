@@ -261,8 +261,14 @@ class AssetController extends Controller
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Catat perubahan lokasi (mutasi)
-        if ($validated['location_id'] != $asset->location_id) {
+        // Catat perubahan lokasi (mutasi). Pakai array_key_exists, bukan cuma "?? null"
+        // — location_id "nullable" berarti raw request yang tidak menyertakan field ini
+        // SAMA SEKALI (bukan cuma dikosongkan lewat form) membuat key-nya tidak ada di
+        // $validated (Laravel's validated() cuma include key yang benar-benar ada di
+        // input). Kalau key benar-benar tidak ada, berarti request ini tidak berniat
+        // menyentuh lokasi sama sekali — jangan dianggap "dipindah ke kosong", dan
+        // $asset->update($validated) di bawah memang tidak akan menyentuh kolom ini.
+        if (array_key_exists('location_id', $validated) && $validated['location_id'] != $asset->location_id) {
             $oldLocation = $asset->location?->nama ?? 'unknown';
             $newLocation = Location::find($validated['location_id'])?->nama ?? 'unknown';
             AssetLog::create([
@@ -309,21 +315,34 @@ class AssetController extends Controller
             'deskripsi' => ['required', 'string', 'max:500'],
         ]);
 
-        $oldKondisi = $asset->kondisi;
+        DB::transaction(function () use ($validated, $asset) {
+            $locked = Asset::lockForUpdate()->findOrFail($asset->id);
 
-        $asset->update(['kondisi' => $validated['kondisi']]);
+            // Melaporkan kerusakan cuma masuk akal untuk aset yang masih aktif —
+            // tombolnya sudah disembunyikan untuk Hilang/Disposed di UI, tapi backend
+            // tetap wajib menolak raw request juga (lihat pola yang sama di reportLost()).
+            if (in_array($locked->status, ['Hilang', 'Disposed'])) {
+                throw ValidationException::withMessages([
+                    'status' => 'Aset dengan status ' . $this->statusLabel($locked->status) . ' tidak dapat dilaporkan kerusakannya.',
+                ]);
+            }
 
-        // Jika status masih Tersedia dan dilapor rusak berat, ubah ke Perbaikan
-        if ($validated['kondisi'] === 'Rusak Berat' && $asset->status === 'Tersedia') {
-            $asset->update(['status' => 'Perbaikan']);
-        }
+            $oldKondisi = $locked->kondisi;
 
-        AssetLog::create([
-            'asset_id' => $asset->id,
-            'tipe' => 'kondisi',
-            'deskripsi' => $validated['deskripsi'] . " (Laporan: {$oldKondisi} → {$validated['kondisi']})",
-            'user_id' => auth()->id(),
-        ]);
+            $locked->update(['kondisi' => $validated['kondisi']]);
+
+            // Jika status masih Tersedia dan dilapor rusak berat, ubah ke Perbaikan
+            if ($validated['kondisi'] === 'Rusak Berat' && $locked->status === 'Tersedia') {
+                $locked->update(['status' => 'Perbaikan']);
+            }
+
+            AssetLog::create([
+                'asset_id' => $locked->id,
+                'tipe' => 'kondisi',
+                'deskripsi' => $validated['deskripsi'] . " (Laporan: {$oldKondisi} → {$validated['kondisi']})",
+                'user_id' => auth()->id(),
+            ]);
+        });
 
         ActivityLog::record($asset, 'asset.reported-damage', "Melaporkan kerusakan {$asset->kode_barang}: {$validated['deskripsi']}");
 

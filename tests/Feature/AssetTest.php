@@ -211,6 +211,76 @@ class AssetTest extends TestCase
         ]);
     }
 
+    public function test_updating_asset_without_location_id_field_does_not_error(): void
+    {
+        $location = Location::factory()->create();
+        $asset = Asset::factory()->tersedia()->create(['location_id' => $location->id]);
+
+        // Simulasi raw request yang tidak menyertakan location_id sama sekali
+        // (bukan cuma kosong) — form asli selalu kirim field ini, tapi raw
+        // request/API tidak wajib. Field ini "nullable" jadi harus aman.
+        $response = $this->actingAs($this->admin)
+            ->put(route('assets.update', $asset), [
+                'kode_barang' => $asset->kode_barang,
+                'nama_barang' => $asset->nama_barang,
+                'category_id' => $asset->category_id,
+                'kondisi' => $asset->kondisi,
+            ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('assets', [
+            'id' => $asset->id,
+            'location_id' => $location->id,
+        ]);
+
+        $this->assertDatabaseMissing('asset_logs', [
+            'asset_id' => $asset->id,
+            'tipe' => 'mutasi',
+        ]);
+    }
+
+    public function test_report_damage_on_lost_asset_is_rejected(): void
+    {
+        $asset = Asset::factory()->hilang()->create(['kondisi' => 'Baik']);
+
+        $response = $this->actingAs($this->admin)
+            ->post(route('assets.report-damage', $asset), [
+                'kondisi' => 'Rusak Berat',
+                'deskripsi' => 'Percobaan pada aset hilang.',
+            ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseHas('assets', [
+            'id' => $asset->id,
+            'kondisi' => 'Baik',
+            'status' => 'Hilang',
+        ]);
+
+        $this->assertDatabaseCount('asset_logs', 0);
+    }
+
+    public function test_report_damage_on_disposed_asset_is_rejected(): void
+    {
+        $asset = Asset::factory()->disposed()->create(['kondisi' => 'Baik']);
+
+        $response = $this->actingAs($this->admin)
+            ->post(route('assets.report-damage', $asset), [
+                'kondisi' => 'Rusak Berat',
+                'deskripsi' => 'Percobaan pada aset yang sudah dihapuskan.',
+            ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseHas('assets', [
+            'id' => $asset->id,
+            'kondisi' => 'Baik',
+            'status' => 'Disposed',
+        ]);
+    }
+
     public function test_edit_asset_cannot_change_status(): void
     {
         $asset = Asset::factory()->dipinjam()->create();

@@ -46,9 +46,13 @@
                                     'admin' => 'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
                                     'staff' => 'bg-primary-50 text-primary dark:bg-primary-900/30 dark:text-primary-300',
                                 ];
+                                $roleLabel = [
+                                    'admin' => 'Admin Sarpras',
+                                    'staff' => 'Staff Sarpras',
+                                ];
                             @endphp
                             <span class="inline-flex items-center px-2.5 py-1 text-xs font-normal {{ $roleBadge[$user->role] ?? 'bg-gray-100 text-secondary dark:bg-gray-700' }}">
-                                {{ $user->role }}
+                                {{ $roleLabel[$user->role] ?? $user->role }}
                             </span>
                         </td>
                         <td class="text-sm text-secondary">{{ $user->created_at->format('d/m/Y') }}</td>

@@ -2,7 +2,7 @@
 
     <div class="card-header">
         <div>
-            <h3>Asset Terbaru</h3>
+            <h3>Aset Terbaru</h3>
             <p class="subtitle">5 asset yang terakhir ditambahkan.</p>
         </div>
         <a href="{{ route('assets.index') }}" class="text-xs font-normal text-primary-600 hover:text-primary-700 transition-colors">
@@ -31,23 +31,14 @@
                 </div>
             </div>
             <div class="text-right flex items-center gap-3">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-normal
-                    {{ $asset->status == 'Tersedia' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : '' }}
-                    {{ $asset->status == 'Dipinjam' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : '' }}
-                    {{ $asset->status == 'Perbaikan' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : '' }}">
-                    <span class="w-1.5 h-1.5
-                        {{ $asset->status == 'Tersedia' ? 'bg-emerald-500' : '' }}
-                        {{ $asset->status == 'Dipinjam' ? 'bg-amber-500' : '' }}
-                        {{ $asset->status == 'Perbaikan' ? 'bg-red-500' : '' }}"></span>
-                    {{ $asset->status }}
-                </span>
+                <x-ui.badge-status :status="$asset->status" />
                 <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </div>
         </a>
         @empty
-        <div class="p-10 text-center text-gray-400 dark:text-gray-500">Belum ada asset.</div>
+        <div class="p-10 text-center text-gray-400 dark:text-gray-500">Belum ada aset.</div>
         @endforelse
     </div>
 

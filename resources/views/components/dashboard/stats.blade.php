@@ -9,7 +9,7 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="stat-label">Total Asset</p>
+                <p class="stat-label">Total Aset</p>
                 <h2 class="stat-value">{{ $totalAsset }}</h2>
                 <p class="stat-detail">Nilai: Rp {{ number_format($totalNilai, 0, ',', '.') }}</p>
             </div>
@@ -41,7 +41,7 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="stat-label">Asset Dipinjam</p>
+                <p class="stat-label">Aset Dipinjam</p>
                 <h2 class="stat-value">{{ $dipinjam }}</h2>
                 <p class="stat-detail">{{ $totalAsset > 0 ? round(($dipinjam/$totalAsset)*100) : 0 }}% dari total</p>
             </div>
@@ -58,7 +58,7 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="stat-label">Asset Maintenance</p>
+                <p class="stat-label">Aset Perbaikan</p>
                 <h2 class="stat-value">{{ $perbaikan }}</h2>
                 <p class="stat-detail">{{ $totalAsset > 0 ? round(($perbaikan/$totalAsset)*100) : 0 }}% dari total</p>
             </div>

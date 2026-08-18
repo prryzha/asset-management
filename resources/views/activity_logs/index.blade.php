@@ -3,6 +3,31 @@
 @section('title', 'Aktivitas Sistem')
 
 @section('content')
+@php
+    $eventLabels = [
+        'asset.created' => 'Aset Ditambahkan',
+        'asset.updated' => 'Aset Diubah',
+        'asset.deleted' => 'Aset Dihapus',
+        'asset.photo-deleted' => 'Foto Aset Dihapus',
+        'asset.reported-damage' => 'Kerusakan Dilaporkan',
+        'asset.reported-lost' => 'Aset Dilaporkan Hilang',
+        'asset.marked-found' => 'Aset Ditandai Ditemukan',
+        'asset.disposed' => 'Aset Dihapuskan',
+        'transaction.borrowed' => 'Aset Dipinjam',
+        'transaction.returned' => 'Aset Dikembalikan',
+        'maintenance.created' => 'Perawatan Dijadwalkan',
+        'maintenance.updated' => 'Jadwal Perawatan Diubah',
+        'maintenance.started' => 'Perawatan Dimulai',
+        'maintenance.completed' => 'Perawatan Selesai',
+        'maintenance.cancelled' => 'Perawatan Dibatalkan',
+        'category.created' => 'Kategori Ditambahkan',
+        'category.updated' => 'Kategori Diubah',
+        'category.deleted' => 'Kategori Dihapus',
+        'location.created' => 'Lokasi Ditambahkan',
+        'location.updated' => 'Lokasi Diubah',
+        'location.deleted' => 'Lokasi Dihapus',
+    ];
+@endphp
 <div class="p-8">
 
     <x-ui.page-header title="Aktivitas Sistem" subtitle="Riwayat seluruh aktivitas pengguna." />
@@ -22,7 +47,7 @@
                 <select name="event" class="form-input form-input-sm w-auto">
                     <option value="">Semua Aktivitas</option>
                     @foreach($events as $event)
-                        <option value="{{ $event }}" {{ request('event') == $event ? 'selected' : '' }}>{{ $event }}</option>
+                        <option value="{{ $event }}" {{ request('event') == $event ? 'selected' : '' }}>{{ $eventLabels[$event] ?? $event }}</option>
                     @endforeach
                 </select>
                 <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Dari:</label>
@@ -68,7 +93,7 @@
                 </div>
             </div>
             <span class="ml-3 inline-flex items-center px-2.5 py-1 text-xs font-normal bg-gray-100 dark:bg-gray-700 text-secondary whitespace-nowrap">
-                {{ $log->event }}
+                {{ $eventLabels[$log->event] ?? $log->event }}
             </span>
         </div>
         @empty
