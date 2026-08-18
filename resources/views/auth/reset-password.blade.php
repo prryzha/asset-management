@@ -1,39 +1,68 @@
 <x-guest-layout>
+
+    <h2 class="text-lg font-normal text-gray-900 mb-1.5">Atur Ulang Password</h2>
+    <p class="text-sm text-gray-600 mb-6">
+        Masukkan password baru untuk akun Anda.
+    </p>
+
+    @if(session('status'))
+        <div class="alert alert-success mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            {{ session('status') }}
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('password.store') }}">
         @csrf
 
-        <!-- Password Reset Token -->
+        {{-- Token reset password --}}
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" value="Email" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        {{-- Email --}}
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+                type="email"
+                name="email"
+                value="{{ old('email', $request->email) }}"
+                required
+                autofocus
+                autocomplete="username"
+                class="form-input @error('email') is-invalid @enderror">
+            @error('email')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" value="Password" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        {{-- Password Baru --}}
+        <div class="form-group mt-5">
+            <label class="form-label">Password Baru</label>
+            <input
+                type="password"
+                name="password"
+                required
+                autocomplete="new-password"
+                class="form-input @error('password') is-invalid @enderror">
+            @error('password')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" value="Konfirmasi Password" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        {{-- Konfirmasi Password Baru --}}
+        <div class="form-group mt-5">
+            <label class="form-label">Konfirmasi Password Baru</label>
+            <input
+                type="password"
+                name="password_confirmation"
+                required
+                autocomplete="new-password"
+                class="form-input @error('password_confirmation') is-invalid @enderror">
+            @error('password_confirmation')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                Reset Password
-            </x-primary-button>
+        {{-- Submit --}}
+        <div class="mt-8">
+            <button class="btn-primary w-full">
+                Atur Ulang Password
+            </button>
         </div>
+
     </form>
+
 </x-guest-layout>

@@ -204,6 +204,7 @@ return [
         'alasan' => 'alasan',
         'name' => 'nama',
         'email' => 'email',
+        'new_email' => 'email baru',
         'password' => 'password',
         'password_confirmation' => 'konfirmasi password',
         'current_password' => 'password saat ini',

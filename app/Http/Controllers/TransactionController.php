@@ -115,7 +115,11 @@ class TransactionController extends Controller
             ]);
         });
 
-        Cache::forget('available_assets');
+        // Peminjaman mengubah asset.status (Tersedia -> Dipinjam) — invalidate
+        // seluruh cache yang bergantung pada status aset (dashboard, dropdown
+        // Perawatan, dsb), bukan cuma 'available_assets'. Lihat
+        // Asset::forgetStatusCaches().
+        Asset::forgetStatusCaches();
 
         return redirect()->route('transactions.index')->with('success', 'Peminjaman berhasil dicatat.');
     }
@@ -168,7 +172,10 @@ class TransactionController extends Controller
             ]);
         });
 
-        Cache::forget('available_assets');
+        // Pengembalian mengubah asset.status (Dipinjam -> Tersedia/Perbaikan) —
+        // sama seperti store(), invalidate seluruh cache yang bergantung pada
+        // status aset. Lihat Asset::forgetStatusCaches().
+        Asset::forgetStatusCaches();
 
         return redirect()->route('transactions.index')->with('success', 'Pengembalian berhasil dicatat.');
     }

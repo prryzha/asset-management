@@ -48,4 +48,39 @@ class PasswordUpdateTest extends TestCase
             ->assertSessionHasErrorsIn('updatePassword', 'current_password')
             ->assertRedirect('/profile');
     }
+
+    public function test_password_confirmation_must_match_new_password(): void
+    {
+        $user = User::factory()->create();
+        $originalHash = $user->password;
+
+        $response = $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->put('/password', [
+                'current_password' => 'password',
+                'password' => 'new-password',
+                'password_confirmation' => 'password-yang-berbeda',
+            ]);
+
+        $response
+            ->assertSessionHasErrorsIn('updatePassword', 'password')
+            ->assertRedirect('/profile');
+
+        $this->assertSame($originalHash, $user->fresh()->password);
+    }
+
+    public function test_old_password_no_longer_works_after_change(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->put('/password', [
+            'current_password' => 'password',
+            'password' => 'new-password',
+            'password_confirmation' => 'new-password',
+        ]);
+
+        $this->assertFalse(Hash::check('password', $user->fresh()->password));
+        $this->assertTrue(Hash::check('new-password', $user->fresh()->password));
+    }
 }

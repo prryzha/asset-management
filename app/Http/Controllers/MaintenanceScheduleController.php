@@ -225,6 +225,11 @@ class MaintenanceScheduleController extends Controller
             ]);
         });
 
+        // start() mengubah asset.status (Tersedia/Perbaikan -> Perbaikan) —
+        // invalidate cache yang bergantung pada status aset (dashboard, dropdown
+        // "Catat Peminjaman", dsb). Lihat Asset::forgetStatusCaches().
+        Asset::forgetStatusCaches();
+
         return redirect()
             ->route('maintenance.index')
             ->with('success', 'Perawatan berhasil dimulai.');
@@ -305,6 +310,11 @@ class MaintenanceScheduleController extends Controller
                 'user_id' => auth()->id(),
             ]);
         });
+
+        // complete() mengubah asset.status (Perbaikan -> Tersedia/Perbaikan) dan
+        // kondisi — invalidate cache yang bergantung pada status aset. Lihat
+        // Asset::forgetStatusCaches().
+        Asset::forgetStatusCaches();
 
         return redirect()
             ->route('maintenance.index')

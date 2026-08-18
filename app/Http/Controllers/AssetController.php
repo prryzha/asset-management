@@ -1148,20 +1148,13 @@ class AssetController extends Controller
     }
 
     /**
-     * Clear all cached data after any asset mutation.
+     * Clear all cached data after any asset mutation. Delegasi ke
+     * Asset::forgetStatusCaches() — satu sumber kebenaran yang juga dipakai
+     * TransactionController & MaintenanceScheduleController, supaya daftar
+     * cache key tidak didup di 3 tempat berbeda dan berpotensi drift.
      */
     private function clearCache(): void
     {
-        Cache::forget('dashboard_data');
-        Cache::forget('filter_categories');
-        Cache::forget('filter_locations');
-        Cache::forget('available_assets');
-        Cache::forget('all_assets');
-        Cache::forget('all_assets_v2');
-        Cache::forget('all_assets_v3');
-        // Notifikasi header ikut bergantung pada status/kondisi aset (lihat
-        // HeaderNotificationComposer) — tanpa ini aset yang baru dihapuskan masih
-        // nongol sebagai "Aset Rusak Berat" sampai cache-nya expired sendiri.
-        Cache::forget('header_notifications');
+        Asset::forgetStatusCaches();
     }
 }

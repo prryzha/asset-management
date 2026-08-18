@@ -1,25 +1,40 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        Lupa password? Tidak masalah. Masukkan alamat email Anda dan kami akan mengirimkan link untuk membuat password baru.
-    </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <h2 class="text-lg font-normal text-gray-900 mb-1.5">Lupa Password</h2>
+    <p class="text-sm text-gray-600 mb-6">
+        Tidak masalah. Masukkan alamat email Anda dan kami akan mengirimkan link untuk mengatur ulang password Anda.
+    </p>
+
+    @if(session('status'))
+        <div class="alert alert-success mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            {{ session('status') }}
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" value="Email" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        {{-- Email --}}
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+                type="email"
+                name="email"
+                value="{{ old('email') }}"
+                required
+                autofocus
+                class="form-input @error('email') is-invalid @enderror">
+            @error('email')<p class="form-error">{{ $message }}</p>@enderror
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                Kirim Link Reset Password
-            </x-primary-button>
+        {{-- Submit --}}
+        <div class="mt-8">
+            <button class="btn-primary w-full">
+                Kirim Link Atur Ulang Password
+            </button>
         </div>
+
     </form>
+
 </x-guest-layout>

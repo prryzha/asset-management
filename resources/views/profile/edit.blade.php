@@ -5,12 +5,12 @@
 @section('content')
 <div class="p-8 max-w-3xl mx-auto">
 
-    <x-ui.page-header title="Profil" subtitle="Kelola informasi akun Anda." />
+    <x-ui.page-header title="Profil" subtitle="Kelola informasi akun dan keamanan Anda." />
 
     @if(session('status') === 'profile-updated')
         <div class="alert alert-success mb-6">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Profil berhasil diperbarui.
+            Nama berhasil diperbarui.
         </div>
     @endif
 
@@ -21,39 +21,116 @@
         </div>
     @endif
 
+    @if(session('status') === 'email-change-requested')
+        <div class="alert alert-success mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Link verifikasi telah dikirim ke email baru Anda. Email aktif Anda <strong>belum berubah</strong> sampai link tersebut dibuka dan diverifikasi.
+        </div>
+    @endif
+
+    @if(session('status') === 'verification-link-sent')
+        <div class="alert alert-success mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Link verifikasi telah dikirim ke email Anda.
+        </div>
+    @endif
+
+    @if(session('status') === 'email-already-verified')
+        <div class="alert alert-success mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Email Anda sudah terverifikasi.
+        </div>
+    @endif
+
     <div class="space-y-6">
 
-        {{-- Profile Information --}}
+        {{-- ============ PROFIL ============ --}}
+        <p class="text-xs font-normal text-secondary uppercase tracking-wider">Profil</p>
+
+        {{-- Informasi Dasar --}}
         <div class="card">
             <div class="card-header">
-                <h3>Informasi Profil</h3>
-                <p class="text-xs text-secondary mt-0.5">Perbarui informasi akun dan email anda.</p>
+                <h3>Informasi Dasar</h3>
+                <p class="text-xs text-secondary mt-0.5">Nama, email aktif, dan peran akun Anda.</p>
             </div>
-            <form method="post" action="{{ route('profile.update') }}">
-                @csrf @method('patch')
+            <div class="card-body space-y-5">
+
+                <form method="post" action="{{ route('profile.update') }}" id="form-nama">
+                    @csrf @method('patch')
+                    <div class="form-group mb-0">
+                        <label class="form-label">Nama</label>
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <input type="text" name="name" value="{{ old('name', $user->name) }}" required autocomplete="name" class="form-input @error('name') is-invalid @enderror">
+                                @error('name')<p class="form-error">{{ $message }}</p>@enderror
+                            </div>
+                            <button type="submit" class="btn-primary btn-sm shrink-0">Simpan</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="pt-5 border-t border-[#E5E7EB] dark:border-gray-700">
+                    <label class="form-label">Email Aktif</label>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <span class="text-sm text-gray-900 dark:text-gray-100 font-normal">{{ $user->email }}</span>
+                        @if($user->hasVerifiedEmail())
+                            <span class="badge-green gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-success-500"></span>
+                                Terverifikasi
+                            </span>
+                        @else
+                            <span class="badge-yellow gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-warning-500"></span>
+                                Belum Terverifikasi
+                            </span>
+                            <form method="post" action="{{ route('verification.send') }}">
+                                @csrf
+                                <button type="submit" class="text-xs font-normal text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                                    Kirim Ulang Verifikasi
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                    <p class="text-xs text-secondary mt-2">Untuk mengubah alamat email, gunakan form "Ubah Email" di bawah.</p>
+                </div>
+
+                <div class="pt-5 border-t border-[#E5E7EB] dark:border-gray-700">
+                    <label class="form-label">Role</label>
+                    <p class="text-sm text-gray-900 dark:text-gray-100 font-normal">{{ ucfirst($user->role) }}</p>
+                    <p class="text-xs text-secondary mt-1">Role hanya dapat diubah oleh Admin lewat Manajemen User.</p>
+                </div>
+
+            </div>
+        </div>
+
+        {{-- Ubah Email --}}
+        <div class="card">
+            <div class="card-header">
+                <h3>Ubah Email</h3>
+                <p class="text-xs text-secondary mt-0.5">Email aktif tidak akan berubah sampai email baru diverifikasi.</p>
+            </div>
+            <form method="post" action="{{ route('profile.email.update') }}">
+                @csrf
                 <div class="card-body">
-                    <div class="space-y-5">
-                        <div class="form-group">
-                            <label class="form-label">Nama</label>
-                            <input type="text" name="name" value="{{ old('name', $user->name) }}" required autofocus autocomplete="name" class="form-input @error('name') is-invalid @enderror">
-                            @error('name')<p class="form-error">{{ $message }}</p>@enderror
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" value="{{ old('email', $user->email) }}" required autocomplete="username" class="form-input @error('email') is-invalid @enderror">
-                            @error('email')<p class="form-error">{{ $message }}</p>@enderror
-                        </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label">Email Baru</label>
+                        <input type="email" name="new_email" value="{{ old('new_email') }}" placeholder="email-baru@contoh.com" required autocomplete="email" class="form-input @error('new_email', 'changeEmail') is-invalid @enderror">
+                        @error('new_email', 'changeEmail')<p class="form-error">{{ $message }}</p>@enderror
+                        <p class="text-xs text-secondary mt-2">Link verifikasi akan dikirim ke alamat ini. Email aktif Anda saat ini ({{ $user->email }}) tetap berlaku sampai link tersebut diverifikasi.</p>
                     </div>
                 </div>
                 <div class="card-footer">
                     <div class="flex items-center gap-4">
-                        <button type="submit" class="btn-primary btn-sm">Simpan</button>
+                        <button type="submit" class="btn-primary btn-sm">Kirim Link Verifikasi</button>
                     </div>
                 </div>
             </form>
         </div>
 
-        {{-- Update Password --}}
+        {{-- ============ KEAMANAN AKUN ============ --}}
+        <p class="text-xs font-normal text-secondary uppercase tracking-wider pt-2">Keamanan Akun</p>
+
+        {{-- Ubah Password --}}
         <div class="card">
             <div class="card-header">
                 <h3>Ubah Password</h3>

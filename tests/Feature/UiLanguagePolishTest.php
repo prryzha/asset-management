@@ -74,7 +74,10 @@ class UiLanguagePolishTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Profil');
-        $response->assertSee('Informasi Profil');
+        // "Informasi Profil" -> "Informasi Dasar" saat halaman Profil
+        // di-upgrade jadi Account Settings (bagian Profil vs Keamanan Akun).
+        $response->assertSee('Informasi Dasar');
+        $response->assertSee('Keamanan Akun');
         $response->assertDontSee('>Profile<');
     }
 

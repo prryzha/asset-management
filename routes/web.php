@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MaintenanceScheduleController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileEmailController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Konfirmasi ganti email — sengaja di luar grup `auth` karena link dikirim
+// ke inbox email BARU, yang bisa dibuka dari device/browser tanpa sesi login
+// sama sekali. Keamanannya ditanggung `signed` (URL tidak bisa dimanipulasi/
+// kedaluwarsa), bukan oleh status login. Lihat ProfileEmailController.
+Route::get('/profile/email/verify', [ProfileEmailController::class, 'verify'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('profile.email.verify');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AssetController::class, 'dashboard'])->name('dashboard');
@@ -58,6 +67,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Ganti email butuh sesi login untuk MENGAJUKAN (harus tahu ini akun
+    // siapa) — tapi konfirmasinya (profile.email.verify, di luar grup ini)
+    // sengaja TIDAK butuh sesi, karena link-nya dibuka dari inbox email baru
+    // yang bisa jadi beda browser/device tanpa sesi aktif sama sekali.
+    Route::post('/profile/email', [ProfileEmailController::class, 'store'])->name('profile.email.update');
 
     Route::middleware('role:admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

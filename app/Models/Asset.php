@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class Asset extends Model
@@ -133,5 +134,28 @@ class Asset extends Model
         }
 
         return $prefix . str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Cache yang bergantung pada status/kondisi aset — dashboard, dropdown
+     * "Catat Peminjaman" (available_assets), dropdown pilih-aset Perawatan
+     * (all_assets_v3), dan notifikasi header (header_notifications). Dipakai
+     * bersama oleh AssetController, TransactionController, dan
+     * MaintenanceScheduleController supaya ketiganya tidak bisa saling lupa
+     * meng-invalidate cache yang sama setelah mengubah status aset — sebelum
+     * ini, hanya AssetController yang membersihkannya (lihat audit pre-demo:
+     * peminjaman/pengembalian/perawatan bisa meninggalkan dashboard & dropdown
+     * aset basi sampai 5 menit, atau sampai 1 jam untuk all_assets_v3).
+     */
+    public static function forgetStatusCaches(): void
+    {
+        Cache::forget('dashboard_data');
+        Cache::forget('filter_categories');
+        Cache::forget('filter_locations');
+        Cache::forget('available_assets');
+        Cache::forget('all_assets');
+        Cache::forget('all_assets_v2');
+        Cache::forget('all_assets_v3');
+        Cache::forget('header_notifications');
     }
 }
