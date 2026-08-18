@@ -10,6 +10,7 @@
         th { background: #f0f0f0; }
         h1 { text-align: center; font-size: 18px; margin-bottom: 5px; }
         .subtitle { text-align: center; font-size: 12px; color: #555; margin-bottom: 20px; }
+        tfoot td { font-weight: bold; background: #f0f0f0; }
     </style>
 </head>
 <body>
@@ -27,9 +28,11 @@
                 <th>Kode Barang</th>
                 <th>Nama Barang</th>
                 <th>Jenis Perawatan</th>
+                <th>Teknisi/Vendor</th>
                 <th>Tgl Jadwal</th>
                 <th>Tgl Selesai</th>
                 <th>Status</th>
+                <th>Biaya</th>
                 <th>Catatan</th>
             </tr>
         </thead>
@@ -40,13 +43,21 @@
                 <td>{{ $item->asset->kode_barang ?? '-' }}</td>
                 <td>{{ $item->asset->nama_barang ?? '-' }}</td>
                 <td>{{ $item->jenis_perawatan }}</td>
+                <td>{{ $item->teknisi ?? '-' }}</td>
                 <td>{{ $item->tanggal_jadwal->format('d/m/Y') }}</td>
                 <td>{{ $item->tanggal_selesai?->format('d/m/Y') ?? '-' }}</td>
                 <td>{{ $item->status }}</td>
+                <td>{{ $item->biaya ? 'Rp '.number_format($item->biaya,0,',','.') : '-' }}</td>
                 <td>{{ $item->catatan_selesai ?? $item->catatan ?? '-' }}</td>
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="8">Total Biaya Perawatan</td>
+                <td colspan="2">Rp {{ number_format($maintenanceSchedules->sum('biaya'), 0, ',', '.') }}</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>

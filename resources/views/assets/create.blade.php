@@ -79,16 +79,6 @@
                         <p id="nomor_seri_hint" class="text-xs text-gray-500 dark:text-gray-400 mt-1.5 hidden">Dikosongkan otomatis karena jumlah unit &gt; 1 — nomor seri tiap unit fisik biasanya berbeda, isi belakangan lewat halaman Edit per unit kalau perlu.</p>
                     </div>
 
-                    {{-- Status --}}
-                    <div class="form-group">
-                        <label class="form-label">Status</label>
-                        <select name="status" class="form-input">
-                            <option>Tersedia</option>
-                            <option>Dipinjam</option>
-                            <option>Perbaikan</option>
-                        </select>
-                    </div>
-
                     {{-- Penanggung Jawab --}}
                     <div class="form-group">
                         <label class="form-label">Penanggung Jawab</label>

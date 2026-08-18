@@ -3,6 +3,8 @@
 <head>
     {{-- Dark Mode inline script — cegah FOUC --}}
     <script>if(localStorage.getItem('darkMode')==='true')document.documentElement.classList.add('dark')</script>
+    {{-- Sidebar state inline script — cegah blink sidebar tiap ganti halaman --}}
+    <script>if(localStorage.getItem('sidebarOpen')==='false')document.documentElement.classList.add('sidebar-closed')</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -138,14 +140,21 @@
         @include('components.sidebar')
 
         {{-- RIGHT CONTENT --}}
-        <div class="flex-1 flex flex-col ml-64">
+        <div id="mainContentWrapper" class="flex-1 flex flex-col ml-64">
 
             {{-- CONTENT TOPBAR: breadcrumb + live clock --}}
             <div class="content-topbar">
                 <div class="flex items-center gap-2 text-sm text-gray-500">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
+                    <button
+                        type="button"
+                        id="sidebarToggle"
+                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                        title="Tampilkan/Sembunyikan Sidebar"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
                     <span>@yield('title', 'Sistem Informasi Aset')</span>
                 </div>
                 <div id="liveClock" class="content-topbar-clock"></div>
@@ -208,6 +217,21 @@
                 toggle.addEventListener('click', function() {
                     const isDark = !html.classList.contains('dark');
                     applyTheme(isDark);
+                });
+            }
+        });
+    </script>
+
+    {{-- Sidebar Toggle --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const html = document.documentElement;
+            const toggle = document.getElementById('sidebarToggle');
+
+            if (toggle) {
+                toggle.addEventListener('click', function() {
+                    const isClosed = html.classList.toggle('sidebar-closed');
+                    localStorage.setItem('sidebarOpen', isClosed ? 'false' : 'true');
                 });
             }
         });

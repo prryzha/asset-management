@@ -15,10 +15,12 @@ class MaintenanceSchedule extends Model
         'asset_id',
         'created_by',
         'jenis_perawatan',
+        'teknisi',
         'tanggal_jadwal',
         'tanggal_selesai',
         'catatan',
         'catatan_selesai',
+        'biaya',
         'status',
     ];
 

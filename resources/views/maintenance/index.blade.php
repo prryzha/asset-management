@@ -12,7 +12,14 @@
                     : '{{ route('maintenance.export-pdf', request()->only(['status','search','tanggal_dari','tanggal_sampai'])) }}'"
                class="btn-secondary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                <span x-text="selected.length > 0 ? 'Export Terpilih (' + selected.length + ')' : 'Export PDF'"></span>
+                <span x-text="selected.length > 0 ? 'Export PDF Terpilih (' + selected.length + ')' : 'Export PDF'"></span>
+            </a>
+            <a :href="selected.length > 0
+                    ? '{{ route('maintenance.export-csv') }}?' + selected.map(id => 'ids[]=' + id).join('&')
+                    : '{{ route('maintenance.export-csv', request()->only(['status','search','tanggal_dari','tanggal_sampai'])) }}'"
+               class="btn-secondary btn-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <span x-text="selected.length > 0 ? 'Export CSV Terpilih (' + selected.length + ')' : 'Export CSV'"></span>
             </a>
             <a href="{{ route('maintenance.create') }}" class="btn-primary btn-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,7 +41,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                 </div>
-                <select name="status" onchange="this.form.submit()" class="form-input form-input-sm w-auto">
+                <select name="status" class="form-input form-input-sm w-auto">
                     <option value="">Semua Status</option>
                     <option value="Dijadwalkan" {{ request('status')=='Dijadwalkan'?'selected':'' }}>Dijadwalkan</option>
                     <option value="Dikerjakan" {{ request('status')=='Dikerjakan'?'selected':'' }}>Dikerjakan</option>
@@ -65,7 +72,7 @@
                     <tr>
                         <th class="w-8">
                             <input type="checkbox"
-                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600"
                                    :checked="selected.length > 0 && selected.length === {{ $maintenanceSchedules->count() }}"
                                    @change="selected = ($event.target.checked ? {{ $maintenanceSchedules->pluck('id')->values() }} : []).map(String)">
                         </th>
@@ -81,7 +88,7 @@
                     <tr>
                         <td>
                             <input type="checkbox" value="{{ $maintenance->id }}" x-model="selected"
-                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600">
                         </td>
                         <td>
                             <div class="font-normal">{{ $maintenance->asset->kode_barang ?? '-' }}</div>

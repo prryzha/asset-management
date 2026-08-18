@@ -98,7 +98,7 @@ class TransactionController extends Controller
 
             AssetLog::create([
                 'asset_id' => $asset->id,
-                'tipe' => 'mutasi',
+                'tipe' => 'peminjaman',
                 'deskripsi' => "Dipinjam oleh {$transaction->nama_peminjam} untuk {$transaction->keperluan}",
                 'user_id' => auth()->id(),
             ]);
@@ -140,7 +140,7 @@ class TransactionController extends Controller
 
             AssetLog::create([
                 'asset_id' => $asset->id,
-                'tipe' => 'mutasi',
+                'tipe' => 'pengembalian',
                 'deskripsi' => "Dikembalikan oleh {$trx->nama_peminjam}",
                 'user_id' => auth()->id(),
             ]);
@@ -168,5 +168,36 @@ class TransactionController extends Controller
         $pdf = Pdf::loadView('pdf.transactions', compact('transactions', 'isSelection'));
 
         return $pdf->download('laporan-peminjaman.pdf');
+    }
+
+    public function exportCsv(Request $request): Response
+    {
+        $ids = $request->input('ids', []);
+
+        $transactions = Transaction::with('asset')
+            ->when($ids, fn($q) => $q->whereIn('id', $ids))
+            ->when(!$ids && $request->filled('status'), fn($q) => $q->where('status_peminjaman', $request->status))
+            ->when(!$ids && $request->filled('tanggal_dari'), fn($q) => $q->whereDate('tanggal_pinjam', '>=', $request->input('tanggal_dari')))
+            ->when(!$ids && $request->filled('tanggal_sampai'), fn($q) => $q->whereDate('tanggal_pinjam', '<=', $request->input('tanggal_sampai')))
+            ->latest()
+            ->get();
+
+        return response()->streamDownload(function () use ($transactions) {
+            $out = fopen('php://output', 'w');
+            fputs($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['Kode Barang', 'Nama Barang', 'Peminjam', 'Keperluan', 'Tgl Pinjam', 'Tgl Kembali', 'Status']);
+            foreach ($transactions as $trx) {
+                fputcsv($out, [
+                    $trx->asset->kode_barang ?? '-',
+                    $trx->asset->nama_barang ?? '-',
+                    $trx->nama_peminjam,
+                    $trx->keperluan,
+                    $trx->tanggal_pinjam,
+                    $trx->tanggal_kembali,
+                    $trx->status_peminjaman,
+                ]);
+            }
+            fclose($out);
+        }, 'data-peminjaman-' . now()->format('Ymd-His') . '.csv', ['Content-Type' => 'text/csv']);
     }
 }

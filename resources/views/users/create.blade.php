@@ -52,7 +52,7 @@
                         <label class="form-label">Role <span class="text-danger">*</span></label>
                         <select name="role" required class="form-input @error('role') is-invalid @enderror">
                             <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff (Sarpras/TU)</option>
-                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin (Kepala Sekolah)</option>
+                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin Sarpras</option>
                         </select>
                         @error('role')<p class="form-error">{{ $message }}</p>@enderror
                     </div>

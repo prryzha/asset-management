@@ -38,6 +38,12 @@
                     <span class="text-xs text-secondary block mb-1">Tanggal</span>
                     <span class="font-normal">{{ \Carbon\Carbon::parse($maintenanceSchedule->tanggal_jadwal)->format('d M Y') }}</span>
                 </div>
+                @if($maintenanceSchedule->teknisi)
+                <div>
+                    <span class="text-xs text-secondary block mb-1">Teknisi / Vendor</span>
+                    <span class="font-normal">{{ $maintenanceSchedule->teknisi }}</span>
+                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -59,6 +65,12 @@
                             <option value="Rusak Berat">Rusak Berat</option>
                         </select>
                         @error('kondisi')<p class="form-error">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Biaya Perawatan (Rp)</label>
+                        <input type="number" name="biaya" min="0" value="{{ old('biaya') }}" class="form-input @error('biaya') is-invalid @enderror" placeholder="0">
+                        @error('biaya')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="form-group">

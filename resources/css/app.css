@@ -6,6 +6,10 @@
    BASE LAYER
    ============================================ */
 @layer base {
+    [x-cloak] {
+        display: none !important;
+    }
+
     html {
         font-family: 'Poppins', system-ui, sans-serif;
         scroll-behavior: smooth;
@@ -291,6 +295,22 @@
     /* ── Sidebar ── */
     .sidebar {
         @apply fixed top-[70px] left-0 z-40 w-64 h-[calc(100vh-70px)] flex flex-col bg-white border-r border-[#E5E7EB];
+        transition: transform 200ms ease-in-out;
+    }
+
+    /* Status buka/tutup sidebar diputuskan sebelum render lewat inline script di <head>
+       (baca localStorage), jadi transisi di atas tidak pernah kepicu saat pindah halaman —
+       cuma kepicu saat tombol toggle benar-benar diklik. */
+    html.sidebar-closed .sidebar {
+        transform: translateX(-100%);
+    }
+
+    #mainContentWrapper {
+        transition: margin-left 200ms ease-in-out;
+    }
+
+    html.sidebar-closed #mainContentWrapper {
+        margin-left: 0;
     }
 
     .sidebar-nav {
@@ -334,7 +354,7 @@
     }
 
     .sidebar-user-avatar {
-        @apply w-9 h-9 bg-primary-600 text-white rounded flex items-center justify-center font-normal text-sm;
+        @apply w-9 h-9 bg-primary-600 text-white rounded-full flex items-center justify-center font-normal text-sm;
     }
 
     .sidebar-user-name {

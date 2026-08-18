@@ -80,14 +80,15 @@
                         <input type="text" name="nomor_seri" value="{{ old('nomor_seri', $asset->nomor_seri) }}" class="form-input" placeholder="SN-xxx">
                     </div>
 
-                    {{-- Status --}}
+                    {{-- Status (read-only) --}}
                     <div class="form-group">
                         <label class="form-label">Status</label>
-                        <select name="status" class="form-input">
-                            <option value="Tersedia" {{ $asset->status=='Tersedia'?'selected':'' }}>Tersedia</option>
-                            <option value="Dipinjam" {{ $asset->status=='Dipinjam'?'selected':'' }}>Dipinjam</option>
-                            <option value="Perbaikan" {{ $asset->status=='Perbaikan'?'selected':'' }}>Perbaikan</option>
-                        </select>
+                        <div class="flex items-center h-[42px]">
+                            <x-ui.badge-status :status="$asset->status" />
+                        </div>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5">
+                            Status ditentukan otomatis oleh proses Peminjaman/Perawatan, bukan diubah manual di sini.
+                        </p>
                     </div>
 
                     {{-- Penanggung Jawab --}}

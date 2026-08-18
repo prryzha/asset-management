@@ -187,7 +187,7 @@ class DemoDataSeeder extends Seeder
                     $this->staffId,
                     $pinjamDaysAgo
                 );
-                $this->logAsset($asset->id, 'mutasi', "Dipinjam oleh {$nama} untuk Kegiatan belajar mengajar", $this->staffId, $pinjamDaysAgo);
+                $this->logAsset($asset->id, 'peminjaman', "Dipinjam oleh {$nama} untuk Kegiatan belajar mengajar", $this->staffId, $pinjamDaysAgo);
             }
 
             if ($status === 'Perbaikan') {
@@ -233,9 +233,36 @@ class DemoDataSeeder extends Seeder
         }
 
         // Variasi tambahan biar riwayat Aktivitas nggak cuma "Dipinjam"/"Dikerjakan" —
-        // satu peminjaman yang sudah selesai dikembalikan, satu perawatan yang sudah selesai.
+        // satu peminjaman yang sudah selesai dikembalikan, satu perawatan yang sudah selesai,
+        // dan dua contoh perpindahan lokasi (mutasi) supaya halaman Riwayat Mutasi tidak kosong.
         $this->addReturnedTransaction($assetsByCode['ELK-001'] ?? null);
         $this->addCompletedMaintenance($assetsByCode['MBL-004'] ?? null);
+        $this->addAssetMutation($assetsByCode['ELK-004'] ?? null, 'Lab Komputer', 5);
+        $this->addAssetMutation($assetsByCode['MBL-002'] ?? null, 'Ruang Kelas', 3);
+    }
+
+    /**
+     * Tambahkan riwayat mutasi (perpindahan lokasi) untuk demo. Sekaligus
+     * update location_id aset itu sendiri supaya lokasi yang tertampil
+     * konsisten dengan riwayat mutasinya — persis seperti kalau dipindah
+     * manual lewat form Edit Aset (lihat AssetController::update()).
+     */
+    private function addAssetMutation(?Asset $asset, string $toLocationNama, int $daysAgo): void
+    {
+        if (! $asset) {
+            return;
+        }
+
+        $oldLocationNama = $asset->location?->nama ?? 'unknown';
+        $newLocation = Location::where('nama', $toLocationNama)->first();
+        if (! $newLocation || $newLocation->nama === $oldLocationNama) {
+            return;
+        }
+
+        $asset->update(['location_id' => $newLocation->id]);
+
+        $this->logAsset($asset->id, 'mutasi', "Perpindahan lokasi dari {$oldLocationNama} ke {$newLocation->nama}", $this->staffId, $daysAgo);
+        $this->logActivity($asset, 'asset.updated', "Mengubah aset {$asset->kode_barang}", [], $this->staffId, $daysAgo);
     }
 
     private function addReturnedTransaction(?Asset $asset): void
@@ -266,7 +293,7 @@ class DemoDataSeeder extends Seeder
             $this->staffId,
             $borrowDaysAgo
         );
-        $this->logAsset($asset->id, 'mutasi', "Dipinjam oleh Wulan Sari (Guru) untuk Presentasi rapat wali murid", $this->staffId, $borrowDaysAgo);
+        $this->logAsset($asset->id, 'peminjaman', "Dipinjam oleh Wulan Sari (Guru) untuk Presentasi rapat wali murid", $this->staffId, $borrowDaysAgo);
 
         $this->logActivity(
             $transaction,
@@ -276,7 +303,7 @@ class DemoDataSeeder extends Seeder
             $this->staffId,
             $returnDaysAgo
         );
-        $this->logAsset($asset->id, 'mutasi', "Dikembalikan oleh Wulan Sari (Guru)", $this->staffId, $returnDaysAgo);
+        $this->logAsset($asset->id, 'pengembalian', "Dikembalikan oleh Wulan Sari (Guru)", $this->staffId, $returnDaysAgo);
     }
 
     private function addCompletedMaintenance(?Asset $asset): void

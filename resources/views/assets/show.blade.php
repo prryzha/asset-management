@@ -168,14 +168,23 @@
                         </button>
                     </div>
                     @if($assetLogs->count())
+                    @php
+                        $logColors = [
+                            'mutasi' => ['border-blue-400 dark:border-blue-600', 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'],
+                            'perawatan' => ['border-amber-400 dark:border-amber-600', 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'],
+                            'kondisi' => ['border-purple-400 dark:border-purple-600', 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300'],
+                            'peminjaman' => ['border-indigo-400 dark:border-indigo-600', 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'],
+                            'pengembalian' => ['border-teal-400 dark:border-teal-600', 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'],
+                        ];
+                        $logColorDefault = ['border-gray-400 dark:border-gray-600', 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'];
+                    @endphp
                     <div class="space-y-4">
                         @foreach($assetLogs as $log)
-                        <div class="flex items-start gap-4 pl-4 border-l-4
-                            {{ $log->tipe=='mutasi'?'border-blue-400 dark:border-blue-600':($log->tipe=='perawatan'?'border-amber-400 dark:border-amber-600':($log->tipe=='kondisi'?'border-purple-400 dark:border-purple-600':'border-gray-400 dark:border-gray-600')) }}">
+                        @php [$logBorder, $logBadge] = $logColors[$log->tipe] ?? $logColorDefault; @endphp
+                        <div class="flex items-start gap-4 pl-4 border-l-4 {{ $logBorder }}">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-normal
-                                        {{ $log->tipe=='mutasi'?'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300':($log->tipe=='perawatan'?'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300':($log->tipe=='kondisi'?'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300':'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400')) }}">
+                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-normal {{ $logBadge }}">
                                         {{ ucfirst($log->tipe) }}
                                     </span>
                                     <span class="text-xs text-gray-400 dark:text-gray-500">{{ $log->created_at->diffForHumans() }}</span>

@@ -33,7 +33,7 @@
                     </svg>
                 </div>
                 <h1 class="text-2xl font-normal text-gray-900 mt-4">Manajemen Aset</h1>
-                <p class="text-gray-500 text-sm mt-1">Sistem Informasi Inventaris & Peminjaman Aset Sekolah</p>
+                <p class="text-gray-500 text-sm mt-1">Sistem Informasi Inventaris & Peminjaman Aset</p>
             </div>
 
             {{-- Card --}}

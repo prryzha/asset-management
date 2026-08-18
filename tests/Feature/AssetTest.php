@@ -83,6 +83,110 @@ class AssetTest extends TestCase
         ]);
     }
 
+    public function test_creating_asset_without_status_defaults_to_tersedia(): void
+    {
+        $category = Category::factory()->create();
+        $location = Location::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->post(route('assets.store'), [
+                'kode_barang' => 'KMR-101',
+                'nama_barang' => 'Komputer',
+                'category_id' => $category->id,
+                'location_id' => $location->id,
+                'kondisi' => 'Baik',
+            ]);
+
+        $this->assertDatabaseHas('assets', [
+            'kode_barang' => 'KMR-101',
+            'status' => 'Tersedia',
+        ]);
+    }
+
+    public function test_creating_asset_with_raw_status_dipinjam_still_defaults_to_tersedia(): void
+    {
+        $category = Category::factory()->create();
+        $location = Location::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->post(route('assets.store'), [
+                'kode_barang' => 'KMR-102',
+                'nama_barang' => 'Komputer',
+                'category_id' => $category->id,
+                'location_id' => $location->id,
+                'kondisi' => 'Baik',
+                'status' => 'Dipinjam',
+            ]);
+
+        $this->assertDatabaseHas('assets', [
+            'kode_barang' => 'KMR-102',
+            'status' => 'Tersedia',
+        ]);
+    }
+
+    public function test_creating_asset_with_raw_status_perbaikan_still_defaults_to_tersedia(): void
+    {
+        $category = Category::factory()->create();
+        $location = Location::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->post(route('assets.store'), [
+                'kode_barang' => 'KMR-103',
+                'nama_barang' => 'Komputer',
+                'category_id' => $category->id,
+                'location_id' => $location->id,
+                'kondisi' => 'Baik',
+                'status' => 'Perbaikan',
+            ]);
+
+        $this->assertDatabaseHas('assets', [
+            'kode_barang' => 'KMR-103',
+            'status' => 'Tersedia',
+        ]);
+    }
+
+    public function test_creating_asset_with_raw_status_hilang_still_defaults_to_tersedia(): void
+    {
+        $category = Category::factory()->create();
+        $location = Location::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->post(route('assets.store'), [
+                'kode_barang' => 'KMR-104',
+                'nama_barang' => 'Komputer',
+                'category_id' => $category->id,
+                'location_id' => $location->id,
+                'kondisi' => 'Baik',
+                'status' => 'Hilang',
+            ]);
+
+        $this->assertDatabaseHas('assets', [
+            'kode_barang' => 'KMR-104',
+            'status' => 'Tersedia',
+        ]);
+    }
+
+    public function test_creating_asset_with_raw_status_disposed_still_defaults_to_tersedia(): void
+    {
+        $category = Category::factory()->create();
+        $location = Location::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->post(route('assets.store'), [
+                'kode_barang' => 'KMR-105',
+                'nama_barang' => 'Komputer',
+                'category_id' => $category->id,
+                'location_id' => $location->id,
+                'kondisi' => 'Baik',
+                'status' => 'Disposed',
+            ]);
+
+        $this->assertDatabaseHas('assets', [
+            'kode_barang' => 'KMR-105',
+            'status' => 'Tersedia',
+        ]);
+    }
+
     public function test_admin_can_update_asset(): void
     {
         $asset = Asset::factory()->create();
@@ -104,6 +208,100 @@ class AssetTest extends TestCase
         $this->assertDatabaseHas('assets', [
             'id' => $asset->id,
             'nama_barang' => 'Updated Name',
+        ]);
+    }
+
+    public function test_edit_asset_cannot_change_status(): void
+    {
+        $asset = Asset::factory()->dipinjam()->create();
+
+        // Simulasi manipulasi request langsung — kirim status di luar UI (Edit
+        // Aset sudah tidak lagi menampilkan dropdown status).
+        $response = $this->actingAs($this->admin)
+            ->put(route('assets.update', $asset), [
+                'kode_barang' => $asset->kode_barang,
+                'nama_barang' => $asset->nama_barang,
+                'category_id' => $asset->category_id,
+                'location_id' => $asset->location_id,
+                'kondisi' => $asset->kondisi,
+                'status' => 'Tersedia',
+            ]);
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('assets', [
+            'id' => $asset->id,
+            'status' => 'Dipinjam',
+        ]);
+    }
+
+    public function test_changing_location_creates_mutasi_asset_log(): void
+    {
+        $oldLocation = Location::factory()->create();
+        $newLocation = Location::factory()->create();
+        $asset = Asset::factory()->tersedia()->create(['location_id' => $oldLocation->id]);
+
+        $response = $this->actingAs($this->admin)
+            ->put(route('assets.update', $asset), [
+                'kode_barang' => $asset->kode_barang,
+                'nama_barang' => $asset->nama_barang,
+                'category_id' => $asset->category_id,
+                'location_id' => $newLocation->id,
+                'kondisi' => $asset->kondisi,
+            ]);
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('asset_logs', [
+            'asset_id' => $asset->id,
+            'tipe' => 'mutasi',
+        ]);
+
+        $this->assertDatabaseHas('assets', [
+            'id' => $asset->id,
+            'location_id' => $newLocation->id,
+            'status' => 'Tersedia',
+        ]);
+    }
+
+    public function test_editing_master_field_without_location_change_does_not_create_mutasi_log(): void
+    {
+        $asset = Asset::factory()->tersedia()->create();
+
+        $response = $this->actingAs($this->admin)
+            ->put(route('assets.update', $asset), [
+                'kode_barang' => $asset->kode_barang,
+                'nama_barang' => 'Nama Baru',
+                'category_id' => $asset->category_id,
+                'location_id' => $asset->location_id,
+                'kondisi' => $asset->kondisi,
+            ]);
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseCount('asset_logs', 0);
+    }
+
+    public function test_editing_master_field_on_borrowed_asset_is_allowed_and_status_unchanged(): void
+    {
+        $asset = Asset::factory()->dipinjam()->create();
+
+        $response = $this->actingAs($this->admin)
+            ->put(route('assets.update', $asset), [
+                'kode_barang' => $asset->kode_barang,
+                'nama_barang' => 'Nama Diperbarui',
+                'category_id' => $asset->category_id,
+                'location_id' => $asset->location_id,
+                'kondisi' => $asset->kondisi,
+            ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('assets', [
+            'id' => $asset->id,
+            'nama_barang' => 'Nama Diperbarui',
+            'status' => 'Dipinjam',
         ]);
     }
 

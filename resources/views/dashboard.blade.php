@@ -317,10 +317,10 @@ document.addEventListener('DOMContentLoaded', function () {
         charts.push(new Chart(statusCanvas, {
             type: 'doughnut',
             data: {
-                labels: ['Tersedia', 'Dipinjam', 'Perbaikan'],
+                labels: ['Tersedia', 'Dipinjam', 'Perbaikan', 'Hilang', 'Disposed'],
                 datasets: [{
-                    data: [{{ $tersedia }}, {{ $dipinjam }}, {{ $perbaikan }}],
-                    backgroundColor: ['#16A34A', '#D97706', '#DC2626'],
+                    data: [{{ $tersedia }}, {{ $dipinjam }}, {{ $perbaikan }}, {{ $hilang }}, {{ $disposed }}],
+                    backgroundColor: ['#16A34A', '#D97706', '#DC2626', '#7C3AED', '#6B7280'],
                     borderWidth: 0,
                     hoverOffset: 8
                 }]

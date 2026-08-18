@@ -79,6 +79,47 @@ class TransactionTest extends TestCase
         ]);
     }
 
+    public function test_borrowing_creates_peminjaman_log_without_mutasi_log(): void
+    {
+        $asset = Asset::factory()->tersedia()->create();
+
+        $this->actingAs($this->admin)
+            ->post(route('transactions.store'), [
+                'asset_id' => $asset->id,
+                'nama_peminjam' => 'Budi',
+                'keperluan' => 'Praktikum',
+                'tanggal_pinjam' => now()->format('Y-m-d'),
+            ]);
+
+        $this->assertDatabaseHas('asset_logs', [
+            'asset_id' => $asset->id,
+            'tipe' => 'peminjaman',
+        ]);
+
+        $this->assertDatabaseMissing('asset_logs', [
+            'asset_id' => $asset->id,
+            'tipe' => 'mutasi',
+        ]);
+    }
+
+    public function test_returning_creates_pengembalian_log_without_mutasi_log(): void
+    {
+        $transaction = Transaction::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->post(route('transactions.return', $transaction));
+
+        $this->assertDatabaseHas('asset_logs', [
+            'asset_id' => $transaction->asset_id,
+            'tipe' => 'pengembalian',
+        ]);
+
+        $this->assertDatabaseMissing('asset_logs', [
+            'asset_id' => $transaction->asset_id,
+            'tipe' => 'mutasi',
+        ]);
+    }
+
     public function test_cannot_borrow_unavailable_asset(): void
     {
         $asset = Asset::factory()->dipinjam()->create();

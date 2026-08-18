@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
     Route::get('/assets/export-pdf', [AssetController::class, 'exportPdf'])->name('assets.export-pdf');
+    Route::get('/assets/export-csv', [AssetController::class, 'exportCsv'])->name('assets.export-csv');
     Route::get('/assets/next-code/{prefix}', [AssetController::class, 'nextCode'])->name('assets.next-code');
     Route::get('/assets/{asset}/qr-code', [AssetController::class, 'qrCode'])->name('assets.qr-code');
 
@@ -27,6 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
     Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
     Route::get('/transactions/export-pdf', [TransactionController::class, 'exportPdf'])->name('transactions.export-pdf');
+    Route::get('/transactions/export-csv', [TransactionController::class, 'exportCsv'])->name('transactions.export-csv');
+
+    Route::get('/mutasi', [AssetLogController::class, 'mutasi'])->name('mutasi.index');
+    Route::get('/mutasi/export-pdf', [AssetLogController::class, 'mutasiExportPdf'])->name('mutasi.export-pdf');
+    Route::get('/mutasi/export-csv', [AssetLogController::class, 'mutasiExportCsv'])->name('mutasi.export-csv');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -47,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
     Route::get('/assets/{asset}/edit', [AssetController::class, 'edit'])->name('assets.edit');
     Route::put('/assets/{asset}', [AssetController::class, 'update'])->name('assets.update');
+    Route::delete('/assets/bulk-destroy', [AssetController::class, 'bulkDestroy'])->name('assets.bulk-destroy');
     Route::delete('/assets/{asset}', [AssetController::class, 'destroy'])->name('assets.destroy');
     Route::delete('/assets/{asset}/foto', [AssetController::class, 'deleteFoto'])->name('assets.delete-foto');
     Route::post('/assets/{asset}/report-damage', [AssetController::class, 'reportDamage'])->name('assets.report-damage');
@@ -70,6 +77,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/maintenance', [MaintenanceScheduleController::class, 'index'])->name('maintenance.index');
     Route::get('/maintenance/export-pdf', [MaintenanceScheduleController::class, 'exportPdf'])->name('maintenance.export-pdf');
+    Route::get('/maintenance/export-csv', [MaintenanceScheduleController::class, 'exportCsv'])->name('maintenance.export-csv');
     Route::get('/maintenance/create', [MaintenanceScheduleController::class, 'create'])->name('maintenance.create');
     Route::post('/maintenance', [MaintenanceScheduleController::class, 'store'])->name('maintenance.store');
     Route::get('/maintenance/{maintenanceSchedule}/edit', [MaintenanceScheduleController::class, 'edit'])->name('maintenance.edit');

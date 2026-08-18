@@ -23,12 +23,17 @@ switch($status) {
     case 'Rusak Berat':
     case 'Dibatalkan':
     case 'Ditolak':
+    case 'Hilang':
         $classes = 'badge-red';
         $dot = 'bg-danger-500';
         break;
     case 'Dikerjakan':
         $classes = 'badge-blue';
         $dot = 'bg-primary-500';
+        break;
+    case 'Disposed':
+        $classes = 'badge-gray';
+        $dot = 'bg-gray-400';
         break;
 }
 @endphp

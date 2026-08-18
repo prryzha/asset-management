@@ -63,6 +63,7 @@ class MaintenanceScheduleController extends Controller
         $validated = $request->validate([
             'asset_id'          => ['required', 'exists:assets,id'],
             'jenis_perawatan'   => ['required', 'string', 'max:255'],
+            'teknisi'           => ['nullable', 'string', 'max:255'],
             'tanggal_jadwal'    => ['required', 'date'],
             'catatan'           => ['nullable', 'string'],
         ]);
@@ -121,6 +122,7 @@ class MaintenanceScheduleController extends Controller
         $validated = $request->validate([
             'asset_id'          => ['required', 'exists:assets,id'],
             'jenis_perawatan'   => ['required', 'string', 'max:255'],
+            'teknisi'           => ['nullable', 'string', 'max:255'],
             'tanggal_jadwal'    => ['required', 'date'],
             'catatan'           => ['nullable', 'string'],
         ]);
@@ -206,6 +208,7 @@ class MaintenanceScheduleController extends Controller
         $validated = $request->validate([
             'kondisi' => ['required', 'in:Baik,Kurang Baik,Rusak Berat'],
             'catatan_selesai' => ['nullable', 'string'],
+            'biaya' => ['nullable', 'numeric', 'min:0'],
         ]);
 
         DB::transaction(function () use ($maintenanceSchedule, $validated) {
@@ -227,7 +230,8 @@ class MaintenanceScheduleController extends Controller
             $schedule->update([
                 'status' => 'Selesai',
                 'tanggal_selesai' => now()->toDateString(),
-                'catatan_selesai' => $validated['catatan_selesai'],
+                'catatan_selesai' => $validated['catatan_selesai'] ?? null,
+                'biaya' => $validated['biaya'] ?? null,
             ]);
 
             $asset->update([
@@ -248,7 +252,7 @@ class MaintenanceScheduleController extends Controller
             AssetLog::create([
                 'asset_id' => $asset->id,
                 'tipe' => 'perawatan',
-                'deskripsi' => "Perawatan selesai. Kondisi: {$validated['kondisi']}. " . ($validated['catatan_selesai'] ? "Catatan: {$validated['catatan_selesai']}" : ''),
+                'deskripsi' => "Perawatan selesai. Kondisi: {$validated['kondisi']}. " . (($validated['catatan_selesai'] ?? null) ? "Catatan: {$validated['catatan_selesai']}" : ''),
                 'user_id' => auth()->id(),
             ]);
         });
@@ -307,5 +311,38 @@ class MaintenanceScheduleController extends Controller
         $pdf = Pdf::loadView('pdf.maintenance', compact('maintenanceSchedules', 'isSelection'));
 
         return $pdf->download('laporan-perawatan.pdf');
+    }
+
+    public function exportCsv(Request $request): Response
+    {
+        $ids = $request->input('ids', []);
+
+        $maintenanceSchedules = MaintenanceSchedule::with('asset')
+            ->when($ids, fn($q) => $q->whereIn('id', $ids))
+            ->when(!$ids && $request->filled('status'), fn($q) => $q->where('status', $request->status))
+            ->when(!$ids && $request->filled('tanggal_dari'), fn($q) => $q->whereDate('tanggal_jadwal', '>=', $request->input('tanggal_dari')))
+            ->when(!$ids && $request->filled('tanggal_sampai'), fn($q) => $q->whereDate('tanggal_jadwal', '<=', $request->input('tanggal_sampai')))
+            ->orderBy('tanggal_jadwal')
+            ->get();
+
+        return response()->streamDownload(function () use ($maintenanceSchedules) {
+            $out = fopen('php://output', 'w');
+            fputs($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['Kode Barang', 'Nama Barang', 'Jenis Perawatan', 'Teknisi/Vendor', 'Tgl Jadwal', 'Tgl Selesai', 'Status', 'Biaya', 'Catatan']);
+            foreach ($maintenanceSchedules as $item) {
+                fputcsv($out, [
+                    $item->asset->kode_barang ?? '-',
+                    $item->asset->nama_barang ?? '-',
+                    $item->jenis_perawatan,
+                    $item->teknisi,
+                    $item->tanggal_jadwal->format('Y-m-d'),
+                    $item->tanggal_selesai?->format('Y-m-d'),
+                    $item->status,
+                    $item->biaya,
+                    $item->catatan_selesai ?? $item->catatan,
+                ]);
+            }
+            fclose($out);
+        }, 'data-perawatan-' . now()->format('Ymd-His') . '.csv', ['Content-Type' => 'text/csv']);
     }
 }

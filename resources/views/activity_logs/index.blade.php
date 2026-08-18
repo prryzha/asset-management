@@ -19,7 +19,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                 </div>
-                <select name="event" onchange="this.form.submit()" class="form-input form-input-sm w-auto">
+                <select name="event" class="form-input form-input-sm w-auto">
                     <option value="">Semua Aktivitas</option>
                     @foreach($events as $event)
                         <option value="{{ $event }}" {{ request('event') == $event ? 'selected' : '' }}>{{ $event }}</option>

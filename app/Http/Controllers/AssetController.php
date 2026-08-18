@@ -37,6 +37,17 @@ class AssetController extends Controller
         // menampilkan semua data, bukan dianggap "belum difilter".
         $hasFilter = $request->has('f') || $search || $categoryId || $locationId || $kondisi || $status;
 
+        $sortOptions = [
+            'kode_asc' => ['kode_barang', 'asc'],
+            'kode_desc' => ['kode_barang', 'desc'],
+            'nama_asc' => ['nama_barang', 'asc'],
+            'nama_desc' => ['nama_barang', 'desc'],
+            'nilai_desc' => ['nilai_perolehan', 'desc'],
+            'nilai_asc' => ['nilai_perolehan', 'asc'],
+            'terbaru' => ['created_at', 'desc'],
+        ];
+        $sort = $sortOptions[$request->input('sort')] ?? $sortOptions['kode_asc'];
+
         $assets = Asset::with(['category', 'location'])
             ->when(!$hasFilter, fn($q) => $q->whereIn('id', []))
             ->when($search, function ($query, $search) {
@@ -51,7 +62,7 @@ class AssetController extends Controller
             ->when($locationId, fn($q, $v) => $q->where('location_id', $v))
             ->when($kondisi, fn($q, $v) => $q->where('kondisi', $v))
             ->when($status, fn($q, $v) => $q->where('status', $v))
-            ->orderBy('kode_barang')
+            ->orderBy($sort[0], $sort[1])
             ->paginate(10)
             ->withQueryString();
 
@@ -89,7 +100,6 @@ class AssetController extends Controller
             'location_id' => 'nullable|exists:locations,id',
             'penanggung_jawab' => 'nullable|string|max:255',
             'kondisi' => 'required|in:Baik,Kurang Baik,Rusak Berat',
-            'status' => 'required|in:Tersedia,Dipinjam,Perbaikan',
             'jumlah_unit' => 'nullable|integer|min:1|max:50',
 
             'tahun_perolehan' => 'nullable|integer|min:1900|max:' . date('Y'),
@@ -99,6 +109,13 @@ class AssetController extends Controller
             'catatan' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        // "status" SENGAJA tidak divalidasi dari request — status aset mengikuti
+        // business lifecycle transaction-driven (Dipinjam via peminjaman, Perbaikan
+        // via maintenance/report damage), bukan pilihan bebas saat aset baru dibuat.
+        // Aset baru belum pernah mengalami transaksi apa pun, jadi satu-satunya
+        // status yang valid di titik ini adalah Tersedia — ditetapkan server-side.
+        $validated['status'] = 'Tersedia';
 
         $jumlahUnit = (int) ($validated['jumlah_unit'] ?? 1);
         unset($validated['jumlah_unit']);
@@ -200,6 +217,17 @@ class AssetController extends Controller
 
     public function update(Request $request, Asset $asset)
     {
+        // "status" SENGAJA tidak divalidasi/diterima di sini. Status aset (Dipinjam,
+        // Perbaikan, Hilang, Disposed) adalah hasil proses lain (Peminjaman,
+        // Perawatan, dst) — bukan atribut administratif yang boleh diubah bebas
+        // lewat Edit Aset. Karena Laravel's validate() cuma me-return key yang ada
+        // di rules, "status" tidak akan pernah masuk ke $validated walau raw
+        // request body menyertakannya (mis. lewat curl/Postman/manipulasi URL) —
+        // sehingga $asset->update($validated) di bawah tidak pernah menyentuh
+        // kolom itu. Satu-satunya jalur resmi mengubah status: Transaction (borrow/
+        // return) & MaintenanceSchedule (start/complete). Lihat juga store() yang
+        // MASIH boleh menerima status karena itu penentuan awal saat aset dibuat,
+        // bukan perubahan status aset yang sudah eksis.
         $validated = $request->validate([
             'kode_barang' => ['required', Rule::unique('assets', 'kode_barang')->ignore($asset->id)->whereNull('deleted_at')],
             'nama_barang' => 'required|string|max:255',
@@ -209,7 +237,6 @@ class AssetController extends Controller
             'location_id' => 'nullable|exists:locations,id',
             'penanggung_jawab' => 'nullable|string|max:255',
             'kondisi' => 'required|in:Baik,Kurang Baik,Rusak Berat',
-            'status' => 'required|in:Tersedia,Dipinjam,Perbaikan',
 
             'tahun_perolehan' => 'nullable|integer|min:1900|max:' . date('Y'),
 
@@ -335,6 +362,52 @@ class AssetController extends Controller
         return redirect()->route('assets.index')->with('success', 'Aset berhasil dihapus.');
     }
 
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $ids = $request->input('ids', []);
+        $assets = Asset::whereIn('id', $ids)->get();
+
+        $deletedCodes = [];
+        $skippedCodes = [];
+        $photosToDelete = [];
+
+        DB::transaction(function () use ($assets, &$deletedCodes, &$skippedCodes, &$photosToDelete) {
+            foreach ($assets as $asset) {
+                if ($asset->status === 'Dipinjam' || $asset->transactions()->where('status_peminjaman', 'Dipinjam')->exists()) {
+                    $skippedCodes[] = $asset->kode_barang;
+                    continue;
+                }
+
+                $assetCode = $asset->kode_barang;
+                if ($asset->foto) {
+                    $photosToDelete[] = $asset->foto;
+                }
+
+                $asset->delete();
+                ActivityLog::record($asset, 'asset.deleted', "Menghapus aset {$assetCode}", ['kode_barang' => $assetCode]);
+                $deletedCodes[] = $assetCode;
+            }
+        });
+
+        foreach ($photosToDelete as $photo) {
+            Storage::disk('public')->delete($photo);
+        }
+
+        $this->clearCache();
+
+        if (empty($deletedCodes)) {
+            return redirect()->route('assets.index')
+                ->with('error', 'Tidak ada aset yang dihapus — semua aset yang dipilih sedang dipinjam: ' . implode(', ', $skippedCodes) . '.');
+        }
+
+        $message = count($deletedCodes) . ' aset berhasil dihapus (' . implode(', ', $deletedCodes) . ').';
+        if (!empty($skippedCodes)) {
+            $message .= ' ' . count($skippedCodes) . ' dilewati karena sedang dipinjam: ' . implode(', ', $skippedCodes) . '.';
+        }
+
+        return redirect()->route('assets.index')->with('success', $message);
+    }
+
     public function exportPdf(Request $request): Response
     {
         $ids = $request->input('ids', []);
@@ -355,6 +428,43 @@ class AssetController extends Controller
         $pdf = Pdf::loadView('pdf.assets', compact('assets', 'filterCategory', 'filterLocation', 'isSelection'));
 
         return $pdf->download('laporan-aset.pdf');
+    }
+
+    public function exportCsv(Request $request): Response
+    {
+        $ids = $request->input('ids', []);
+        $categoryId = $request->input('category_id');
+        $locationId = $request->input('location_id');
+
+        $assets = Asset::with(['category', 'location'])
+            ->when($ids, fn($q) => $q->whereIn('id', $ids))
+            ->when(!$ids && $categoryId, fn($q, $v) => $q->where('category_id', $categoryId))
+            ->when(!$ids && $locationId, fn($q, $v) => $q->where('location_id', $locationId))
+            ->orderBy('kode_barang')
+            ->get();
+
+        return response()->streamDownload(function () use ($assets) {
+            $out = fopen('php://output', 'w');
+            fputs($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['Kode Barang', 'Nama Barang', 'Merk', 'Nomor Seri', 'Kategori', 'Lokasi', 'Kondisi', 'Status', 'Tahun Perolehan', 'Nilai Perolehan', 'Penanggung Jawab', 'Catatan']);
+            foreach ($assets as $asset) {
+                fputcsv($out, [
+                    $asset->kode_barang,
+                    $asset->nama_barang,
+                    $asset->merk,
+                    $asset->nomor_seri,
+                    $asset->category?->nama,
+                    $asset->location?->nama,
+                    $asset->kondisi,
+                    $asset->status,
+                    $asset->tahun_perolehan,
+                    $asset->nilai_perolehan,
+                    $asset->penanggung_jawab,
+                    $asset->catatan,
+                ]);
+            }
+            fclose($out);
+        }, 'data-aset-' . now()->format('Ymd-His') . '.csv', ['Content-Type' => 'text/csv']);
     }
 
     public function qrCode(Asset $asset): Response
@@ -408,10 +518,12 @@ class AssetController extends Controller
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as tersedia,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as dipinjam,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as perbaikan,
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as hilang,
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as disposed,
                 SUM(CASE WHEN kondisi = ? THEN 1 ELSE 0 END) as baik,
                 SUM(CASE WHEN kondisi = ? THEN 1 ELSE 0 END) as kurang_baik,
                 SUM(CASE WHEN kondisi = ? THEN 1 ELSE 0 END) as rusak_berat
-            ', ['Tersedia', 'Dipinjam', 'Perbaikan', 'Baik', 'Kurang Baik', 'Rusak Berat'])
+            ', ['Tersedia', 'Dipinjam', 'Perbaikan', 'Hilang', 'Disposed', 'Baik', 'Kurang Baik', 'Rusak Berat'])
             ->first();
 
             /*
@@ -523,6 +635,8 @@ class AssetController extends Controller
                 'tersedia' => $cached['assetStats']->tersedia,
                 'dipinjam' => $cached['assetStats']->dipinjam,
                 'perbaikan' => $cached['assetStats']->perbaikan,
+                'hilang' => $cached['assetStats']->hilang,
+                'disposed' => $cached['assetStats']->disposed,
                 'baik' => $cached['assetStats']->baik,
                 'kurangBaik' => $cached['assetStats']->kurang_baik,
                 'rusakBerat' => $cached['assetStats']->rusak_berat,

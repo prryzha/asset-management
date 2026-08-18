@@ -66,6 +66,12 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="form-label">Teknisi / Vendor</label>
+                        <input type="text" name="teknisi" value="{{ old('teknisi', $maintenanceSchedule->teknisi) }}" class="form-input @error('teknisi') is-invalid @enderror" placeholder="mis. Budi (Teknisi AC), CV Sejahtera Elektronik">
+                        @error('teknisi')<p class="form-error">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div class="form-group">
                         <label class="form-label">Catatan</label>
                         <textarea name="catatan" rows="4" class="form-input @error('catatan') is-invalid @enderror" placeholder="Catatan tambahan...">{{ old('catatan', $maintenanceSchedule->catatan) }}</textarea>
                         @error('catatan')<p class="form-error">{{ $message }}</p>@enderror
