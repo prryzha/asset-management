@@ -24,6 +24,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AssetController extends Controller
 {
+    /** Batas jumlah label per sekali cetak massal — lihat labelMassalPdf(). */
+    private const MAX_LABEL_MASSAL = 300;
+
     public function index(Request $request): View
     {
         $search = $request->input('search');
@@ -907,6 +910,59 @@ class AssetController extends Controller
         $pdf = Pdf::loadView('pdf.label', compact('asset', 'qrDataUri'));
 
         return $pdf->download("label-{$asset->kode_barang}.pdf");
+    }
+
+    /**
+     * Cetak Label Aset Massal — satu PDF berisi banyak label sekaligus.
+     *
+     * Dataset memakai activeAssetQuery() yang SAMA dengan Daftar Aset dan export
+     * PDF/CSV, jadi untuk filter yang sama isinya persis sama dan status
+     * "Disposed" mustahil ikut tercetak (dikecualikan di level query, bukan di
+     * view). Dua mode, mengikuti pola export existing:
+     *   - tanpa ids  : semua aset hasil filter halaman
+     *   - dengan ids : hanya baris yang dicentang, filter halaman dilewati
+     *     (tapi pengecualian Disposed tetap berlaku).
+     */
+    public function labelMassalPdf(Request $request): Response|RedirectResponse
+    {
+        $ids = $request->input('ids', []);
+
+        $assets = $this->activeAssetQuery($request, empty($ids))
+            ->when($ids, fn($q) => $q->whereIn('id', $ids))
+            ->orderBy('kode_barang')
+            ->get();
+
+        if ($assets->isEmpty()) {
+            return redirect()
+                ->route('assets.index', $request->only(['search', 'category_id', 'location_id', 'kondisi', 'status', 'f']))
+                ->with('error', 'Tidak ada aset yang sesuai dengan filter, label tidak dapat dicetak.');
+        }
+
+        // Batas aman: tiap label butuh 1 QR SVG dan render DomPDF ±50 ms/label.
+        // Tanpa batas, permintaan ribuan label bisa menabrak max_execution_time
+        // dan berakhir sebagai PDF rusak/timeout yang membingungkan operator.
+        if ($assets->count() > self::MAX_LABEL_MASSAL) {
+            return redirect()
+                ->route('assets.index', $request->only(['search', 'category_id', 'location_id', 'kondisi', 'status', 'f']))
+                ->with('error', 'Terlalu banyak aset (' . $assets->count() . '). Maksimal ' . self::MAX_LABEL_MASSAL . ' label sekali cetak — persempit filter terlebih dahulu.');
+        }
+
+        // QR dibentuk sama persis dengan label individual (labelPdf): isinya URL
+        // detail aset, di-embed sebagai data URI supaya PDF tidak perlu akses
+        // jaringan saat render.
+        $qrDataUris = [];
+        foreach ($assets as $asset) {
+            $svg = QrCode::format('svg')
+                ->size(240)
+                ->margin(1)
+                ->generate(route('assets.show', $asset));
+
+            $qrDataUris[$asset->id] = 'data:image/svg+xml;base64,' . base64_encode($svg);
+        }
+
+        $pdf = Pdf::loadView('pdf.labels', compact('assets', 'qrDataUris'));
+
+        return $pdf->download('label-aset-' . now()->format('Ymd-His') . '.pdf');
     }
 
     public function nextCode(string $prefix): \Illuminate\Http\JsonResponse

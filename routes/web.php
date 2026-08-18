@@ -44,6 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions/laporan', [TransactionController::class, 'report'])->name('transactions.report');
     Route::get('/transactions/laporan/export-pdf', [TransactionController::class, 'reportExportPdf'])->name('transactions.report-export-pdf');
     Route::get('/transactions/laporan/export-csv', [TransactionController::class, 'reportExportCsv'])->name('transactions.report-export-csv');
+    // Rekap Peminjaman — ringkasan agregat per periode, terpisah dari Laporan
+    // Peminjaman (yang menampilkan baris per transaksi). Akses sama: seluruh
+    // user yang login (Admin & Staff).
+    Route::get('/transactions/rekap', [TransactionController::class, 'recap'])->name('transactions.recap');
+    Route::get('/transactions/rekap/export-pdf', [TransactionController::class, 'recapExportPdf'])->name('transactions.recap-export-pdf');
+    Route::get('/transactions/rekap/export-csv', [TransactionController::class, 'recapExportCsv'])->name('transactions.recap-export-csv');
 
     Route::get('/mutasi', [AssetLogController::class, 'mutasi'])->name('mutasi.index');
     Route::get('/mutasi/export-pdf', [AssetLogController::class, 'mutasiExportPdf'])->name('mutasi.export-pdf');
@@ -76,6 +82,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/assets/{asset}/mark-found', [AssetController::class, 'markFound'])->name('assets.mark-found');
     Route::post('/assets/{asset}/process-disposal', [AssetController::class, 'processDisposal'])->name('assets.process-disposal')->middleware('role:admin');
     Route::get('/assets/{asset}/label/pdf', [AssetController::class, 'labelPdf'])->name('assets.label-pdf');
+    // Cetak Label Aset Massal. Path statis, jadi wajib didaftarkan sebelum route
+    // GET /assets/{asset} (assets.show) di bawah — kalau tidak, "label-massal"
+    // akan ketangkap sebagai parameter {asset}. Akses sama dengan label
+    // individual: seluruh user yang login (Admin & Staff).
+    Route::get('/assets/label-massal/pdf', [AssetController::class, 'labelMassalPdf'])->name('assets.label-massal-pdf');
 
     Route::post('/transactions/{transaction}/return', [TransactionController::class, 'returnItem'])->name('transactions.return');
 

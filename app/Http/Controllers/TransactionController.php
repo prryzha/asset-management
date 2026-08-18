@@ -9,10 +9,13 @@ use App\Models\Category;
 use App\Models\Location;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -277,6 +280,179 @@ class TransactionController extends Controller
             }
             fclose($out);
         }, 'laporan-peminjaman-' . now()->format('Ymd-His') . '.csv', ['Content-Type' => 'text/csv']);
+    }
+
+    /**
+     * Rekap Peminjaman — ringkasan AGREGAT per periode, terpisah dari Laporan
+     * Peminjaman (yang menampilkan baris per transaksi). Baca-saja, dataset
+     * memakai transactionReportQuery() yang SAMA dengan Laporan supaya filter
+     * (periode/kategori/lokasi/status) konsisten. Tidak dipaginasi karena
+     * halaman ini menampilkan agregat, bukan daftar baris per transaksi.
+     */
+    public function recap(Request $request): View
+    {
+        $transactions = $this->transactionReportQuery($request)
+            ->with(['asset.category', 'asset.location'])
+            ->get();
+
+        $recap = $this->buildRecapSummary($transactions);
+
+        $categories = Cache::remember('filter_categories', 60, function () {
+            return Category::orderBy('nama')->get();
+        });
+        $locations = Cache::remember('filter_locations', 60, function () {
+            return Location::orderBy('nama')->get();
+        });
+
+        return view('transactions.recap', compact('recap', 'categories', 'locations'));
+    }
+
+    public function recapExportPdf(Request $request): Response
+    {
+        $transactions = $this->transactionReportQuery($request)
+            ->with(['asset.category', 'asset.location'])
+            ->get();
+
+        $recap = $this->buildRecapSummary($transactions);
+
+        $pdf = Pdf::loadView('pdf.transactions-recap', compact('recap'));
+
+        return $pdf->download('rekap-peminjaman-' . now()->format('Ymd-His') . '.pdf');
+    }
+
+    public function recapExportCsv(Request $request): Response
+    {
+        $transactions = $this->transactionReportQuery($request)
+            ->with(['asset.category', 'asset.location'])
+            ->get();
+
+        $recap = $this->buildRecapSummary($transactions);
+
+        return response()->streamDownload(function () use ($recap) {
+            $out = fopen('php://output', 'w');
+            fputs($out, "\xEF\xBB\xBF");
+
+            $section = function ($out, string $title, array $header, array $rows, string $emptyLabel) {
+                fputcsv($out, [$title]);
+                fputcsv($out, $header);
+                if (empty($rows)) {
+                    fputcsv($out, [$emptyLabel, 0]);
+                }
+                foreach ($rows as $row) {
+                    fputcsv($out, array_values($row));
+                }
+                fputcsv($out, []);
+            };
+
+            fputcsv($out, ['RINGKASAN']);
+            fputcsv($out, ['Total Peminjaman', $recap['total_peminjaman']]);
+            fputcsv($out, ['Sedang Dipinjam', $recap['sedang_dipinjam']]);
+            fputcsv($out, ['Total Pengembalian', $recap['total_pengembalian']]);
+            fputcsv($out, ['Total Transaksi', $recap['total_transaksi']]);
+            fputcsv($out, []);
+
+            $section($out, 'PEMINJAMAN PER KATEGORI', ['Kategori', 'Jumlah'], $recap['per_kategori'], 'Tidak ada data');
+            $section($out, 'PEMINJAMAN PER LOKASI', ['Lokasi', 'Jumlah'], $recap['per_lokasi'], 'Tidak ada data');
+            $section($out, 'PEMINJAMAN PER STATUS', ['Status', 'Jumlah'], $recap['per_status'], 'Tidak ada data');
+            $section($out, 'PEMINJAMAN PER BULAN', ['Bulan', 'Jumlah'], $recap['per_bulan'], 'Tidak ada data');
+            $section($out, 'PEMINJAM TERBANYAK', ['Nama Peminjam', 'Jumlah'], $recap['top_peminjam'], 'Tidak ada data');
+
+            fclose($out);
+        }, 'rekap-peminjaman-' . now()->format('Ymd-His') . '.csv', ['Content-Type' => 'text/csv']);
+    }
+
+    /**
+     * Menghitung SELURUH agregat Rekap Peminjaman dari satu collection yang
+     * sama (bukan query terpisah per kartu) — supaya angka di halaman, PDF,
+     * dan CSV tidak mungkin berbeda satu sama lain. Dihitung di PHP (bukan
+     * GROUP BY SQL) supaya portable antara MySQL (produksi) dan SQLite
+     * (test), yang punya fungsi tanggal/agregasi yang berbeda.
+     *
+     * nama_peminjam adalah kolom bebas-teks (tidak ada tabel master
+     * peminjam) — untuk "Peminjam Terbanyak", baris digabung berdasarkan
+     * nama yang disamakan spasi-ganda & huruf besar/kecilnya saja (bukan
+     * fuzzy matching), supaya tidak menghasilkan agregasi yang menyesatkan.
+     * Label yang ditampilkan tetap memakai kapitalisasi asli kemunculan
+     * pertama, hanya spasi gandanya yang dirapikan.
+     *
+     * @param Collection<int, Transaction> $transactions
+     * @return array<string, mixed>
+     */
+    private function buildRecapSummary(Collection $transactions): array
+    {
+        $sedangDipinjam = $transactions->where('status_peminjaman', 'Dipinjam')->count();
+        $totalPengembalian = $transactions->where('status_peminjaman', 'Dikembalikan')->count();
+
+        $perKategori = $this->tallyRows($transactions, fn(Transaction $t) => $t->asset?->category?->nama ?? 'Tanpa Kategori');
+        $perLokasi = $this->tallyRows($transactions, fn(Transaction $t) => $t->asset?->location?->nama ?? 'Tanpa Lokasi');
+        $perStatus = $this->tallyRows($transactions, fn(Transaction $t) => $t->status_peminjaman);
+
+        $bulanCounts = [];
+        foreach ($transactions as $trx) {
+            $key = Carbon::parse($trx->tanggal_pinjam)->format('Y-m');
+            $bulanCounts[$key] = ($bulanCounts[$key] ?? 0) + 1;
+        }
+        ksort($bulanCounts);
+        $perBulan = [];
+        foreach ($bulanCounts as $key => $jumlah) {
+            $perBulan[] = [
+                'label' => Carbon::createFromFormat('Y-m', $key)->translatedFormat('F Y'),
+                'jumlah' => $jumlah,
+            ];
+        }
+
+        $peminjamCounts = [];
+        foreach ($transactions as $trx) {
+            $normalized = Str::of($trx->nama_peminjam)->squish()->lower()->value();
+            if (!isset($peminjamCounts[$normalized])) {
+                $peminjamCounts[$normalized] = [
+                    'nama' => Str::of($trx->nama_peminjam)->squish()->value(),
+                    'jumlah' => 0,
+                ];
+            }
+            $peminjamCounts[$normalized]['jumlah']++;
+        }
+        $topPeminjam = array_values($peminjamCounts);
+        usort($topPeminjam, fn($a, $b) => $b['jumlah'] <=> $a['jumlah'] ?: strcmp($a['nama'], $b['nama']));
+        $topPeminjam = array_slice($topPeminjam, 0, 10);
+
+        return [
+            'total_transaksi' => $transactions->count(),
+            'sedang_dipinjam' => $sedangDipinjam,
+            'total_pengembalian' => $totalPengembalian,
+            'total_peminjaman' => $sedangDipinjam + $totalPengembalian,
+            'per_kategori' => $perKategori,
+            'per_lokasi' => $perLokasi,
+            'per_status' => $perStatus,
+            'per_bulan' => $perBulan,
+            'top_peminjam' => $topPeminjam,
+        ];
+    }
+
+    /**
+     * Hitung jumlah transaksi per label (mis. per kategori/lokasi/status),
+     * diurutkan dari jumlah terbesar; label sama diurutkan alfabetis supaya
+     * hasilnya deterministik.
+     *
+     * @param Collection<int, Transaction> $transactions
+     * @param \Closure(Transaction): string $keyFn
+     * @return array<int, array{label: string, jumlah: int}>
+     */
+    private function tallyRows(Collection $transactions, \Closure $keyFn): array
+    {
+        $counts = [];
+        foreach ($transactions as $trx) {
+            $label = $keyFn($trx);
+            $counts[$label] = ($counts[$label] ?? 0) + 1;
+        }
+
+        $rows = [];
+        foreach ($counts as $label => $jumlah) {
+            $rows[] = ['label' => $label, 'jumlah' => $jumlah];
+        }
+        usort($rows, fn($a, $b) => $b['jumlah'] <=> $a['jumlah'] ?: strcmp($a['label'], $b['label']));
+
+        return $rows;
     }
 
     public function exportPdf(Request $request): Response
