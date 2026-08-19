@@ -1,0 +1,92 @@
+/* ============================================
+   CARDS
+   ============================================ */
+@layer components {
+    .card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-card);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-4) var(--space-6);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .card-header h3 {
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--color-text);
+    }
+
+    .card-body {
+        padding: var(--space-5);
+    }
+
+    /* Body text di dark mode sedikit lebih lembut dari heading (gray-300,
+       bukan gray-100) — di light mode sengaja tidak diset, ikut warisan
+       warna body/.card seperti sebelumnya. */
+    .dark .card-body {
+        color: var(--color-text-secondary);
+    }
+
+    .card-footer {
+        padding: var(--space-3) var(--space-6);
+        border-top: 1px solid var(--color-border);
+        background-color: var(--color-surface-alt);
+        border-radius: var(--radius-md);
+    }
+
+    /* ── Stat cards ── */
+    .stat-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-card);
+        padding: var(--space-4);
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: var(--color-text);
+        margin-top: 0.25rem;
+        font-family: var(--font-primary);
+    }
+
+    .stat-card .stat-detail {
+        font-size: 0.75rem;
+        color: var(--color-text-faint);
+        margin-top: 0.125rem;
+    }
+
+    .stat-card .stat-icon {
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Modifier warna stat-icon — menggantikan pola berulang
+       "bg-{color}-50 dark:bg-{color}-900/30" yang sebelumnya ditulis manual
+       di setiap halaman (dashboard, laporan peminjaman, dst). */
+    .stat-icon-primary { background-color: var(--color-primary-subtle); color: var(--color-primary-subtle-text); }
+    .stat-icon-success { background-color: var(--color-success-subtle); color: var(--color-success-subtle-text); }
+    .stat-icon-warning { background-color: var(--color-warning-subtle); color: var(--color-warning-subtle-text); }
+    .stat-icon-danger  { background-color: var(--color-danger-subtle);  color: var(--color-danger-subtle-text); }
+    .stat-icon-neutral { background-color: var(--color-neutral-subtle); color: var(--color-text-secondary); }
+}

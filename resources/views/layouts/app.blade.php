@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-[#F5F7FA]">
+<body>
 
     {{-- APP HEADER (single compact bar, full width, topmost) --}}
     <header class="app-header">
@@ -27,7 +27,7 @@
                 <button
                     type="button"
                     id="sidebarToggle"
-                    class="flex items-center justify-center w-7 h-7 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors flex-shrink-0"
+                    class="icon-btn icon-btn-lg"
                     title="Tampilkan/Sembunyikan Sidebar"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@
                     <div class="relative" x-data="{ open: false }" x-on:keydown.escape.window="open = false">
                         <button
                             type="button"
-                            class="relative flex items-center justify-center w-5 h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                            class="relative icon-btn"
                             title="Notifikasi"
                             x-on:click="open = !open"
                         >
@@ -60,7 +60,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                             </svg>
                             @if($headerNotifications['total'] > 0)
-                            <span class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-danger-600 text-white text-[10px] font-normal leading-none">
+                            <span class="badge-count">
                                 {{ $headerNotifications['total'] > 9 ? '9+' : $headerNotifications['total'] }}
                             </span>
                             @endif
@@ -70,7 +70,7 @@
                             x-show="open"
                             x-on:click.outside="open = false"
                             x-transition
-                            class="card absolute right-0 mt-3 w-80 max-h-96 overflow-y-auto z-50 text-left"
+                            class="card dropdown-panel dropdown-panel-scroll w-80"
                             style="display: none;"
                         >
                             <div class="card-header">
@@ -83,21 +83,21 @@
 
                                 @foreach($headerNotifications['sections'] as $section)
                                 <div>
-                                    <p class="text-xs font-normal text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">{{ $section['title'] }} ({{ $section['count'] }})</p>
+                                    <p class="dropdown-section-title">{{ $section['title'] }} ({{ $section['count'] }})</p>
                                     <div class="space-y-2">
                                         @foreach($section['items'] as $item)
                                         @if($item['url'])
-                                        <a href="{{ $item['url'] }}" class="block text-sm hover:bg-gray-50 dark:hover:bg-gray-700 -mx-2 px-2 py-1.5">
-                                            <span class="font-normal text-gray-900 dark:text-gray-100">{{ $item['label'] }}</span>
+                                        <a href="{{ $item['url'] }}" class="dropdown-list-item">
+                                            <span class="item-label">{{ $item['label'] }}</span>
                                             @if($item['sublabel'])
-                                            <span class="block text-xs text-secondary">{{ $item['sublabel'] }}</span>
+                                            <span class="item-sublabel">{{ $item['sublabel'] }}</span>
                                             @endif
                                         </a>
                                         @else
-                                        <div class="text-sm -mx-2 px-2 py-1.5">
-                                            <span class="font-normal text-gray-900 dark:text-gray-100">{{ $item['label'] }}</span>
+                                        <div class="dropdown-list-item">
+                                            <span class="item-label">{{ $item['label'] }}</span>
                                             @if($item['sublabel'])
-                                            <span class="block text-xs text-secondary">{{ $item['sublabel'] }}</span>
+                                            <span class="item-sublabel">{{ $item['sublabel'] }}</span>
                                             @endif
                                         </div>
                                         @endif
@@ -114,7 +114,7 @@
                     @endif
 
                 {{-- Dark Mode Toggle --}}
-                <button id="darkModeToggle" class="flex items-center justify-center w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0" title="Mode Gelap">
+                <button id="darkModeToggle" class="icon-btn" title="Mode Gelap">
                     <svg id="sunIcon" class="w-5 h-5 dark:hidden" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
                     </svg>
@@ -123,7 +123,7 @@
                     </svg>
                 </button>
 
-                <div class="w-px h-6 bg-gray-200 dark:bg-gray-700 flex-shrink-0"></div>
+                <div class="header-divider"></div>
 
                 {{-- User Menu --}}
                 <div class="relative flex-shrink-0" x-data="{ open: false }" x-on:keydown.escape.window="open = false">
@@ -142,19 +142,19 @@
                         x-show="open"
                         x-on:click.outside="open = false"
                         x-transition
-                        class="card absolute right-0 mt-3 w-48 z-50 py-1"
+                        class="card dropdown-panel w-48 py-1"
                         style="display: none;"
                     >
-                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                             </svg>
                             Profil Saya
                         </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-left">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button type="submit" class="dropdown-item w-full text-left">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                                 </svg>
                                 Keluar
@@ -173,7 +173,7 @@
         @include('components.sidebar')
 
         {{-- RIGHT CONTENT --}}
-        <div id="mainContentWrapper" class="flex-1 flex flex-col ml-60 min-w-0">
+        <div id="mainContentWrapper" class="flex-1 flex flex-col min-w-0">
 
             @php
                 // Breadcrumb trail derived from the current route, mirroring the

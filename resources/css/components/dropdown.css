@@ -1,0 +1,76 @@
+/* ============================================
+   DROPDOWN PANEL (notifikasi header, user menu)
+   ============================================
+   Panel-nya sendiri reuse .card (bg/border/shadow/radius) — file ini cuma
+   menambah positioning + isi menu. Lebar (w-80/w-48) tetap lewat utility
+   Tailwind di Blade karena murni angka satu-kali per instance, bukan pola.
+   ============================================ */
+@layer components {
+    .dropdown-panel {
+        position: absolute;
+        right: 0;
+        margin-top: 0.75rem;
+        z-index: 50;
+        text-align: left;
+    }
+
+    .dropdown-panel.dropdown-panel-scroll {
+        max-height: 24rem;
+        overflow-y: auto;
+    }
+
+    .dropdown-section-title {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--color-text-faint);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-2);
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: var(--space-2) 0.875rem;
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        transition: background-color 150ms;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--color-surface-alt);
+    }
+
+    .dropdown-item .icon {
+        width: 16px;
+        height: 16px;
+        color: var(--color-text-faint);
+        flex-shrink: 0;
+    }
+
+    /* Item notifikasi (bukan menu-trigger biasa) — margin negatif supaya hover
+       background-nya nempel full-width di dalam padding card-body */
+    .dropdown-list-item {
+        display: block;
+        margin: 0 -0.5rem;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.875rem;
+        transition: background-color 150ms;
+    }
+
+    a.dropdown-list-item:hover {
+        background-color: var(--color-surface-alt);
+    }
+
+    .dropdown-list-item .item-label {
+        font-weight: 400;
+        color: var(--color-text);
+    }
+
+    .dropdown-list-item .item-sublabel {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+    }
+}

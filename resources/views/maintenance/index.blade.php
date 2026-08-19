@@ -72,7 +72,7 @@
                     <tr>
                         <th class="w-8">
                             <input type="checkbox"
-                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600"
+                                   class="checkbox"
                                    :checked="selected.length > 0 && selected.length === {{ $maintenanceSchedules->count() }}"
                                    @change="selected = ($event.target.checked ? {{ $maintenanceSchedules->pluck('id')->values() }} : []).map(String)">
                         </th>
@@ -88,7 +88,7 @@
                     <tr>
                         <td>
                             <input type="checkbox" value="{{ $maintenance->id }}" x-model="selected"
-                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600">
+                                   class="checkbox">
                         </td>
                         <td>
                             <div class="font-normal">{{ $maintenance->asset->kode_barang ?? '-' }}</div>

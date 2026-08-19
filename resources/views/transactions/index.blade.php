@@ -68,7 +68,7 @@
                     <tr>
                         <th class="w-8">
                             <input type="checkbox"
-                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600"
+                                   class="checkbox"
                                    :checked="selected.length > 0 && selected.length === {{ $transactions->count() }}"
                                    @change="selected = ($event.target.checked ? {{ $transactions->pluck('id')->values() }} : []).map(String)">
                         </th>
@@ -85,7 +85,7 @@
                     <tr>
                         <td>
                             <input type="checkbox" value="{{ $trx->id }}" x-model="selected"
-                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600">
+                                   class="checkbox">
                         </td>
                         <td>
                             <span class="font-normal">{{ $trx->asset->kode_barang ?? 'Barang Dihapus' }}</span>

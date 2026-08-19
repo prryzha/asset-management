@@ -1,0 +1,39 @@
+/* ============================================
+   BADGES
+   ============================================ */
+@layer components {
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.125rem 0.625rem;
+        font-size: 0.75rem;
+        font-weight: 400;
+        border-radius: var(--radius-md);
+        font-family: var(--font-secondary);
+    }
+
+    .badge-blue {
+        background-color: var(--color-primary-tint);
+        color: var(--color-primary-subtle-text);
+    }
+
+    .badge-green {
+        background-color: var(--color-success-tint);
+        color: var(--color-success-subtle-text);
+    }
+
+    .badge-yellow {
+        background-color: var(--color-warning-tint);
+        color: var(--color-warning-subtle-text);
+    }
+
+    .badge-red {
+        background-color: var(--color-danger-tint);
+        color: var(--color-danger-subtle-text);
+    }
+
+    .badge-gray {
+        background-color: var(--color-neutral-subtle);
+        color: var(--color-text-secondary);
+    }
+}

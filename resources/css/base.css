@@ -1,0 +1,43 @@
+/* ============================================
+   BASE LAYER
+   ============================================
+   Reset/default tipografi & elemen dasar. Dipindahkan dari app.css supaya
+   token (tokens.css) punya satu konsumen yang jelas di sini, dan supaya
+   app.css sendiri jadi cuma daftar @import.
+   ============================================ */
+@layer base {
+    [x-cloak] {
+        display: none !important;
+    }
+
+    html {
+        font-family: var(--font-primary);
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--color-background);
+        color: var(--color-text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-family: var(--font-primary);
+    }
+
+    /* Body text, tabel, input pakai font secondary (Inter) */
+    p, span, li, td, th,
+    input, select, textarea,
+    .text-body {
+        font-family: var(--font-secondary);
+    }
+
+    h1, h2, h3, h4, h5, h6,
+    label, button, .btn,
+    .sidebar-link, .nav-link,
+    .font-heading {
+        font-family: var(--font-primary);
+    }
+
+    table, .table-font {
+        font-family: var(--font-secondary);
+    }
+}

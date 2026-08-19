@@ -1,0 +1,183 @@
+/* ============================================
+   DESIGN TOKENS
+   ============================================
+   Satu sumber kebenaran untuk warna, spacing, radius, shadow, dan ukuran
+   layout. Nilai-nilai di sini diambil langsung dari tailwind.config.js
+   (bukan angka baru) — tujuannya cuma memindahkan "sumber kebenaran" dari
+   Tailwind config + class utility yang tersebar, menjadi CSS variable yang
+   terpusat, supaya suatu saat primary color bisa diganti per-sekolah/instansi
+   cukup dengan override token di satu tempat (lihat komentar di bagian
+   bawah file ini), tanpa menyentuh selector komponen manapun.
+
+   Komponen (buttons.css, cards.css, dst.) HARUS mereferensikan token-token
+   ini lewat var(--...), bukan hardcode hex/Tailwind color baru.
+   ============================================ */
+
+:root {
+    /* ── Brand / semantic colors ── */
+    --color-primary: #2563EB;
+    --color-primary-hover: #1D4ED8;
+    --color-primary-light: #3B82F6;
+    --color-primary-subtle: #EFF6FF;
+    --color-primary-subtle-text: #1D4ED8;
+
+    --color-success: #16A34A;
+    --color-success-hover: #15803D;
+    --color-success-subtle: #F0FDF4;
+    --color-success-subtle-text: #15803D;
+
+    --color-warning: #D97706;
+    --color-warning-button: #F59E0B;
+    --color-warning-button-hover: #D97706;
+    --color-warning-subtle: #FFFBEB;
+    --color-warning-subtle-text: #B45309;
+
+    --color-danger: #DC2626;
+    --color-danger-hover: #B91C1C;
+    --color-danger-subtle: #FEF2F2;
+    --color-danger-subtle-text: #B91C1C;
+
+    --color-info: #0284C7;
+    --color-info-hover: #0369A1;
+    --color-info-subtle: #F0F9FF;
+    --color-info-subtle-text: #0369A1;
+
+    --color-neutral-subtle: #F3F4F6;
+
+    /* Tint "100-tier" — satu tingkat lebih pekat dari -subtle (50-tier),
+       dipakai badge (bukan stat-icon). Di dark mode nilainya sama dengan
+       -subtle karena original juga memakai basis warna 900/30 yang sama
+       untuk kedua konteks itu. */
+    --color-primary-tint: #DBEAFE;
+    --color-success-tint: #DCFCE7;
+    --color-warning-tint: #FEF3C7;
+    --color-danger-tint: #FEE2E2;
+
+    /* ── Surfaces / text ── */
+    --color-background: #F5F7FA;
+    --color-surface: #FFFFFF;
+    --color-surface-hover: #F5F7FA;
+    --color-surface-alt: #F9FAFB;
+
+    --color-border: #E5E7EB;
+    --color-border-strong: #D1D5DB;
+
+    --color-text: #111827;
+    --color-text-secondary: #374151;
+    --color-text-muted: #6B7280;
+    --color-text-faint: #9CA3AF;
+    --color-text-on-primary: #FFFFFF;
+
+    /* Baris tabel: hover pakai tint biru di light mode, tapi abu polos di
+       dark mode (bukan kombinasi simetris) — token terpisah supaya perilaku
+       asimetris ini tetap sama persis seperti sebelum migrasi. */
+    --color-row-hover: #EFF6FF;
+
+    /* Hover warna untuk tombol ikon polos di header (hamburger/bell/dark-mode) */
+    --color-icon-hover: #4B5563;
+
+    /* Teks link sidebar (non-aktif): gray-600 di light, gray-400 di dark —
+       tidak simetris dengan --color-text-muted (5-tier) jadi token sendiri. */
+    --color-sidebar-link-text: #4B5563;
+
+    /* Hover state kedua yang sedikit lebih kuat dari --color-surface-hover,
+       dipakai .btn-secondary di dark mode (base gray-700 -> hover gray-600) */
+    --color-surface-hover-strong: #E5E7EB;
+
+    /* ── Radius ── */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-full: 9999px;
+
+    /* ── Spacing scale ── */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+
+    /* ── Shadow ── */
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -1px rgb(0 0 0 / 0.04);
+    --shadow-header: 0 1px 3px 0 rgb(0 0 0 / 0.04);
+
+    /* ── Layout ── */
+    --sidebar-width: 240px;
+    --header-height: 56px;
+    --topbar-height: 36px;
+
+    /* ── Typography ── */
+    --font-primary: 'Poppins', system-ui, sans-serif;
+    --font-secondary: Inter, system-ui, sans-serif;
+}
+
+/* ── Dark mode ──
+   Sama seperti mekanisme sekarang: class `.dark` di <html>, di-toggle lewat
+   localStorage + inline <head> script (bukan Alpine, supaya kepasang sebelum
+   paint pertama). Cukup redefinisi token di sini — komponen yang sudah pakai
+   var(--...) otomatis ikut berubah, tidak perlu selector `.dark .foo` lagi
+   per komponen. */
+.dark {
+    --color-primary-subtle: rgb(30 58 138 / 0.3);
+    --color-primary-subtle-text: #93C5FD;
+
+    --color-success-subtle: rgb(6 78 59 / 0.3);
+    --color-success-subtle-text: #6EE7B7;
+
+    --color-warning-subtle: rgb(120 53 15 / 0.3);
+    --color-warning-subtle-text: #FCD34D;
+
+    --color-danger-subtle: rgb(127 29 29 / 0.3);
+    --color-danger-subtle-text: #FCA5A5;
+
+    --color-info-subtle: rgb(12 74 110 / 0.3);
+    --color-info-subtle-text: #7DD3FC;
+
+    --color-neutral-subtle: #374151;
+
+    --color-primary-tint: var(--color-primary-subtle);
+    --color-success-tint: var(--color-success-subtle);
+    --color-warning-tint: var(--color-warning-subtle);
+    --color-danger-tint: var(--color-danger-subtle);
+
+    --color-background: #111827;
+    --color-surface: #1F2937;
+    --color-surface-hover: #374151;
+    --color-surface-alt: #374151;
+
+    --color-border: #374151;
+    --color-border-strong: #4B5563;
+
+    --color-text: #F3F4F6;
+    --color-text-secondary: #D1D5DB;
+    --color-text-muted: #9CA3AF;
+    --color-text-faint: #6B7280;
+
+    --color-row-hover: #374151;
+    --color-icon-hover: #E5E7EB;
+    --color-surface-hover-strong: #4B5563;
+    --color-sidebar-link-text: #9CA3AF;
+
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.35), 0 2px 4px -1px rgb(0 0 0 / 0.2);
+    --shadow-header: 0 1px 3px 0 rgb(0 0 0 / 0.2);
+}
+
+/* ── Future theming (BELUM diaktifkan — arsitektur saja) ──
+   Saat fitur Theme Settings dibangun, warna sekolah/instansi bisa masuk lewat
+   pola ini, tanpa menyentuh file manapun di components/ atau layout/:
+
+   [data-theme="school-a"] {
+       --color-primary: #0F766E;
+       --color-primary-hover: #115E59;
+   }
+
+   atau, kalau nilainya datang dari backend/tenant settings:
+
+   :root {
+       --color-primary: var(--tenant-primary-color, #2563EB);
+   }
+
+   Jangan diaktifkan sekarang — belum ada backend/requirement-nya. */

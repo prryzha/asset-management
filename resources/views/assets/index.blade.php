@@ -107,7 +107,7 @@
                     <tr>
                         <th class="w-8">
                             <input type="checkbox"
-                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600"
+                                   class="checkbox"
                                    :checked="selected.length > 0 && selected.length === {{ $assets->count() }}"
                                    @change="selected = ($event.target.checked ? {{ $assets->pluck('id')->values() }} : []).map(String)">
                         </th>
@@ -126,7 +126,7 @@
                         <td>
                             <input type="checkbox" value="{{ $asset->id }}" x-model="selected"
                                    data-status="{{ $asset->status }}" data-kode="{{ $asset->kode_barang }}"
-                                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600">
+                                   class="checkbox">
                         </td>
                         <td>
                             <div class="flex items-center gap-3">
