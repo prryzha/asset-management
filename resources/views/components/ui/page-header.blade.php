@@ -20,7 +20,7 @@
 
     <div class="page-title-wrapper">
         <div>
-            <h1 class="page-title">{{ $title }}</h1>
+            <h1 class="page-title ui-title">{{ $title }}</h1>
             @if($subtitle)
                 <p class="page-subtitle">{{ $subtitle }}</p>
             @endif

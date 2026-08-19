@@ -17,8 +17,8 @@
         @foreach($statusRows as $row)
         <div>
             <div class="flex items-center justify-between mb-1">
-                <span class="text-sm text-gray-700 dark:text-gray-300">{{ $row['label'] }}</span>
-                <span class="text-sm text-gray-900 dark:text-gray-100">{{ $row['value'] }}</span>
+                <span class="text-xs text-gray-700 dark:text-gray-300">{{ $row['label'] }}</span>
+                <span class="text-xs text-gray-900 dark:text-gray-100">{{ $row['value'] }}</span>
             </div>
             <div class="w-full bg-gray-100 dark:bg-gray-700 h-1.5">
                 <div class="{{ $row['bar'] }} h-1.5" style="width: {{ $statusTotal > 0 ? ($row['value'] / $statusTotal) * 100 : 0 }}%"></div>

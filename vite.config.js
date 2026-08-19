@@ -1,5 +1,23 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import { networkInterfaces } from 'os';
+
+// Detect the current machine's LAN IPv4 address instead of hardcoding one,
+// so the dev server keeps working after the machine moves networks / gets a
+// new office IP (previously pinned to a stale 192.168.20.168).
+function getLanIp() {
+    const nets = networkInterfaces();
+    for (const name of Object.keys(nets)) {
+        for (const net of nets[name]) {
+            if (net.family === 'IPv4' && !net.internal) {
+                return net.address;
+            }
+        }
+    }
+    return 'localhost';
+}
+
+const lanHost = getLanIp();
 
 export default defineConfig({
     plugins: [
@@ -15,10 +33,10 @@ export default defineConfig({
         strictPort: true,
         cors: true,
 
-        origin: 'http://192.168.20.168:5173',
+        origin: `http://${lanHost}:5173`,
 
         hmr: {
-            host: '192.168.20.168',
+            host: lanHost,
             port: 5173,
         },
     },

@@ -12,66 +12,58 @@
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
 
         {{-- Total Aset --}}
-        <div class="stat-card">
-            <div class="flex items-start gap-3">
-                <div class="stat-icon bg-primary-50 dark:bg-primary-900/30">
-                    <svg class="w-5 h-5 text-primary dark:text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="stat-label">Total Aset Aktif</p>
-                    <h2 class="stat-value">{{ $totalAsset }}</h2>
-                    <p class="stat-detail truncate">Rp {{ number_format($totalNilai, 0, ',', '.') }}</p>
-                </div>
+        <div class="stat-card-compact">
+            <div class="stat-icon stat-icon-primary">
+                <svg class="icon text-primary dark:text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <div class="flex-1 min-w-0 stat-text">
+                <p class="stat-label">Total Aset Aktif</p>
+                <h2 class="stat-value">{{ $totalAsset }}</h2>
+                <p class="stat-detail truncate">Rp {{ number_format($totalNilai, 0, ',', '.') }}</p>
             </div>
         </div>
 
         {{-- Tersedia --}}
-        <div class="stat-card">
-            <div class="flex items-start gap-3">
-                <div class="stat-icon bg-success-50 dark:bg-emerald-900/30">
-                    <svg class="w-5 h-5 text-success dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="stat-label">Tersedia</p>
-                    <h2 class="stat-value">{{ $tersedia }}</h2>
-                    <p class="stat-detail">Aset tersedia</p>
-                </div>
+        <div class="stat-card-compact">
+            <div class="stat-icon stat-icon-success">
+                <svg class="icon text-success dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="flex-1 min-w-0 stat-text">
+                <p class="stat-label">Tersedia</p>
+                <h2 class="stat-value">{{ $tersedia }}</h2>
+                <p class="stat-detail">Aset tersedia</p>
             </div>
         </div>
 
         {{-- Dipinjam --}}
-        <div class="stat-card">
-            <div class="flex items-start gap-3">
-                <div class="stat-icon bg-warning-50 dark:bg-amber-900/30">
-                    <svg class="w-5 h-5 text-warning dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="stat-label">Dipinjam</p>
-                    <h2 class="stat-value">{{ $dipinjam }}</h2>
-                    <p class="stat-detail">Aset sedang dipinjam</p>
-                </div>
+        <div class="stat-card-compact">
+            <div class="stat-icon stat-icon-warning">
+                <svg class="icon text-warning dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                </svg>
+            </div>
+            <div class="flex-1 min-w-0 stat-text">
+                <p class="stat-label">Dipinjam</p>
+                <h2 class="stat-value">{{ $dipinjam }}</h2>
+                <p class="stat-detail">Aset sedang dipinjam</p>
             </div>
         </div>
 
         {{-- Perbaikan --}}
-        <div class="stat-card">
-            <div class="flex items-start gap-3">
-                <div class="stat-icon bg-danger-50 dark:bg-red-900/30">
-                    <svg class="w-5 h-5 text-danger dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="stat-label">Perbaikan</p>
-                    <h2 class="stat-value">{{ $perbaikan }}</h2>
-                    <p class="stat-detail">Aset dalam perbaikan</p>
-                </div>
+        <div class="stat-card-compact">
+            <div class="stat-icon stat-icon-danger">
+                <svg class="icon text-danger dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="flex-1 min-w-0 stat-text">
+                <p class="stat-label">Perbaikan</p>
+                <h2 class="stat-value">{{ $perbaikan }}</h2>
+                <p class="stat-detail">Aset dalam perbaikan</p>
             </div>
         </div>
 
@@ -91,7 +83,7 @@
                         <p class="text-xs text-secondary mt-0.5">Daftar jadwal perawatan aset</p>
                     </div>
                     <a href="{{ route('maintenance.create') }}" class="btn-primary btn-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
                         Jadwalkan
@@ -133,7 +125,7 @@
                             @empty
                             <tr>
                                 <td colspan="5" class="text-center py-10">
-                                    <span class="text-sm text-secondary">Tidak ada jadwal perawatan.</span>
+                                    <span class="text-xs text-secondary">Tidak ada jadwal perawatan.</span>
                                 </td>
                             </tr>
                             @endforelse
@@ -176,7 +168,7 @@
                             @empty
                             <tr>
                                 <td colspan="3" class="text-center py-10">
-                                    <span class="text-sm text-secondary">Belum ada aktivitas.</span>
+                                    <span class="text-xs text-secondary">Belum ada aktivitas.</span>
                                 </td>
                             </tr>
                             @endforelse

@@ -5,10 +5,10 @@
 @section('content')
 <div class="page-content">
 
-    <x-ui.page-header title="Tambah Aset" subtitle="Tambahkan aset baru ke sistem.">
+    <x-ui.page-header title="Tambah Aset">
         <x-slot:actions>
             <a href="{{ route('assets.index') }}" class="btn-ghost btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
                 Kembali
@@ -123,15 +123,15 @@
                     </div>
 
                     {{-- Foto --}}
-                    <div class="lg:col-span-2 pt-6 border-t border-[#E5E7EB] dark:border-gray-700">
+                    <div class="lg:col-span-2 pt-6 border-t border-default">
                         <label class="form-label">Foto Aset</label>
                         <div class="flex items-start gap-6">
                             <div class="flex-1">
-                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-normal file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
+                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input">
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Format: JPG, JPEG, PNG. Maks: 2MB</p>
                                 @error('foto')<p class="form-error">{{ $message }}</p>@enderror
                             </div>
-                            <div id="foto_preview" class="w-32 h-32 border-2 border-dashed border-[#E5E7EB] dark:border-gray-600 flex items-center justify-center overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-700 hidden">
+                            <div id="foto_preview" class="w-32 h-32 border-2 border-dashed border-default-strong flex items-center justify-center overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-700 hidden">
                                 <img id="foto_preview_img" class="w-full h-full object-cover">
                             </div>
                         </div>
@@ -146,9 +146,9 @@
                     <button type="submit" id="submitBtn" class="btn-primary btn-sm">
                         <span id="submitText">Simpan Aset</span>
                         <span id="submitLoading" class="inline-flex items-center gap-2 hidden">
-                            <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                            <svg class="spinner" viewBox="0 0 24 24" fill="none">
+                                <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="spinner-fill" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
                             </svg>
                             Menyimpan...
                         </span>

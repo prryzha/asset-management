@@ -38,13 +38,13 @@
 @endphp
 <div class="page-content">
 
-    <x-ui.page-header title="Aktivitas Sistem" subtitle="Riwayat seluruh aktivitas pengguna." />
+    <x-ui.page-header title="Aktivitas Sistem" />
 
     {{-- Filter --}}
     <div class="card mb-6">
         <div class="card-body-compact">
             <form method="GET" class="filter-form">
-                <div class="relative">
+                <div class="search-input-wrapper">
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Cari deskripsi..."
                            class="form-input form-input-sm w-48 pl-8">
@@ -63,7 +63,7 @@
                 <label class="filter-label">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
                 <button type="submit" class="btn-primary btn-sm">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                     Cari
@@ -101,15 +101,15 @@
                     @endphp
                     <tr>
                         <td class="whitespace-nowrap">
-                            <div class="text-sm">{{ $log->created_at->format('d/m/Y') }}</div>
+                            <div class="text-xs">{{ $log->created_at->format('d/m/Y') }}</div>
                             <div class="text-xs text-secondary">{{ $log->created_at->format('H:i') }}</div>
                         </td>
-                        <td class="text-sm">{{ $log->user?->name ?? 'Sistem' }}</td>
+                        <td class="text-xs">{{ $log->user?->name ?? 'Sistem' }}</td>
                         <td>
                             <span class="{{ $eventBadge }} whitespace-nowrap">{{ $eventLabels[$log->event] ?? $log->event }}</span>
                         </td>
-                        <td class="text-secondary text-sm whitespace-nowrap">{{ $subjectLabels[$log->subject_type] ?? '—' }}</td>
-                        <td class="text-secondary text-sm max-w-md truncate" title="{{ $log->description }}">{{ $log->description }}</td>
+                        <td class="text-secondary text-xs whitespace-nowrap">{{ $subjectLabels[$log->subject_type] ?? '—' }}</td>
+                        <td class="text-secondary text-xs max-w-md truncate" title="{{ $log->description }}">{{ $log->description }}</td>
                     </tr>
                     @empty
                     <tr>

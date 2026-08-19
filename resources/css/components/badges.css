@@ -58,4 +58,41 @@
     .badge-dot-danger  { background-color: var(--color-danger); }
     .badge-dot-primary { background-color: var(--color-primary); }
     .badge-dot-neutral { background-color: var(--color-text-faint); }
+
+    /* ── Subtle badge (kondisi/role kolom di index table) ──
+       Beda sengaja dari .badge-* di atas: pakai token "-subtle" (tier 50 /
+       900-30%, bukan tint tier 100) + warna teks DEFAULT (bukan -subtle-text
+       tier 700), padding vertikal lebih tinggi, dan TANPA border-radius —
+       supaya identik persis dengan style yang sebelumnya ditulis manual
+       inline (px-2.5 py-1, tanpa class rounded) di assets/index, archive,
+       dan users/index. Jangan disatukan dengan .badge-* di atas, warnanya
+       memang beda tier by design. */
+    .badge-subtle {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.625rem;
+        font-size: 0.75rem;
+        font-weight: 400;
+    }
+
+    .badge-subtle-primary { background-color: var(--color-primary-subtle); color: var(--color-primary); }
+    .dark .badge-subtle-primary { color: var(--color-primary-subtle-text); }
+
+    .badge-subtle-success { background-color: var(--color-success-subtle); color: var(--color-success); }
+    .dark .badge-subtle-success { color: var(--color-success-subtle-text); }
+
+    .badge-subtle-warning { background-color: var(--color-warning-subtle); color: var(--color-warning); }
+    .dark .badge-subtle-warning { color: var(--color-warning-subtle-text); }
+
+    .badge-subtle-danger { background-color: var(--color-danger-subtle); color: var(--color-danger); }
+    .dark .badge-subtle-danger { color: var(--color-danger-subtle-text); }
+
+    /* Purple tidak punya token semantik (cuma dipakai untuk role "admin") —
+       nilai hex disamakan persis dengan Tailwind purple-50/700/900/300. */
+    .badge-subtle-purple { background-color: #FAF5FF; color: #7E22CE; }
+    .dark .badge-subtle-purple { background-color: rgb(88 28 135 / 0.3); color: #D8B4FE; }
+
+    /* Fallback netral — teks pakai .text-secondary yang sudah ada, jangan
+       duplikasi warnanya di sini. */
+    .badge-subtle-neutral { background-color: var(--color-neutral-subtle); }
 }

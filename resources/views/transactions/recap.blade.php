@@ -5,16 +5,16 @@
 @section('content')
 <div class="page-content">
 
-    <x-ui.page-header title="Rekap Peminjaman" subtitle="Ringkasan agregat peminjaman aset per periode untuk kebutuhan laporan dan administrasi sekolah. Halaman ini hanya membaca data, tidak mengubah status aset maupun transaksi.">
+    <x-ui.page-header title="Rekap Peminjaman">
         <x-slot:actions>
             <a href="{{ route('transactions.recap-export-pdf', request()->only(['category_id','location_id','status','tanggal_dari','tanggal_sampai'])) }}"
                class="btn-secondary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 Ekspor PDF
             </a>
             <a href="{{ route('transactions.recap-export-csv', request()->only(['category_id','location_id','status','tanggal_dari','tanggal_sampai'])) }}"
                class="btn-secondary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                 Ekspor CSV
             </a>
         </x-slot:actions>
@@ -51,7 +51,7 @@
                 <label class="filter-label">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
                 <button type="submit" class="btn-primary btn-sm">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
                     Terapkan Filter
@@ -65,8 +65,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         <div class="stat-card">
             <div class="flex items-start gap-4">
-                <div class="stat-icon bg-primary-50 dark:bg-primary-900/30">
-                    <svg class="w-5 h-5 text-primary dark:text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="stat-icon stat-icon-primary">
+                    <svg class="icon-lg text-primary dark:text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                     </svg>
                 </div>
@@ -80,8 +80,8 @@
 
         <div class="stat-card">
             <div class="flex items-start gap-4">
-                <div class="stat-icon bg-warning-50 dark:bg-amber-900/30">
-                    <svg class="w-5 h-5 text-warning dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="stat-icon stat-icon-warning">
+                    <svg class="icon-lg text-warning dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
@@ -95,8 +95,8 @@
 
         <div class="stat-card">
             <div class="flex items-start gap-4">
-                <div class="stat-icon bg-success-50 dark:bg-emerald-900/30">
-                    <svg class="w-5 h-5 text-success dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="stat-icon stat-icon-success">
+                    <svg class="icon-lg text-success dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
@@ -110,8 +110,8 @@
 
         <div class="stat-card">
             <div class="flex items-start gap-4">
-                <div class="stat-icon bg-gray-100 dark:bg-gray-700">
-                    <svg class="w-5 h-5 text-secondary dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="stat-icon stat-icon-neutral">
+                    <svg class="icon-lg text-secondary dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                     </svg>
                 </div>
@@ -145,8 +145,8 @@
                 @foreach($recap['per_kategori'] as $row)
                 <div>
                     <div class="flex justify-between items-center mb-1.5">
-                        <span class="text-sm text-gray-900 dark:text-gray-100">{{ $row['label'] }}</span>
-                        <span class="text-sm font-normal">{{ $row['jumlah'] }}</span>
+                        <span class="text-xs text-gray-900 dark:text-gray-100">{{ $row['label'] }}</span>
+                        <span class="text-xs font-normal">{{ $row['jumlah'] }}</span>
                     </div>
                     <div class="w-full bg-gray-100 dark:bg-gray-700 h-2">
                         <div class="bg-primary h-2" style="width: {{ $recap['total_transaksi'] > 0 ? ($row['jumlah'] / $recap['total_transaksi']) * 100 : 0 }}%"></div>
@@ -165,8 +165,8 @@
                 @foreach($recap['per_lokasi'] as $row)
                 <div>
                     <div class="flex justify-between items-center mb-1.5">
-                        <span class="text-sm text-gray-900 dark:text-gray-100">{{ $row['label'] }}</span>
-                        <span class="text-sm font-normal">{{ $row['jumlah'] }}</span>
+                        <span class="text-xs text-gray-900 dark:text-gray-100">{{ $row['label'] }}</span>
+                        <span class="text-xs font-normal">{{ $row['jumlah'] }}</span>
                     </div>
                     <div class="w-full bg-gray-100 dark:bg-gray-700 h-2">
                         <div class="bg-primary h-2" style="width: {{ $recap['total_transaksi'] > 0 ? ($row['jumlah'] / $recap['total_transaksi']) * 100 : 0 }}%"></div>
@@ -184,9 +184,9 @@
             <div class="card-body">
                 <div class="flex flex-wrap gap-3">
                     @foreach($recap['per_status'] as $row)
-                    <div class="flex items-center gap-2 border border-[#E5E7EB] dark:border-gray-700 rounded-md px-3 py-2">
+                    <div class="flex items-center gap-2 border border-default rounded-md px-3 py-2">
                         <x-ui.badge-status :status="$row['label']" />
-                        <span class="text-sm font-normal">{{ $row['jumlah'] }}</span>
+                        <span class="text-xs font-normal">{{ $row['jumlah'] }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -203,8 +203,8 @@
                 @php($maxBulan = max(array_column($recap['per_bulan'], 'jumlah')))
                 <div>
                     <div class="flex justify-between items-center mb-1.5">
-                        <span class="text-sm text-gray-900 dark:text-gray-100">{{ $row['label'] }}</span>
-                        <span class="text-sm font-normal">{{ $row['jumlah'] }}</span>
+                        <span class="text-xs text-gray-900 dark:text-gray-100">{{ $row['label'] }}</span>
+                        <span class="text-xs font-normal">{{ $row['jumlah'] }}</span>
                     </div>
                     <div class="w-full bg-gray-100 dark:bg-gray-700 h-2">
                         <div class="bg-primary h-2" style="width: {{ $maxBulan > 0 ? ($row['jumlah'] / $maxBulan) * 100 : 0 }}%"></div>
@@ -235,7 +235,7 @@
                 <tbody>
                     @foreach($recap['top_peminjam'] as $i => $row)
                     <tr>
-                        <td class="text-sm text-secondary">{{ $i + 1 }}</td>
+                        <td class="text-xs text-secondary">{{ $i + 1 }}</td>
                         <td class="font-normal">{{ $row['nama'] }}</td>
                         <td class="text-right">{{ $row['jumlah'] }}</td>
                     </tr>

@@ -5,7 +5,7 @@
         <button type="button" class="sidebar-user-trigger" x-on:click="open = !open">
             <div class="header-user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
             <div class="text-left leading-tight min-w-0">
-                <p class="header-user-name">{{ auth()->user()->name }}</p>
+                <p class="header-user-name ui-title">{{ auth()->user()->name }}</p>
                 <p class="header-user-role">{{ ucfirst(auth()->user()->role) }}</p>
             </div>
         </button>

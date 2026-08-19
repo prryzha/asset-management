@@ -41,3 +41,63 @@
         font-family: var(--font-secondary);
     }
 }
+
+/* ============================================
+   BORDER COLOR UTILITIES
+   ============================================
+   Menggantikan pola berulang "border-[#E5E7EB] dark:border-gray-700/600"
+   yang sebelumnya ditulis manual — nilainya identik dengan token warna
+   border yang sudah ada, cuma dipindah dari hardcoded hex ke var(--...).
+   Sengaja hanya meng-override warna; width/style/radius/spacing tetap
+   dikontrol oleh utility Tailwind (border-t, border, border-2 border-dashed,
+   dst.) yang masih dipakai apa adanya. */
+@layer components {
+    .border-default {
+        border-color: var(--color-border);
+    }
+
+    /* Dipakai untuk 3 tempat yang secara sengaja beda dari pasangan di atas:
+       terang = --color-border, gelap = --color-border-strong (bukan
+       --color-border versi gelap) — cocok persis dengan "border-[#E5E7EB]
+       dark:border-gray-600" yang digantikan. */
+    .border-default-strong {
+        border-color: var(--color-border);
+    }
+
+    .dark .border-default-strong {
+        border-color: var(--color-border-strong);
+    }
+
+    /* Untuk Tailwind divide-y, warna border ada di selector child-combinator
+       ini, bukan di elemen wrapper-nya sendiri. */
+    .divide-default > * + * {
+        border-color: var(--color-border);
+    }
+}
+
+/* ============================================
+   TITLE TIER — single source of truth
+   ============================================
+   Satu class dipakai langsung di markup (bukan cuma nilai yang dicocokkan
+   manual di 3 rule terpisah) untuk 3 elemen yang WAJIB identik: page-title
+   (h1), app-header-title (div), header-user-name (p). Karena elemen-elemen
+   ini pakai tag HTML berbeda (h1/div/p), tanpa class bersama ini masing-
+   masing bisa diam-diam mewarisi typography tag/tampilan yang berbeda dari
+   base.css (mis. <p> ikut aturan font-secondary). Menaruh SEMUA properti
+   typography di sini dan hanya di sini mencegah drift — jangan
+   redeclare font-size/weight/family/line-height/letter-spacing di
+   .page-title/.app-header-title/.header-user-name lagi, cukup pakai
+   class ini di markup-nya.
+   Pengecualian yang disengaja: .header-user-name meng-override font-size
+   jadi 13px di layout/header.css supaya nama user di sidebar tidak terasa
+   lebih dominan dari "Sistem Informasi Aset" di app header — font-family/
+   weight/line-height/letter-spacing tetap ikut .ui-title. */
+@layer components {
+    .ui-title {
+        font-family: var(--font-primary);
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1.25;
+        letter-spacing: normal;
+    }
+}

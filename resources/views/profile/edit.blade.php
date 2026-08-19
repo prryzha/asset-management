@@ -5,39 +5,39 @@
 @section('content')
 <div class="p-8 max-w-3xl mx-auto">
 
-    <x-ui.page-header title="Profil" subtitle="Kelola informasi akun dan keamanan Anda." />
+    <x-ui.page-header title="Profil" />
 
     @if(session('status') === 'profile-updated')
         <div class="alert alert-success mb-6">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Nama berhasil diperbarui.
         </div>
     @endif
 
     @if(session('status') === 'password-updated')
         <div class="alert alert-success mb-6">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Password berhasil diubah.
         </div>
     @endif
 
     @if(session('status') === 'email-change-requested')
         <div class="alert alert-success mb-6">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Link verifikasi telah dikirim ke email baru Anda. Email aktif Anda <strong>belum berubah</strong> sampai link tersebut dibuka dan diverifikasi.
         </div>
     @endif
 
     @if(session('status') === 'verification-link-sent')
         <div class="alert alert-success mb-6">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Link verifikasi telah dikirim ke email Anda.
         </div>
     @endif
 
     @if(session('status') === 'email-already-verified')
         <div class="alert alert-success mb-6">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Email Anda sudah terverifikasi.
         </div>
     @endif
@@ -45,7 +45,7 @@
     <div class="space-y-6">
 
         {{-- ============ PROFIL ============ --}}
-        <p class="text-xs font-normal text-secondary uppercase tracking-wider">Profil</p>
+        <p class="text-xs font-normal text-secondary tracking-wider">Profil</p>
 
         {{-- Informasi Dasar --}}
         <div class="card">
@@ -69,10 +69,10 @@
                     </div>
                 </form>
 
-                <div class="pt-5 border-t border-[#E5E7EB] dark:border-gray-700">
+                <div class="pt-5 border-t border-default">
                     <label class="form-label">Email Aktif</label>
                     <div class="flex flex-wrap items-center gap-2.5">
-                        <span class="text-sm text-gray-900 dark:text-gray-100 font-normal">{{ $user->email }}</span>
+                        <span class="text-xs text-gray-900 dark:text-gray-100 font-normal">{{ $user->email }}</span>
                         @if($user->hasVerifiedEmail())
                             <span class="badge-green gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-success-500"></span>
@@ -94,9 +94,9 @@
                     <p class="text-xs text-secondary mt-2">Untuk mengubah alamat email, gunakan form "Ubah Email" di bawah.</p>
                 </div>
 
-                <div class="pt-5 border-t border-[#E5E7EB] dark:border-gray-700">
+                <div class="pt-5 border-t border-default">
                     <label class="form-label">Role</label>
-                    <p class="text-sm text-gray-900 dark:text-gray-100 font-normal">{{ ucfirst($user->role) }}</p>
+                    <p class="text-xs text-gray-900 dark:text-gray-100 font-normal">{{ ucfirst($user->role) }}</p>
                     <p class="text-xs text-secondary mt-1">Role hanya dapat diubah oleh Admin lewat Manajemen User.</p>
                 </div>
 
@@ -128,7 +128,7 @@
         </div>
 
         {{-- ============ KEAMANAN AKUN ============ --}}
-        <p class="text-xs font-normal text-secondary uppercase tracking-wider pt-2">Keamanan Akun</p>
+        <p class="text-xs font-normal text-secondary tracking-wider pt-2">Keamanan Akun</p>
 
         {{-- Ubah Password --}}
         <div class="card">
@@ -173,7 +173,7 @@
             </div>
             <div class="card-body">
                 <button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')" class="btn-danger">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     Hapus Akun
                 </button>
             </div>
@@ -193,7 +193,7 @@
                 <h3>Yakin ingin menghapus akun?</h3>
             </div>
 
-            <p class="text-sm text-secondary mb-6">Masukkan password untuk konfirmasi penghapusan akun.</p>
+            <p class="text-xs text-secondary mb-6">Masukkan password untuk konfirmasi penghapusan akun.</p>
 
             <div class="form-group mb-6">
                 <label class="form-label sr-only">Password</label>
@@ -204,7 +204,7 @@
             <div class="flex justify-end gap-3">
                 <button type="button" x-on:click="$dispatch('close')" class="btn-secondary">Batal</button>
                 <button class="btn-danger">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     Hapus Akun
                 </button>
             </div>

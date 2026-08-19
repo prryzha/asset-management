@@ -5,43 +5,43 @@
 @section('content')
 <div class="page-content" x-data="{ selected: [] }">
 
-    <x-ui.page-header title="Data Aset" subtitle="Kelola seluruh aset yang dimiliki sekolah.">
+    <x-ui.page-header title="Data Aset">
         <x-slot:actions>
             <a :href="selected.length > 0
                     ? '{{ route('assets.export-pdf') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('assets.export-pdf', request()->only(['search','category_id','location_id','kondisi','status'])) }}'"
-               class="btn-secondary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+               class="btn-secondary btn-xs">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 <span x-text="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'"></span>
             </a>
             <a :href="selected.length > 0
                     ? '{{ route('assets.export-csv') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('assets.export-csv', request()->only(['search','category_id','location_id','kondisi','status'])) }}'"
-               class="btn-secondary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+               class="btn-secondary btn-xs">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                 <span x-text="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'"></span>
             </a>
             <a :href="selected.length > 0
                     ? '{{ route('assets.label-massal-pdf') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('assets.label-massal-pdf', request()->only(['search','category_id','location_id','kondisi','status'])) }}'"
-               class="btn-secondary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+               class="btn-secondary btn-xs">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                 <span x-text="selected.length > 0 ? 'Cetak Label Terpilih (' + selected.length + ')' : 'Cetak Label Aset'"></span>
             </a>
-            <a href="#" x-show="selected.length > 0" x-cloak @click.prevent="confirmBulkDelete()" class="btn-danger btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            <a href="#" x-show="selected.length > 0" x-cloak @click.prevent="confirmBulkDelete()" class="btn-danger btn-xs">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 <span x-text="'Hapus Terpilih (' + selected.length + ')'"></span>
             </a>
-            <a href="{{ route('assets.create') }}" class="btn-primary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            <a href="{{ route('assets.create') }}" class="btn-primary btn-xs">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                 Tambah Aset
             </a>
         </x-slot:actions>
     </x-ui.page-header>
 
-    {{-- Search & Filter Card --}}
-    <div class="card mb-6">
-        <div class="card-body py-2.5">
+    {{-- Search & Filter + Table --}}
+    <div class="card overflow-hidden">
+        <div class="card-body py-2.5 border-b border-default">
             <form action="{{ route('assets.index') }}" method="GET" class="filter-form">
                 <input type="hidden" name="f" value="1">
                 <div class="search-input-wrapper">
@@ -86,21 +86,18 @@
                     <option value="nilai_asc" {{ request('sort')=='nilai_asc'?'selected':'' }}>Nilai Terendah</option>
                     <option value="terbaru" {{ request('sort')=='terbaru'?'selected':'' }}>Terbaru Ditambahkan</option>
                 </select>
-                <button type="submit" class="btn-primary btn-sm">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="submit" class="btn-primary btn-xs">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                     Cari
                 </button>
                 @if(request()->hasAny(['search','category_id','location_id','kondisi','status','sort']))
-                <a href="{{ route('assets.index') }}" class="btn-ghost btn-sm">Reset Filter</a>
+                <a href="{{ route('assets.index') }}" class="btn-ghost btn-xs">Reset Filter</a>
                 @endif
             </form>
         </div>
-    </div>
 
-    {{-- Table --}}
-    <div class="card overflow-hidden">
         <div class="table-container">
             <table class="table">
                 <thead>
@@ -131,19 +128,19 @@
                         <td>
                             <div class="flex items-center gap-3">
                                 @if($asset->foto)
-                                <div class="w-10 h-10 overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-700">
-                                    <img src="{{ asset('storage/'.$asset->foto) }}" alt="{{ $asset->nama_barang }}" class="w-full h-full object-cover">
+                                <div class="table-thumb">
+                                    <img src="{{ asset('storage/'.$asset->foto) }}" alt="{{ $asset->nama_barang }}">
                                 </div>
                                 @else
-                                <div class="w-10 h-10 bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 text-primary dark:text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="table-thumb-icon stat-icon-primary">
+                                    <svg class="icon-lg text-primary dark:text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                     </svg>
                                 </div>
                                 @endif
                                 <div class="min-w-0">
                                     <span class="font-normal">{{ $asset->kode_barang }}</span>
-                                    <div class="text-sm text-secondary truncate">{{ $asset->nama_barang }}</div>
+                                    <div class="text-xs text-secondary truncate">{{ $asset->nama_barang }}</div>
                                     <div class="text-xs text-secondary truncate">{{ $asset->merk }}</div>
                                 </div>
                             </div>
@@ -153,12 +150,12 @@
                         <td>
                             @php
                                 $kondisiBadge = [
-                                    'Baik' => 'bg-success-50 text-success dark:bg-emerald-900/30 dark:text-emerald-300',
-                                    'Kurang Baik' => 'bg-warning-50 text-warning dark:bg-amber-900/30 dark:text-amber-300',
-                                    'Rusak Berat' => 'bg-danger-50 text-danger dark:bg-red-900/30 dark:text-red-300',
+                                    'Baik' => 'badge-subtle-success',
+                                    'Kurang Baik' => 'badge-subtle-warning',
+                                    'Rusak Berat' => 'badge-subtle-danger',
                                 ];
                             @endphp
-                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-normal {{ $kondisiBadge[$asset->kondisi] ?? 'bg-gray-100 text-secondary dark:bg-gray-700' }}">
+                            <span class="badge-subtle {{ $kondisiBadge[$asset->kondisi] ?? 'badge-subtle-neutral text-secondary' }}">
                                 {{ $asset->kondisi }}
                             </span>
                         </td>
@@ -168,19 +165,17 @@
                         <td class="text-center font-normal">{{ $asset->nilai_perolehan ? 'Rp '.number_format($asset->nilai_perolehan,0,',','.') : '—' }}</td>
                         <td class="text-center">
                             <div class="table-actions">
-                                <a href="{{ route('assets.edit', $asset) }}" class="btn-ghost btn-sm px-2 py-1 text-xs">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('assets.edit', $asset) }}" class="btn-ghost btn-icon" title="Ubah" aria-label="Ubah {{ $asset->nama_barang }}">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
-                                    Ubah
                                 </a>
                                 <form action="{{ route('assets.destroy', $asset) }}" method="POST" class="delete-form">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn-ghost btn-sm px-2 py-1 text-xs text-danger hover:text-white hover:bg-danger">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <button type="submit" class="btn-ghost btn-icon text-danger hover:text-white hover:bg-danger" title="Hapus" aria-label="Hapus {{ $asset->nama_barang }}">
+                                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                         </svg>
-                                        Hapus
                                     </button>
                                 </form>
                             </div>
@@ -206,10 +201,11 @@
                 </tbody>
             </table>
         </div>
-    </div>
-
-    <div class="mt-6">
-        {{ $assets->links() }}
+        @if($assets->hasPages())
+        <div class="px-5 py-3 border-t border-default">
+            {{ $assets->links() }}
+        </div>
+        @endif
     </div>
 
     <form id="bulkDeleteForm" method="POST" action="{{ route('assets.bulk-destroy') }}" class="hidden">

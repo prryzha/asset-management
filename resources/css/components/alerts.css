@@ -7,7 +7,7 @@
         align-items: center;
         gap: var(--space-3);
         padding: var(--space-3) var(--space-4);
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         border-radius: var(--radius-md);
         border: 1px solid transparent;
         font-family: var(--font-secondary);

@@ -54,12 +54,11 @@
         font-size: 0.75rem;
         font-weight: 400;
         color: var(--color-text-muted);
-        text-transform: uppercase;
         letter-spacing: 0.05em;
     }
 
     .stat-card .stat-value {
-        font-size: 1.5rem;
+        font-size: 0.75rem;
         font-weight: 400;
         color: var(--color-text);
         margin-top: 0.25rem;
@@ -89,6 +88,66 @@
     .stat-icon-warning { background-color: var(--color-warning-subtle); color: var(--color-warning-subtle-text); }
     .stat-icon-danger  { background-color: var(--color-danger-subtle);  color: var(--color-danger-subtle-text); }
     .stat-icon-neutral { background-color: var(--color-neutral-subtle); color: var(--color-text-secondary); }
+
+    /* ── Dashboard compact stat cards ──
+       Variant khusus untuk statistic cards di Dashboard: icon circular di
+       kiri sebagai visual anchor, information group (label/value/detail) di
+       kanan sebagai satu kelompok. .stat-card generic (dipakai di halaman
+       lain seperti laporan peminjaman) tidak diubah.
+       Height sengaja tidak di-set eksplisit — parent grid (dashboard.blade)
+       sudah membuat semua grid item stretch ke tinggi row yang sama secara
+       natural, jadi height card ditentukan oleh content + padding. */
+    .stat-card-compact {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-card);
+        padding: var(--space-4) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+    }
+
+    .stat-card-compact .stat-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    /* Information group (label/value/detail) — satu kesatuan visual dengan
+       spacing kecil tapi deliberate lewat flex gap, bukan margin per-elemen. */
+    .stat-card-compact .stat-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .stat-card-compact .stat-label {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--color-text-muted);
+        line-height: 1.3;
+        letter-spacing: normal;
+    }
+
+    .stat-card-compact .stat-value {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-text);
+        line-height: 1.3;
+        font-family: var(--font-primary);
+    }
+
+    .stat-card-compact .stat-detail {
+        font-size: 0.75rem;
+        color: var(--color-text-faint);
+        line-height: 1.3;
+    }
 
     /* ── Compact card body (filter cards) ── */
     .card-body-compact {

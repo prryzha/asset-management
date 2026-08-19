@@ -31,7 +31,6 @@
         font-size: 0.75rem;
         font-weight: 400;
         color: var(--color-text-faint);
-        text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-bottom: var(--space-2);
     }
@@ -41,7 +40,7 @@
         align-items: center;
         gap: 0.625rem;
         padding: var(--space-2) 0.875rem;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         color: var(--color-text-secondary);
         transition: background-color 150ms;
     }
@@ -63,7 +62,7 @@
         display: block;
         margin: 0 -0.5rem;
         padding: 0.375rem 0.5rem;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         transition: background-color 150ms;
     }
 

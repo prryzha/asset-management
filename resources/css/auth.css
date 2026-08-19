@@ -78,35 +78,35 @@
 
 /* ── Title block ── */
 .auth-title {
-    font-size: 1.5rem;
+    font-size: 0.875rem;
     font-weight: 400;
     color: var(--color-text);
     margin-top: 1rem;
 }
 
 .auth-subtitle {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
     margin-top: 0.25rem;
 }
 
 /* ── Error page specific ── */
 .auth-error-code {
-    font-size: 3.75rem;
+    font-size: 0.875rem;
     font-weight: 400;
     color: var(--color-text-faint);
     margin-top: 1.5rem;
 }
 
 .auth-error-title {
-    font-size: 1.5rem;
+    font-size: 0.875rem;
     font-weight: 400;
     color: var(--color-text);
     margin-top: 0.5rem;
 }
 
 .auth-error-message {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
     margin-top: 0.75rem;
 }
@@ -119,7 +119,7 @@
     padding: 0.625rem 1.25rem;
     background-color: var(--color-primary);
     color: var(--color-text-on-primary);
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 400;
     border-radius: var(--radius-lg);
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);

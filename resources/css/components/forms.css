@@ -4,7 +4,7 @@
 @layer components {
     .form-label {
         display: block;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         font-weight: 400;
         color: var(--color-text-secondary);
         margin-bottom: 0.375rem;
@@ -14,7 +14,7 @@
     .form-input {
         width: 100%;
         padding: 0.625rem 0.875rem;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         color: var(--color-text);
         background-color: var(--color-surface);
         border: 1px solid var(--color-border);
@@ -114,5 +114,35 @@
         height: 0.875rem;
         color: var(--color-text-muted);
         pointer-events: none;
+    }
+
+    /* ── File input button (::file-selector-button) ──
+       Nilai disamakan persis dengan computed style Tailwind file:* utility
+       yang digantikan (dicek langsung di browser sebelum migrasi) —
+       termasuk border-radius:0 dan cursor:default, karena Tailwind tidak
+       pernah men-set class file:rounded atau file:cursor-* di sini. */
+    .form-input[type="file"]::file-selector-button {
+        margin-right: 1rem;
+        padding: 0.5rem 1rem;
+        border: 0;
+        font-size: 0.75rem;
+        font-weight: 400;
+        font-family: var(--font-secondary);
+        color: var(--color-primary);
+        background-color: var(--color-primary-subtle);
+        transition: background-color 150ms;
+    }
+
+    .form-input[type="file"]::file-selector-button:hover {
+        background-color: var(--color-primary-tint);
+    }
+
+    .dark .form-input[type="file"]::file-selector-button {
+        color: var(--color-primary-subtle-text);
+        background-color: var(--color-primary-subtle);
+    }
+
+    .dark .form-input[type="file"]::file-selector-button:hover {
+        background-color: rgb(30 58 138 / 0.5);
     }
 }

@@ -54,7 +54,7 @@
     }
 
     .modal-header h3 {
-        font-size: 1rem;
+        font-size: 0.875rem;
         font-weight: 400;
         color: var(--color-text);
     }

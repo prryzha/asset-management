@@ -5,10 +5,10 @@
 @section('content')
 <div class="page-content-narrow">
 
-    <x-ui.page-header title="Ubah Lokasi" subtitle="Perbarui informasi lokasi.">
+    <x-ui.page-header title="Ubah Lokasi">
         <x-slot:actions>
             <a href="{{ route('locations.index') }}" class="btn-ghost btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
                 Kembali
@@ -49,9 +49,9 @@
                     <button type="submit" :disabled="submitting" class="btn-primary btn-sm">
                         <span x-show="!submitting">Simpan Perubahan</span>
                         <span x-show="submitting" class="inline-flex items-center gap-2">
-                            <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                            <svg class="spinner" viewBox="0 0 24 24" fill="none">
+                                <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="spinner-fill" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
                             </svg>
                             Menyimpan...
                         </span>

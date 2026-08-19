@@ -1,0 +1,51 @@
+/* ============================================
+   ICON SIZING
+   ============================================
+   Ukuran standar untuk SVG ikon inline (bukan avatar/foto/placeholder
+   container — itu tetap pakai lebar/tinggi masing-masing). Nilai px sengaja
+   disamakan persis dengan utility Tailwind yang digantikan (w-3.5/h-3.5,
+   w-4/h-4, w-5/h-5) supaya tampilan tidak berubah sama sekali.
+   ============================================ */
+@layer components {
+    .icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .icon-sm {
+        width: 14px;
+        height: 14px;
+    }
+
+    .icon-lg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* ── Submit-button loading spinner ──
+       Sama persis dengan Tailwind default: "animate-spin h-4 w-4" (1s linear
+       infinite) + circle/path "opacity-25"/"opacity-75". Dipakai identik di
+       semua form create/edit (11 halaman). */
+    .spinner {
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+    }
+
+    .spinner-track {
+        opacity: 0.25;
+    }
+
+    .spinner-fill {
+        opacity: 0.75;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -5,24 +5,24 @@
 @section('content')
 <div class="page-content" x-data="{ selected: [] }">
 
-    <x-ui.page-header title="Manajemen Perawatan" subtitle="Kelola jadwal perawatan seluruh aset.">
+    <x-ui.page-header title="Manajemen Perawatan">
         <x-slot:actions>
             <a :href="selected.length > 0
                     ? '{{ route('maintenance.export-pdf') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('maintenance.export-pdf', request()->only(['status','search','tanggal_dari','tanggal_sampai'])) }}'"
                class="btn-secondary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 <span x-text="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'"></span>
             </a>
             <a :href="selected.length > 0
                     ? '{{ route('maintenance.export-csv') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('maintenance.export-csv', request()->only(['status','search','tanggal_dari','tanggal_sampai'])) }}'"
                class="btn-secondary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                 <span x-text="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'"></span>
             </a>
             <a href="{{ route('maintenance.create') }}" class="btn-primary btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
                 Jadwalkan Perawatan
@@ -33,7 +33,7 @@
     <div class="card mb-6">
         <div class="card-body-compact">
             <form method="GET" action="{{ route('maintenance.index') }}" class="filter-form">
-                <div class="relative">
+                <div class="search-input-wrapper">
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Kode aset, nama aset atau jenis..."
                            class="form-input form-input-sm w-56 pl-8">
@@ -53,7 +53,7 @@
                 <label class="filter-label">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
                 <button type="submit" class="btn-primary btn-sm">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                     Cari
@@ -108,7 +108,7 @@
                             <div class="table-actions">
                                 @if($maintenance->status=='Dijadwalkan')
                                     <a href="{{ route('maintenance.edit', $maintenance) }}" class="btn-ghost btn-sm px-2 py-1 text-xs">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                         </svg>
                                         Ubah
@@ -116,7 +116,7 @@
                                     <form action="{{ route('maintenance.start', $maintenance) }}" method="POST" class="inline">
                                         @csrf @method('PATCH')
                                         <button type="submit" class="btn-success btn-sm px-2 py-1 text-xs">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
                                             </svg>
                                             Mulai
@@ -126,7 +126,7 @@
                                           onsubmit="return confirm('Batalkan perawatan ini?')">
                                         @csrf @method('PATCH')
                                         <button type="submit" class="btn-ghost btn-sm px-2 py-1 text-xs text-danger hover:text-white hover:bg-danger">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                             </svg>
                                             Batal
@@ -134,7 +134,7 @@
                                     </form>
                                 @elseif($maintenance->status=='Dikerjakan')
                                     <a href="{{ route('maintenance.complete-form', $maintenance) }}" class="btn-primary btn-sm px-2 py-1 text-xs">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
                                         Selesaikan

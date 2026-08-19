@@ -5,10 +5,10 @@
 @section('content')
 <div class="page-content">
 
-    <x-ui.page-header title="Ubah Aset" subtitle="Perbarui informasi aset.">
+    <x-ui.page-header title="Ubah Aset">
         <x-slot:actions>
             <a href="{{ route('assets.show', $asset) }}" class="btn-ghost btn-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
                 Kembali
@@ -128,17 +128,17 @@
                     </div>
 
                     {{-- Foto --}}
-                    <div class="lg:col-span-2 pt-6 border-t border-[#E5E7EB] dark:border-gray-700">
+                    <div class="lg:col-span-2 pt-6 border-t border-default">
                         <label class="form-label">Foto Aset</label>
                         <div class="flex items-start gap-6">
                             <div class="flex-1">
-                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-normal file:bg-primary-50 file:text-primary hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 dark:hover:file:bg-primary-900/50 transition">
+                                <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input">
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Format: JPG, JPEG, PNG. Maks: 2MB</p>
                                 @error('foto')<p class="form-error">{{ $message }}</p>@enderror
                                 @if($asset->foto)
                                 <div class="mt-3">
                                     <button type="button" id="deleteFotoBtn" class="btn-ghost btn-sm text-danger hover:text-white hover:bg-danger">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         Hapus Foto
                                     </button>
                                 </div>
@@ -148,9 +148,9 @@
                                 <div id="foto_current" class="{{ $asset->foto ? '' : 'hidden' }}">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-1.5 font-normal">Foto Saat Ini</p>
                                     <img src="{{ $asset->foto ? asset('storage/'.$asset->foto) : '' }}" id="foto_current_img"
-                                         class="w-32 h-32 object-cover border border-[#E5E7EB] dark:border-gray-600">
+                                         class="w-32 h-32 object-cover border border-default-strong">
                                 </div>
-                                <div id="foto_preview" class="w-32 h-32 border-2 border-dashed border-[#E5E7EB] dark:border-gray-600 flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 hidden">
+                                <div id="foto_preview" class="w-32 h-32 border-2 border-dashed border-default-strong flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-gray-700 hidden">
                                     <img id="foto_preview_img" class="w-full h-full object-cover">
                                 </div>
                             </div>
@@ -166,9 +166,9 @@
                     <button type="submit" id="submitBtn" class="btn-primary btn-sm">
                         <span id="submitText">Simpan Perubahan</span>
                         <span id="submitLoading" class="inline-flex items-center gap-2 hidden">
-                            <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                            <svg class="spinner" viewBox="0 0 24 24" fill="none">
+                                <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="spinner-fill" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
                             </svg>
                             Menyimpan...
                         </span>
