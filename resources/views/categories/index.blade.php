@@ -3,7 +3,7 @@
 @section('title', 'Manajemen Kategori')
 
 @section('content')
-<div class="p-8">
+<div class="page-content">
 
     <x-ui.page-header title="Manajemen Kategori" subtitle="Kelola seluruh kategori aset.">
         <x-slot:actions>
@@ -36,7 +36,7 @@
                         <td class="font-normal">{{ $category->nama }}</td>
                         <td class="text-center">{{ $category->assets_count }}</td>
                         <td>
-                            <div class="flex items-center justify-center gap-1">
+                            <div class="table-actions">
                                 <a href="{{ route('categories.edit', $category) }}"
                                    class="btn-ghost btn-sm px-2 py-1 text-xs">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

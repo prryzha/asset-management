@@ -2,7 +2,16 @@
    BUTTONS
    ============================================ */
 @layer components {
-    .btn {
+    /* Base layout — applies to .btn and every variant so that
+       markup using only variant classes (e.g. "btn-primary btn-sm")
+       still gets flexbox, sizing, and alignment. */
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger,
+    .btn-success,
+    .btn-warning,
+    .btn-ghost {
         display: inline-flex;
         align-items: center;
         justify-content: center;

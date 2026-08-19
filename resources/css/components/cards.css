@@ -89,4 +89,30 @@
     .stat-icon-warning { background-color: var(--color-warning-subtle); color: var(--color-warning-subtle-text); }
     .stat-icon-danger  { background-color: var(--color-danger-subtle);  color: var(--color-danger-subtle-text); }
     .stat-icon-neutral { background-color: var(--color-neutral-subtle); color: var(--color-text-secondary); }
+
+    /* ── Compact card body (filter cards) ── */
+    .card-body-compact {
+        padding: 0.625rem var(--space-5);
+    }
+
+    /* ── Card footer link ("Lihat Semua →" at bottom of dashboard cards) ── */
+    .card-footer-link {
+        padding: var(--space-3) var(--space-5);
+        border-top: 1px solid var(--color-border);
+    }
+
+    .card-footer-link a {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--color-primary);
+        transition: color 150ms;
+    }
+
+    .card-footer-link a:hover {
+        color: var(--color-primary-hover);
+    }
+
+    .dark .card-footer-link a {
+        color: var(--color-primary-light);
+    }
 }

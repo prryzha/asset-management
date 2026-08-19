@@ -1,0 +1,80 @@
+/* ============================================
+   MODAL / DIALOG
+   ============================================ */
+@layer components {
+    /* ── Backdrop ── */
+    .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.75);
+        transition: opacity 200ms ease-in;
+    }
+
+    /* ── Panel wrapper — centers the modal on screen ── */
+    .modal-panel-wrapper {
+        position: fixed;
+        inset: 0;
+        overflow-y: auto;
+        padding: var(--space-6) var(--space-4);
+        z-index: 50;
+    }
+
+    @media (min-width: 640px) {
+        .modal-panel-wrapper {
+            padding: 0;
+        }
+    }
+
+    /* ── Panel — the visible card ── */
+    .modal-panel {
+        margin-bottom: var(--space-6);
+        background-color: var(--color-surface);
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        transition: all 300ms ease-out;
+        width: 100%;
+    }
+
+    @media (min-width: 640px) {
+        .modal-panel {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    .modal-panel-sm  { max-width: 24rem; }
+    .modal-panel-md  { max-width: 28rem; }
+    .modal-panel-lg  { max-width: 32rem; }
+    .modal-panel-xl  { max-width: 36rem; }
+    .modal-panel-2xl { max-width: 42rem; }
+
+    /* ── Header (inside modal, inside card-header) ── */
+    .modal-header {
+        padding: var(--space-5) var(--space-6);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-header h3 {
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--color-text);
+    }
+
+    /* ── Body ── */
+    .modal-body {
+        padding: var(--space-6);
+    }
+
+    /* ── Footer ── */
+    .modal-footer {
+        padding: var(--space-4) var(--space-6);
+        border-top: 1px solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--space-3);
+    }
+
+    .dark .modal-panel {
+        background-color: var(--color-surface);
+    }
+}

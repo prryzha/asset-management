@@ -3,7 +3,7 @@
 @section('title', 'Manajemen Perawatan')
 
 @section('content')
-<div class="p-8" x-data="{ selected: [] }">
+<div class="page-content" x-data="{ selected: [] }">
 
     <x-ui.page-header title="Manajemen Perawatan" subtitle="Kelola jadwal perawatan seluruh aset.">
         <x-slot:actions>
@@ -31,13 +31,13 @@
     </x-ui.page-header>
 
     <div class="card mb-6">
-        <div class="card-body py-2.5">
-            <form method="GET" action="{{ route('maintenance.index') }}" class="flex flex-wrap items-center gap-2">
+        <div class="card-body-compact">
+            <form method="GET" action="{{ route('maintenance.index') }}" class="filter-form">
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Kode aset, nama aset atau jenis..."
                            class="form-input form-input-sm w-56 pl-8">
-                    <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                 </div>
@@ -48,9 +48,9 @@
                     <option value="Selesai" {{ request('status')=='Selesai'?'selected':'' }}>Selesai</option>
                     <option value="Dibatalkan" {{ request('status')=='Dibatalkan'?'selected':'' }}>Dibatalkan</option>
                 </select>
-                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Dari:</label>
+                <label class="filter-label">Dari:</label>
                 <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}" class="form-input form-input-sm w-auto">
-                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Sampai:</label>
+                <label class="filter-label">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
                 <button type="submit" class="btn-primary btn-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +105,7 @@
                             <x-ui.badge-status :status="$maintenance->status"/>
                         </td>
                         <td>
-                            <div class="flex items-center justify-center gap-1">
+                            <div class="table-actions">
                                 @if($maintenance->status=='Dijadwalkan')
                                     <a href="{{ route('maintenance.edit', $maintenance) }}" class="btn-ghost btn-sm px-2 py-1 text-xs">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

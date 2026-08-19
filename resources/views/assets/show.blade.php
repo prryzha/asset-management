@@ -3,7 +3,7 @@
 @section('title', $asset->kode_barang)
 
 @section('content')
-<div class="p-8">
+<div class="page-content">
 
     {{-- Header --}}
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">

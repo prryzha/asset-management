@@ -3,7 +3,7 @@
 @section('title', 'Tambah Aset')
 
 @section('content')
-<div class="p-8">
+<div class="page-content">
 
     <x-ui.page-header title="Tambah Aset" subtitle="Tambahkan aset baru ke sistem.">
         <x-slot:actions>

@@ -1,0 +1,164 @@
+/* ============================================
+   PAGINATION
+   ============================================ */
+@layer components {
+    /* ── Wrapper ── */
+    .pagination-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* ── Responsive: show/hide mobile vs desktop sections ── */
+    .pagination-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .pagination-desktop {
+        display: none;
+    }
+
+    @media (min-width: 640px) {
+        .pagination-mobile {
+            display: none;
+        }
+
+        .pagination-desktop {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+
+    /* ── Info text ── */
+    .pagination-info {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+    }
+
+    .pagination-info strong {
+        font-weight: 400;
+        color: var(--color-text);
+    }
+
+    /* ── Controls container ── */
+    .pagination-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+    }
+
+    /* ── Shared link / span base ── */
+    .pagination-link,
+    .pagination-page,
+    .pagination-ellipsis {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        font-size: 0.875rem;
+        font-weight: 400;
+        border: 1px solid var(--color-border);
+        background-color: var(--color-surface);
+        color: var(--color-text);
+        transition: all 150ms;
+    }
+
+    /* ── Clickable links ── */
+    .pagination-link {
+        cursor: pointer;
+    }
+
+    .pagination-link:hover {
+        background-color: var(--color-surface-hover);
+    }
+
+    /* ── Active page ── */
+    .pagination-page-active {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--color-text-on-primary);
+    }
+
+    /* ── Disabled state ── */
+    .pagination-disabled {
+        color: var(--color-text-muted);
+        cursor: not-allowed;
+    }
+
+    /* ── Ellipsis / separator ── */
+    .pagination-ellipsis {
+        color: var(--color-text-muted);
+        cursor: default;
+    }
+
+    /* ── Mobile prev/next buttons ── */
+    .pagination-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .pagination-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 400;
+        border: 1px solid var(--color-border);
+        background-color: var(--color-surface);
+        color: var(--color-text);
+        transition: all 150ms;
+    }
+
+    .pagination-btn:hover {
+        background-color: var(--color-surface-hover);
+    }
+
+    .pagination-btn-disabled {
+        color: var(--color-text-muted);
+        cursor: not-allowed;
+    }
+
+    /* ── Simple pagination (prev/next only) ── */
+    .pagination-simple {
+        display: flex;
+        gap: var(--space-2);
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* ── Dark mode ── */
+    .dark .pagination-link,
+    .dark .pagination-page,
+    .dark .pagination-ellipsis,
+    .dark .pagination-btn {
+        background-color: var(--color-surface);
+        border-color: var(--color-border);
+        color: var(--color-text-secondary);
+    }
+
+    .dark .pagination-link:hover {
+        background-color: var(--color-surface-hover);
+    }
+
+    .dark .pagination-page-active {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+
+    .dark .pagination-btn-disabled {
+        color: var(--color-text-muted);
+    }
+
+    .dark .pagination-info {
+        color: var(--color-text-muted);
+    }
+
+    .dark .pagination-info strong {
+        color: var(--color-text-secondary);
+    }
+}

@@ -3,7 +3,7 @@
 @section('title', 'Laporan Aset Hilang')
 
 @section('content')
-<div class="p-8">
+<div class="page-content">
 
     <x-ui.page-header title="Laporan Aset Hilang" subtitle="Daftar aset yang dilaporkan hilang beserta kronologi dan petugas pelapor. Aset yang sudah ditemukan kembali otomatis tidak tampil di sini.">
         <x-slot:actions>
@@ -27,13 +27,13 @@
 
     {{-- Search & Filter --}}
     <div class="card mb-6">
-        <div class="card-body py-2.5">
-            <form action="{{ route('assets.hilang') }}" method="GET" class="flex flex-wrap items-center gap-2">
+        <div class="card-body-compact">
+            <form action="{{ route('assets.hilang') }}" method="GET" class="filter-form">
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Kode, nama, kategori atau lokasi..."
                            class="form-input form-input-sm w-64 pl-8">
-                    <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                 </div>

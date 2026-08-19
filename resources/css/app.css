@@ -11,17 +11,20 @@
 @import './components/badges.css';
 @import './components/forms.css';
 @import './components/dropdown.css';
+@import './components/modal.css';
+@import './components/report-tabs.css';
+@import './components/pagination.css';
+@import './components/alerts.css';
+@import './components/empty-state.css';
+@import './components/skeleton.css';
+@import './auth.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================
-   COMPONENT LAYER — belum dimigrasikan
-   ============================================
-   Sisa yang masih pakai @apply Tailwind langsung di sini. Akan dipindah ke
-   file terpisah (alerts.css, modal.css, empty-state.css, auth.css,
-   pagination baru di tables.css) di kelompok berikutnya.
+   COMPONENT LAYER — sisa yang belum dimigrasikan
    ============================================ */
 @layer components {
 
@@ -32,60 +35,6 @@
 
     .dark .text-secondary {
         @apply text-gray-400;
-    }
-
-    /* ── Alerts / Flash Messages ── */
-    .alert {
-        @apply px-4 py-3 rounded text-sm flex items-center gap-3 border;
-        font-family: Inter, system-ui, sans-serif;
-    }
-
-    .alert-success {
-        @apply alert bg-success-50 border-success-500/20 text-success-700;
-    }
-
-    .alert-error {
-        @apply alert bg-danger-50 border-danger-500/20 text-danger-700;
-    }
-
-    .alert-info {
-        @apply alert bg-blue-50 border-primary-500/20 text-primary-700;
-    }
-
-    .alert-warning {
-        @apply alert bg-warning-50 border-warning-500/20 text-warning-700;
-    }
-
-    /* ── Pagination (belum dipakai vendor/pagination/*.blade.php — lihat audit) ── */
-    .pagination {
-        @apply flex items-center justify-between mt-6;
-    }
-
-    .pagination-text {
-        @apply text-sm text-gray-500;
-        font-family: Inter, system-ui, sans-serif;
-    }
-
-    /* ── Loading Skeleton ── */
-    .skeleton {
-        @apply animate-pulse bg-gray-200 rounded;
-    }
-
-    /* ── Empty State ── */
-    .empty-state {
-        @apply flex flex-col items-center justify-center py-16 text-center;
-    }
-
-    .empty-state .empty-icon {
-        @apply w-16 h-16 text-gray-300 mb-4;
-    }
-
-    .empty-state .empty-title {
-        @apply text-base font-normal text-gray-500 mb-1;
-    }
-
-    .empty-state .empty-description {
-        @apply text-sm text-gray-400 max-w-xs;
     }
 
     /* ── Confirmation Dialog Overrides ── */
@@ -132,11 +81,12 @@
     }
 
     .scrollbar-thin::-webkit-scrollbar-thumb {
-        @apply bg-gray-300 rounded;
+        background-color: var(--color-border);
+        border-radius: var(--radius-md);
     }
 
     .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-        @apply bg-gray-400;
+        background-color: var(--color-border-strong);
     }
 
     /* Scrollbar disembunyikan total (tetap bisa di-scroll) — dipakai di sidebar
@@ -149,22 +99,5 @@
 
     .scrollbar-hidden::-webkit-scrollbar {
         display: none; /* Chrome/Edge/Safari */
-    }
-
-    /* ── Dark Mode (sisa yang belum dimigrasikan) ── */
-    .dark .alert-success {
-        @apply bg-gray-800 border-success-700/30 text-success-400;
-    }
-
-    .dark .alert-error {
-        @apply bg-gray-800 border-danger-700/30 text-danger-400;
-    }
-
-    .dark .alert-info {
-        @apply bg-gray-800 border-primary-700/30 text-primary-300;
-    }
-
-    .dark .alert-warning {
-        @apply bg-gray-800 border-warning-700/30 text-warning-400;
     }
 }

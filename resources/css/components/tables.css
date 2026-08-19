@@ -44,4 +44,13 @@
         font-size: 0.875rem;
         color: var(--color-text-secondary);
     }
+
+    /* ── Table action cell ──
+       Used in the last column of index tables for edit/delete buttons. */
+    .table-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-1);
+    }
 }

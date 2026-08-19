@@ -3,7 +3,7 @@
 @section('title', 'Rekap Peminjaman')
 
 @section('content')
-<div class="p-8">
+<div class="page-content">
 
     <x-ui.page-header title="Rekap Peminjaman" subtitle="Ringkasan agregat peminjaman aset per periode untuk kebutuhan laporan dan administrasi sekolah. Halaman ini hanya membaca data, tidak mengubah status aset maupun transaksi.">
         <x-slot:actions>
@@ -27,8 +27,8 @@
 
     {{-- Filter --}}
     <div class="card mb-6">
-        <div class="card-body py-2.5">
-            <form action="{{ route('transactions.recap') }}" method="GET" class="flex flex-wrap items-center gap-2">
+        <div class="card-body-compact">
+            <form action="{{ route('transactions.recap') }}" method="GET" class="filter-form">
                 <select name="category_id" class="form-input form-input-sm w-auto">
                     <option value="">Semua Kategori</option>
                     @foreach($categories as $cat)
@@ -46,9 +46,9 @@
                     <option value="Dipinjam" {{ request('status')=='Dipinjam'?'selected':'' }}>Dipinjam</option>
                     <option value="Dikembalikan" {{ request('status')=='Dikembalikan'?'selected':'' }}>Dikembalikan</option>
                 </select>
-                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Dari:</label>
+                <label class="filter-label">Dari:</label>
                 <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}" class="form-input form-input-sm w-auto">
-                <label class="text-xs font-normal text-gray-500 whitespace-nowrap">Sampai:</label>
+                <label class="filter-label">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
                 <button type="submit" class="btn-primary btn-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

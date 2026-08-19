@@ -97,15 +97,22 @@
     --space-4: 16px;
     --space-5: 20px;
     --space-6: 24px;
+    --space-8: 32px;
 
     /* ── Shadow ── */
     --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px 0 rgb(0 0 0 / 0.04);
     --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -1px rgb(0 0 0 / 0.04);
     --shadow-header: 0 1px 3px 0 rgb(0 0 0 / 0.04);
 
-    /* ── Layout ── */
+    /* ── Layout ──
+       --header-height is the TOTAL height of the fixed header stack (top
+       info bar + main header) — sidebar.css and the layout wrapper's
+       padding-top both read this single token, so the two pieces stay in
+       sync automatically, including across the mobile override below. */
     --sidebar-width: 240px;
-    --header-height: 56px;
+    --header-info-height: 40px;
+    --header-main-height: 64px;
+    --header-height: calc(var(--header-info-height) + var(--header-main-height));
     --topbar-height: 36px;
 
     /* ── Typography ── */
@@ -181,3 +188,13 @@
    }
 
    Jangan diaktifkan sekarang — belum ada backend/requirement-nya. */
+
+/* ── Header responsive override ──
+   Top info bar collapses away on mobile to save vertical space; the header
+   stack height (and therefore sidebar top-offset + content padding) shrinks
+   with it automatically via the --header-height calc() above. */
+@media (max-width: 639px) {
+    :root {
+        --header-info-height: 0px;
+    }
+}

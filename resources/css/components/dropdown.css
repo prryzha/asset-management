@@ -19,6 +19,14 @@
         overflow-y: auto;
     }
 
+    /* Opens rightward from its trigger instead of the default right-aligned
+       flyout — used by triggers near the left edge of the viewport (header
+       profile menu) so the panel doesn't try to render off-screen. */
+    .dropdown-panel-left {
+        left: 0;
+        right: auto;
+    }
+
     .dropdown-section-title {
         font-size: 0.75rem;
         font-weight: 400;

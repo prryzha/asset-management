@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="p-8">
+<div class="page-content">
 
     {{-- ===== PAGE HEADER ===== --}}
     <x-ui.page-header title="Dashboard" subtitle="Ringkasan aset dan aktivitas terkini." />
@@ -141,8 +141,8 @@
                     </table>
                 </div>
                 @if(($maintenanceUpcoming ?? collect())->count() > 0)
-                <div class="px-5 py-3 border-t border-[#E5E7EB] dark:border-gray-700">
-                    <a href="{{ route('maintenance.index') }}" class="text-xs font-normal text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                <div class="card-footer-link">
+                    <a href="{{ route('maintenance.index') }}">
                         Lihat Semua Jadwal &rarr;
                     </a>
                 </div>
@@ -184,8 +184,8 @@
                     </table>
                 </div>
                 @if($recentActivities->count() > 0)
-                <div class="px-5 py-3 border-t border-[#E5E7EB] dark:border-gray-700">
-                    <a href="{{ route('activity-logs.index') }}" class="text-xs font-normal text-primary hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                <div class="card-footer-link">
+                    <a href="{{ route('activity-logs.index') }}">
                         Lihat Semua &rarr;
                     </a>
                 </div>

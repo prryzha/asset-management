@@ -1,5 +1,40 @@
 <aside class="sidebar">
 
+    {{-- User profile --}}
+    <div class="sidebar-user relative" x-data="{ open: false }" x-on:keydown.escape.window="open = false">
+        <button type="button" class="sidebar-user-trigger" x-on:click="open = !open">
+            <div class="header-user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
+            <div class="text-left leading-tight min-w-0">
+                <p class="header-user-name">{{ auth()->user()->name }}</p>
+                <p class="header-user-role">{{ ucfirst(auth()->user()->role) }}</p>
+            </div>
+        </button>
+
+        <div
+            x-show="open"
+            x-on:click.outside="open = false"
+            x-transition
+            class="card dropdown-panel dropdown-panel-left w-48 py-1"
+            style="display: none;"
+        >
+            <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                Profil Saya
+            </a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="dropdown-item w-full text-left">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Keluar
+                </button>
+            </form>
+        </div>
+    </div>
+
     {{-- Navigation --}}
     <nav class="sidebar-nav scrollbar-hidden">
 

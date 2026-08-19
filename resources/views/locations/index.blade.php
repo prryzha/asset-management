@@ -3,7 +3,7 @@
 @section('title', 'Manajemen Lokasi')
 
 @section('content')
-<div class="p-8">
+<div class="page-content">
 
     <x-ui.page-header title="Manajemen Lokasi" subtitle="Kelola seluruh lokasi penyimpanan aset.">
         <x-slot:actions>
@@ -38,7 +38,7 @@
                         <td class="text-secondary">{{ $location->gedung ?? '—' }}</td>
                         <td class="text-center">{{ $location->assets_count }}</td>
                         <td>
-                            <div class="flex items-center justify-center gap-1">
+                            <div class="table-actions">
                                 <a href="{{ route('locations.edit', $location) }}"
                                    class="btn-ghost btn-sm px-2 py-1 text-xs">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

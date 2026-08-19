@@ -1,0 +1,147 @@
+/* ============================================
+   AUTH / GUEST LAYOUT + ERROR LAYOUT
+   ============================================
+   Shared presentation for login, register, and
+   custom error pages (403/404/500).
+   ============================================ */
+
+/* ── Full-screen centered container ── */
+.auth-page {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-background);
+    padding: var(--space-4) var(--space-4) 3rem;
+    overflow: hidden;
+    background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+/* ── Decorative accent blobs ── */
+.auth-blob {
+    position: absolute;
+    border-radius: var(--radius-full);
+    filter: blur(72px);
+    pointer-events: none;
+}
+
+.auth-blob-top {
+    top: -6rem;
+    left: -6rem;
+    width: 24rem;
+    height: 24rem;
+    background-color: var(--color-primary-tint);
+    opacity: 0.5;
+}
+
+.auth-blob-bottom {
+    bottom: -8rem;
+    right: -4rem;
+    width: 28rem;
+    height: 28rem;
+    background-color: var(--color-primary-subtle);
+}
+
+/* ── Card wrapper ── */
+.auth-card {
+    position: relative;
+    width: 100%;
+    max-width: 28rem;
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    border: 1px solid var(--color-primary-subtle);
+    padding: 2rem;
+}
+
+/* ── Logo / brand icon ── */
+.auth-logo {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto;
+    background-color: var(--color-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-logo svg {
+    width: 2rem;
+    height: 2rem;
+    color: var(--color-text-on-primary);
+}
+
+/* ── Title block ── */
+.auth-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--color-text);
+    margin-top: 1rem;
+}
+
+.auth-subtitle {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+}
+
+/* ── Error page specific ── */
+.auth-error-code {
+    font-size: 3.75rem;
+    font-weight: 400;
+    color: var(--color-text-faint);
+    margin-top: 1.5rem;
+}
+
+.auth-error-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--color-text);
+    margin-top: 0.5rem;
+}
+
+.auth-error-message {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-top: 0.75rem;
+}
+
+.auth-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: 2rem;
+    padding: 0.625rem 1.25rem;
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    font-size: 0.875rem;
+    font-weight: 400;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    transition: background-color 150ms;
+}
+
+.auth-back-link:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.dark .auth-page {
+    background-color: var(--color-background);
+}
+
+.dark .auth-card {
+    background-color: var(--color-surface);
+}
+
+.dark .auth-blob-top {
+    background-color: var(--color-primary-subtle);
+}
+
+.dark .auth-blob-bottom {
+    background-color: var(--color-primary-subtle);
+}

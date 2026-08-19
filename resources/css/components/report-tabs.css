@@ -1,0 +1,44 @@
+/* ============================================
+   REPORT TABS
+   ============================================ */
+@layer components {
+    .report-tabs {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        border-bottom: 1px solid var(--color-border);
+        margin-bottom: var(--space-6);
+    }
+
+    .report-tab {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.875rem;
+        font-weight: 400;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        transition: color 150ms;
+        color: var(--color-text-muted);
+    }
+
+    .report-tab:hover {
+        color: var(--color-text-secondary);
+    }
+
+    .dark .report-tab {
+        color: var(--color-text-muted);
+    }
+
+    .dark .report-tab:hover {
+        color: var(--color-text-secondary);
+    }
+
+    /* ── Active state ── */
+    .report-tab-active {
+        border-bottom-color: var(--color-primary);
+        color: var(--color-primary-hover);
+    }
+
+    .dark .report-tab-active {
+        color: var(--color-primary-light);
+    }
+}

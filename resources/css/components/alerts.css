@@ -1,0 +1,64 @@
+/* ============================================
+   ALERTS / FLASH MESSAGES
+   ============================================ */
+@layer components {
+    .alert {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        font-size: 0.875rem;
+        border-radius: var(--radius-md);
+        border: 1px solid transparent;
+        font-family: var(--font-secondary);
+    }
+
+    .alert-success {
+        background-color: var(--color-success-subtle);
+        border-color: rgb(22 163 74 / 0.2);
+        color: var(--color-success-hover);
+    }
+
+    .alert-error {
+        background-color: var(--color-danger-subtle);
+        border-color: rgb(220 38 38 / 0.2);
+        color: var(--color-danger-hover);
+    }
+
+    .alert-info {
+        background-color: var(--color-info-subtle);
+        border-color: rgb(37 99 235 / 0.2);
+        color: var(--color-primary-hover);
+    }
+
+    .alert-warning {
+        background-color: var(--color-warning-subtle);
+        border-color: rgb(217 119 6 / 0.2);
+        color: var(--color-warning);
+    }
+
+    /* ── Dark mode ── */
+    .dark .alert-success {
+        background-color: var(--color-surface);
+        border-color: rgb(21 128 61 / 0.3);
+        color: var(--color-success);
+    }
+
+    .dark .alert-error {
+        background-color: var(--color-surface);
+        border-color: rgb(185 28 28 / 0.3);
+        color: var(--color-danger);
+    }
+
+    .dark .alert-info {
+        background-color: var(--color-surface);
+        border-color: rgb(29 78 216 / 0.3);
+        color: var(--color-primary-light);
+    }
+
+    .dark .alert-warning {
+        background-color: var(--color-surface);
+        border-color: rgb(180 83 9 / 0.3);
+        color: var(--color-warning-button);
+    }
+}

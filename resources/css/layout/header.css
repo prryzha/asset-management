@@ -2,22 +2,127 @@
    APP HEADER + CONTENT TOPBAR
    ============================================ */
 @layer components {
-    .app-header {
+    /* ── Fixed header stack: top info bar + main header ──
+       Grouped under one fixed wrapper so the two bars stack without either
+       needing its own position:fixed math. */
+    .app-header-group {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         z-index: 50;
-        height: var(--header-height);
-        background-color: var(--color-surface);
-        border-bottom: 1px solid var(--color-border);
-        box-shadow: var(--shadow-header);
     }
 
-    .app-header-inner {
+    /* ── Layout wrapper below the fixed header stack ──
+       padding-top tracks --header-height so it reflows in sync with the
+       topbar collapse transition below, instead of jumping instantly. */
+    .app-content-wrapper {
+        display: flex;
+        min-height: 100vh;
+        padding-top: var(--header-height);
+        transition: padding-top 200ms ease-in-out;
+    }
+
+    /* ── Top information bar (tagline + notif/dark-mode/collapse controls) ── */
+    .app-topbar {
+        height: var(--header-info-height);
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: var(--space-4);
+        padding: 0 var(--space-5);
+        background-color: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        font-size: 11px;
+        color: var(--color-text-muted);
+        overflow: hidden;
+        transition: height 200ms ease-in-out, border-color 200ms ease-in-out;
+    }
+
+    .app-topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        flex-shrink: 0;
+    }
+
+    .app-topbar-tagline {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Collapsed via the toggle button — the bar fully disappears (height 0),
+       reading --header-info-height so the sidebar/content padding reflow
+       with it. Bringing it back happens through the hover peek zone below,
+       not a persistent on-bar control. */
+    html.topbar-collapsed {
+        --header-info-height: 0px;
+    }
+
+    html.topbar-collapsed .app-topbar {
+        border-bottom-color: transparent;
+    }
+
+    @media (max-width: 639px) {
+        .app-topbar {
+            display: none;
+        }
+    }
+
+    /* ── Hover peek zone (top-right corner) ──
+       Only present while the topbar is collapsed. Invisible until the
+       cursor is actually over this corner, so it doesn't leave a
+       permanent icon sitting on the page once the bar is closed. */
+    .app-topbar-peek {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 64px;
+        height: 32px;
+        z-index: 60;
+        align-items: center;
+        justify-content: center;
+    }
+
+    html.topbar-collapsed .app-topbar-peek {
+        display: flex;
+    }
+
+    #topbarExpandBtn {
+        opacity: 0;
+        transition: opacity 150ms ease-in-out;
+    }
+
+    .app-topbar-peek:hover #topbarExpandBtn {
+        opacity: 1;
+    }
+
+    /* ── Main header bar (app identity, right-aligned) ──
+       margin-left reserves the sidebar's column so the sidebar's own
+       .sidebar-user block sits flush alongside this bar instead of the
+       header running full-width over an empty area above the sidebar. */
+    .app-header {
+        height: var(--header-main-height);
+        margin-left: var(--sidebar-width);
+        background-color: var(--color-surface);
+        background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--color-border) 65%, transparent) 1px, transparent 0);
+        background-size: 22px 22px;
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-header);
+        transition: margin-left 200ms ease-in-out;
+    }
+
+    html.sidebar-closed .app-header {
+        margin-left: 0;
+    }
+
+    .app-header-main {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--space-4);
         height: 100%;
         padding: 0 var(--space-5);
     }
@@ -125,7 +230,7 @@
         white-space: nowrap;
     }
 
-    /* ── Content topbar (breadcrumb + clock, below app header) ── */
+    /* ── Content topbar (sidebar toggle + breadcrumb + clock, below app header) ── */
     .content-topbar {
         height: var(--topbar-height);
         display: flex;
@@ -136,11 +241,19 @@
         background-color: var(--color-surface);
     }
 
+    .content-topbar-left {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        min-width: 0;
+    }
+
     .content-topbar-clock {
         font-size: 0.75rem;
         font-weight: 400;
         color: var(--color-text-muted);
         font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
     }
 
     .topbar-breadcrumb {

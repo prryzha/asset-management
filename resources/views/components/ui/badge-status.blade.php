@@ -1,7 +1,7 @@
 @props(['status' => ''])
 
 @php
-$dot = 'bg-gray-400';
+$dot = 'badge-dot-neutral';
 $classes = 'badge-gray';
 // Internal DB value tetap "Disposed" (lihat AssetController::statusLabel()) — cuma
 // label yang ditampilkan yang diterjemahkan, supaya tidak perlu migration/rename kolom.
@@ -13,14 +13,14 @@ switch($status) {
     case 'Selesai':
     case 'Baik':
         $classes = 'badge-green';
-        $dot = 'bg-success-500';
+        $dot = 'badge-dot-success';
         break;
     case 'Dipinjam':
     case 'Dijadwalkan':
     case 'Kurang Baik':
     case 'Menunggu Persetujuan':
         $classes = 'badge-yellow';
-        $dot = 'bg-warning-500';
+        $dot = 'badge-dot-warning';
         break;
     case 'Perbaikan':
     case 'Rusak Berat':
@@ -28,20 +28,20 @@ switch($status) {
     case 'Ditolak':
     case 'Hilang':
         $classes = 'badge-red';
-        $dot = 'bg-danger-500';
+        $dot = 'badge-dot-danger';
         break;
     case 'Dikerjakan':
         $classes = 'badge-blue';
-        $dot = 'bg-primary-500';
+        $dot = 'badge-dot-primary';
         break;
     case 'Disposed':
         $classes = 'badge-gray';
-        $dot = 'bg-gray-400';
+        $dot = 'badge-dot-neutral';
         break;
 }
 @endphp
 
 <span class="{{ $classes }} gap-1.5">
-    <span class="w-1.5 h-1.5 rounded-full {{ $dot }}"></span>
+    <span class="badge-dot {{ $dot }}"></span>
     {{ $label }}
 </span>

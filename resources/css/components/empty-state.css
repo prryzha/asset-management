@@ -1,0 +1,33 @@
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+@layer components {
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 0;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 4rem;
+        height: 4rem;
+        color: var(--color-text-faint);
+        margin-bottom: var(--space-4);
+    }
+
+    .empty-title {
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--color-text-muted);
+        margin-bottom: 0.25rem;
+    }
+
+    .empty-description {
+        font-size: 0.875rem;
+        color: var(--color-text-faint);
+        max-width: 20rem;
+    }
+}

@@ -3,7 +3,7 @@
 @section('title', 'Data Aset')
 
 @section('content')
-<div class="p-8" x-data="{ selected: [] }">
+<div class="page-content" x-data="{ selected: [] }">
 
     <x-ui.page-header title="Data Aset" subtitle="Kelola seluruh aset yang dimiliki sekolah.">
         <x-slot:actions>
@@ -42,13 +42,13 @@
     {{-- Search & Filter Card --}}
     <div class="card mb-6">
         <div class="card-body py-2.5">
-            <form action="{{ route('assets.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+            <form action="{{ route('assets.index') }}" method="GET" class="filter-form">
                 <input type="hidden" name="f" value="1">
-                <div class="relative">
+                <div class="search-input-wrapper">
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Kode, nama atau merk..."
                            class="form-input form-input-sm w-56 pl-8">
-                    <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                 </div>
@@ -167,7 +167,7 @@
                         </td>
                         <td class="text-center font-normal">{{ $asset->nilai_perolehan ? 'Rp '.number_format($asset->nilai_perolehan,0,',','.') : '—' }}</td>
                         <td class="text-center">
-                            <div class="flex items-center justify-center gap-1">
+                            <div class="table-actions">
                                 <a href="{{ route('assets.edit', $asset) }}" class="btn-ghost btn-sm px-2 py-1 text-xs">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>

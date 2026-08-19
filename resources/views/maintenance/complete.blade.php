@@ -3,7 +3,7 @@
 @section('title', 'Selesaikan Perawatan')
 
 @section('content')
-<div class="p-8 max-w-2xl mx-auto">
+<div class="page-content-narrow">
 
     <x-ui.page-header title="Selesaikan Perawatan" subtitle="Laporkan hasil penyelesaian perawatan.">
         <x-slot:actions>

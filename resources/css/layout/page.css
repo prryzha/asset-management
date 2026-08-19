@@ -58,4 +58,17 @@
         color: var(--color-text-muted);
         margin-top: 0.125rem;
     }
+
+    /* ── Page content wrappers ──
+       Used by every page as the outermost container. */
+    .page-content {
+        padding: var(--space-8);
+    }
+
+    .page-content-narrow {
+        padding: var(--space-8);
+        max-width: 42rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
