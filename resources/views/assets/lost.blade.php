@@ -20,6 +20,11 @@
         </x-slot:actions>
     </x-ui.page-header>
 
+    <x-ui.report-tabs :tabs="[
+        ['label' => 'Aset Hilang', 'url' => route('assets.hilang'), 'active' => true],
+        ['label' => 'Arsip', 'url' => route('assets.archive'), 'active' => false],
+    ]" />
+
     {{-- Search & Filter --}}
     <div class="card mb-6">
         <div class="card-body py-2.5">

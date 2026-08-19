@@ -20,11 +20,11 @@
         font-family: 'Poppins', system-ui, sans-serif;
     }
 
-    /* Body text, tables, inputs pakai Google Sans */
+    /* Body text, tables, inputs pakai Inter */
     p, span, li, td, th,
     input, select, textarea,
     .text-body {
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 
     h1, h2, h3, h4, h5, h6,
@@ -35,7 +35,7 @@
     }
 
     table, .table-font {
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 }
 
@@ -67,7 +67,7 @@
     }
 
     .card-body {
-        @apply p-6;
+        @apply p-5;
     }
 
     .card-footer {
@@ -76,7 +76,7 @@
 
     /* ── Stat Cards ── */
     .stat-card {
-        @apply bg-white rounded shadow-card border border-[#E5E7EB] p-5;
+        @apply bg-white rounded shadow-card border border-[#E5E7EB] p-4;
     }
 
     .stat-card .stat-label {
@@ -103,7 +103,7 @@
 
     .table {
         @apply w-full text-left;
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 
     .table thead {
@@ -111,7 +111,7 @@
     }
 
     .table thead th {
-        @apply px-5 py-3.5 text-xs font-normal text-gray-500 uppercase tracking-wider border-b border-[#E5E7EB];
+        @apply px-5 py-3 text-xs font-normal text-gray-500 uppercase tracking-wider border-b border-[#E5E7EB];
     }
 
     .table tbody tr {
@@ -127,12 +127,12 @@
     }
 
     .table tbody td {
-        @apply px-5 py-4 text-sm text-gray-700;
+        @apply px-5 py-3 text-sm text-gray-700;
     }
 
     /* ── Buttons ── */
     .btn {
-        @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-normal transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1;
+        @apply inline-flex items-center justify-center gap-2 px-3.5 py-2 text-sm font-normal transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1;
         border-radius: 6px;
         font-family: 'Poppins', system-ui, sans-serif;
     }
@@ -172,7 +172,7 @@
     /* ── Badges ── */
     .badge {
         @apply inline-flex items-center px-2.5 py-0.5 text-xs font-normal rounded;
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 
     .badge-blue {
@@ -204,7 +204,7 @@
     .form-input {
         @apply w-full px-3.5 py-2.5 text-sm border border-[#E5E7EB] bg-white text-gray-900 transition-colors duration-150;
         border-radius: 6px;
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 
     .form-input:focus {
@@ -229,7 +229,7 @@
 
     .form-error {
         @apply text-xs text-danger-600 mt-1;
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 
     .form-group {
@@ -243,7 +243,7 @@
 
     .page-header .breadcrumb {
         @apply flex items-center gap-2 text-xs text-gray-400 mb-2;
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 
     .page-header .breadcrumb a {
@@ -263,7 +263,7 @@
     }
 
     .page-header .page-title {
-        @apply text-xl font-normal text-gray-900;
+        @apply text-2xl font-normal text-gray-900;
     }
 
     .page-header .page-subtitle {
@@ -273,7 +273,7 @@
     /* ── Alerts / Flash Messages ── */
     .alert {
         @apply px-4 py-3 rounded text-sm flex items-center gap-3 border;
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 
     .alert-success {
@@ -294,7 +294,7 @@
 
     /* ── Sidebar ── */
     .sidebar {
-        @apply fixed top-[70px] left-0 z-40 w-64 h-[calc(100vh-70px)] flex flex-col bg-white border-r border-[#E5E7EB];
+        @apply fixed top-[56px] left-0 z-40 w-60 h-[calc(100vh-56px)] flex flex-col bg-white border-r border-[#E5E7EB];
         transition: transform 200ms ease-in-out;
     }
 
@@ -314,11 +314,11 @@
     }
 
     .sidebar-nav {
-        @apply flex-1 overflow-y-auto px-4 py-5 space-y-1;
+        @apply flex-1 overflow-y-auto px-3 py-4 space-y-0.5;
     }
 
     .sidebar-section {
-        @apply mb-4;
+        @apply mb-3;
     }
 
     .sidebar-section-title {
@@ -326,7 +326,7 @@
     }
 
     .sidebar-link {
-        @apply flex items-center gap-3 px-3 py-2.5 text-sm text-gray-600 rounded transition-all duration-150;
+        @apply flex items-center gap-2.5 px-3 py-2 text-sm font-normal text-gray-600 rounded transition-all duration-150;
     }
 
     .sidebar-link:hover {
@@ -338,7 +338,7 @@
     }
 
     .sidebar-link .icon {
-        @apply w-5 h-5 flex-shrink-0 text-gray-400 transition-colors duration-150;
+        @apply w-[18px] h-[18px] flex-shrink-0 text-gray-400 transition-colors duration-150;
     }
 
     .sidebar-link:hover .icon {
@@ -349,33 +349,17 @@
         @apply text-primary-600;
     }
 
-    .sidebar-user {
-        @apply border-b border-[#E5E7EB] p-4;
-    }
-
-    .sidebar-user-avatar {
-        @apply w-9 h-9 bg-primary-600 text-white rounded-full flex items-center justify-center font-normal text-sm;
-    }
-
-    .sidebar-user-name {
-        @apply text-sm font-normal text-gray-900 truncate;
-    }
-
-    .sidebar-user-role {
-        @apply text-xs text-gray-400 truncate;
-    }
-
     /* ── App Header (full width, topmost) ── */
     .app-header {
-        @apply fixed top-0 left-0 right-0 z-50 h-[70px] bg-white border-b border-[#E5E7EB] shadow-header;
+        @apply fixed top-0 left-0 right-0 z-50 h-[56px] bg-white border-b border-[#E5E7EB] shadow-header;
     }
 
     .app-header-inner {
-        @apply flex items-center justify-between h-full px-6;
+        @apply flex items-center justify-between h-full px-5;
     }
 
     .app-header-brand-icon {
-        @apply w-9 h-9 bg-primary-600 flex items-center justify-center flex-shrink-0;
+        @apply w-7 h-7 bg-primary-600 flex items-center justify-center flex-shrink-0;
     }
 
     .app-header-title {
@@ -383,24 +367,45 @@
     }
 
     .app-header-subtitle {
-        @apply text-xs text-gray-400;
+        @apply text-[11px] text-gray-400 leading-tight;
     }
 
-    .app-header-module-label {
-        @apply text-[11px] text-gray-400 uppercase tracking-wider text-right;
+    /* ── User Menu (header, right side) ── */
+    .header-user-avatar {
+        @apply w-7 h-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-xs font-normal flex-shrink-0;
     }
 
-    .app-header-module-title {
-        @apply text-sm font-normal text-gray-900 text-right;
+    .header-user-name {
+        @apply text-xs font-normal text-gray-900 truncate max-w-[120px];
+    }
+
+    .header-user-role {
+        @apply text-[11px] text-gray-400 truncate;
     }
 
     /* ── Content Topbar (breadcrumb + clock, below app header) ── */
     .content-topbar {
-        @apply h-11 flex items-center justify-between px-6 border-b border-[#E5E7EB] bg-white;
+        @apply h-9 flex items-center justify-between px-6 border-b border-[#E5E7EB] bg-white;
     }
 
     .content-topbar-clock {
-        @apply text-sm font-normal text-gray-500 tabular-nums;
+        @apply text-xs font-normal text-gray-500 tabular-nums;
+    }
+
+    .topbar-breadcrumb {
+        @apply flex items-center gap-1.5 text-xs text-gray-500;
+    }
+
+    .topbar-breadcrumb a {
+        @apply text-gray-500 hover:text-primary-600 transition-colors;
+    }
+
+    .topbar-breadcrumb .separator {
+        @apply text-gray-300;
+    }
+
+    .topbar-breadcrumb .current {
+        @apply text-gray-700 font-normal;
     }
 
     /* ── Pagination ── */
@@ -410,7 +415,7 @@
 
     .pagination-text {
         @apply text-sm text-gray-500;
-        font-family: 'Google Sans', Inter, system-ui, sans-serif;
+        font-family: Inter, system-ui, sans-serif;
     }
 
     /* ── Loading Skeleton ── */
@@ -551,14 +556,6 @@
         @apply text-gray-500;
     }
 
-    .dark .sidebar-user {
-        @apply border-gray-700;
-    }
-
-    .dark .sidebar-user-name {
-        @apply text-gray-200;
-    }
-
     .dark .app-header {
         @apply bg-gray-800 border-gray-700;
     }
@@ -571,16 +568,16 @@
         @apply text-gray-400;
     }
 
-    .dark .app-header-module-label {
-        @apply text-gray-500;
+    .dark .app-header-inner .border-gray-200 {
+        @apply border-gray-700;
     }
 
-    .dark .app-header-module-title {
+    .dark .header-user-name {
         @apply text-gray-100;
     }
 
-    .dark .app-header-inner .border-gray-200 {
-        @apply border-gray-700;
+    .dark .header-user-role {
+        @apply text-gray-400;
     }
 
     .dark .content-topbar {
@@ -589,6 +586,18 @@
 
     .dark .content-topbar-clock {
         @apply text-gray-400;
+    }
+
+    .dark .topbar-breadcrumb {
+        @apply text-gray-400;
+    }
+
+    .dark .topbar-breadcrumb .separator {
+        @apply text-gray-600;
+    }
+
+    .dark .topbar-breadcrumb .current {
+        @apply text-gray-200;
     }
 
     .dark .table thead {

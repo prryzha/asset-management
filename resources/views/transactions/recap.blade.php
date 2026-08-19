@@ -20,6 +20,11 @@
         </x-slot:actions>
     </x-ui.page-header>
 
+    <x-ui.report-tabs :tabs="[
+        ['label' => 'Riwayat', 'url' => route('transactions.report'), 'active' => false],
+        ['label' => 'Rekap', 'url' => route('transactions.recap'), 'active' => true],
+    ]" />
+
     {{-- Filter --}}
     <div class="card mb-6">
         <div class="card-body py-2.5">

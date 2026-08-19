@@ -20,6 +20,11 @@
         </x-slot:actions>
     </x-ui.page-header>
 
+    <x-ui.report-tabs :tabs="[
+        ['label' => 'Riwayat', 'url' => route('transactions.report'), 'active' => true],
+        ['label' => 'Rekap', 'url' => route('transactions.recap'), 'active' => false],
+    ]" />
+
     {{-- Ringkasan --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         <div class="stat-card">

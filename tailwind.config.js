@@ -24,8 +24,8 @@ export default {
             fontFamily: {
                 sans: ['Poppins', 'system-ui', 'sans-serif'],
                 heading: ['Poppins', 'system-ui', 'sans-serif'],
-                body: ['"Google Sans"', 'Inter', 'system-ui', 'sans-serif'],
-                table: ['"Google Sans"', 'Inter', 'system-ui', 'sans-serif'],
+                body: ['Inter', 'system-ui', 'sans-serif'],
+                table: ['Inter', 'system-ui', 'sans-serif'],
             },
             colors: {
                 primary: {

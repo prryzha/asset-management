@@ -11,13 +11,18 @@ class DatabaseSeeder extends Seeder
     {
         // updateOrCreate (bukan factory create) supaya seeder aman dijalankan ulang —
         // email user unique, jadi create biasa akan nabrak duplicate key di seed kedua.
+        //
+        // Kredensial ini HARUS sinkron dengan yang benar-benar dipakai untuk login ke
+        // aplikasi (diverifikasi langsung dari database dev, bukan diasumsikan) —
+        // versi sebelumnya (superadmin@gmail.com=admin, admin@gmail.com=staff) sudah
+        // tidak sesuai lagi dengan kredensial yang sungguhan dipakai.
         User::updateOrCreate(
-            ['email' => 'superadmin@gmail.com'],
+            ['email' => 'admin@gmail.com'],
             ['name' => 'Admin Sarpras', 'password' => bcrypt('password'), 'role' => 'admin']
         );
 
         User::updateOrCreate(
-            ['email' => 'admin@gmail.com'],
+            ['email' => 'staff@gmail.com'],
             ['name' => 'Staf Sarpras', 'password' => bcrypt('password'), 'role' => 'staff']
         );
 

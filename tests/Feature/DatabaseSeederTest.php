@@ -33,7 +33,7 @@ class DatabaseSeederTest extends TestCase
             Location::orderBy('id')->pluck('nama')->all()
         );
 
-        $this->assertSame(22, Asset::count());
+        $this->assertSame(24, Asset::count());
 
         // SEMUA aset memakai master data yang di-seed — tidak boleh ada
         // kategori/lokasi nyasar dari factory.
@@ -42,11 +42,29 @@ class DatabaseSeederTest extends TestCase
         $this->assertTrue(Asset::pluck('category_id')->every(fn ($id) => $kategoriIds->contains($id)));
         $this->assertTrue(Asset::pluck('location_id')->every(fn ($id) => $lokasiIds->contains($id)));
 
-        // Distribusi demo masuk akal: tidak ada aset Disposed di data awal,
-        // peminjaman & perawatan ikut ter-seed.
-        $this->assertSame(22, Asset::where('status', '!=', 'Disposed')->count());
+        // Dataset demo SEKARANG sengaja mencakup seluruh status aset yang
+        // didukung aplikasi (termasuk Hilang & Disposed) — lihat
+        // DemoDataSeeder::addLostAsset()/addDisposedAsset() — supaya halaman
+        // Aset Hilang & Arsip Aset tidak kosong saat demo.
+        $this->assertSame(1, Asset::where('status', 'Hilang')->count());
+        $this->assertSame(1, Asset::where('status', 'Disposed')->count());
+        $this->assertSame(23, Asset::where('status', '!=', 'Disposed')->count());
         $this->assertGreaterThan(0, Transaction::count());
         $this->assertGreaterThan(0, MaintenanceSchedule::count());
+
+        // Rekap Peminjaman "per bulan" butuh transaksi yang tersebar di lebih
+        // dari satu bulan kalender, bukan cuma satu — dikelompokkan di PHP
+        // (bukan fungsi SQL spesifik-driver), konsisten dengan cara
+        // TransactionController membangun breakdown "per bulan" Rekap
+        // Peminjaman itu sendiri.
+        $distinctMonths = Transaction::pluck('tanggal_pinjam')
+            ->map(fn ($tanggal) => \Carbon\Carbon::parse($tanggal)->format('Y-m'))
+            ->unique();
+        $this->assertGreaterThan(1, $distinctMonths->count());
+
+        // Setidaknya satu jadwal perawatan yang belum dimulai (Dijadwalkan) —
+        // sebelumnya dataset demo cuma punya Dikerjakan/Selesai.
+        $this->assertGreaterThan(0, MaintenanceSchedule::where('status', 'Dijadwalkan')->count());
     }
 
     public function test_seeder_is_safe_to_run_twice(): void
@@ -57,6 +75,6 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(2, User::count());
         $this->assertSame(5, Category::count());
         $this->assertSame(6, Location::count());
-        $this->assertSame(22, Asset::count());
+        $this->assertSame(24, Asset::count());
     }
 }
