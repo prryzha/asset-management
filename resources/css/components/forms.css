@@ -42,9 +42,17 @@
         padding-right: var(--space-6);
     }
 
+    /* line-height is the real height driver here, not padding — neither
+       .form-input nor this modifier ever set it, so it silently inherited
+       the Tailwind Forms plugin's fixed 1.5rem (24px) reset (meant for its
+       default 16px text), computing a 2:1 ratio at this 12px font-size and
+       rendering ~38px tall next to .btn-xs's 30px in the same toolbar row.
+       1.5 (relative, matching .btn-xs's own line-height ratio at the same
+       font-size) brings it to line with the buttons beside it. */
     .form-input-sm {
         padding: 0.375rem 0.625rem;
         font-size: 0.75rem;
+        line-height: 1.5;
     }
 
     textarea.form-input {

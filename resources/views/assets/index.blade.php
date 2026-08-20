@@ -5,42 +5,44 @@
 @section('content')
 <div class="page-content" x-data="{ selected: [] }">
 
-    <x-ui.page-header title="Data Aset">
-        <x-slot:actions>
+    <x-ui.page-header title="Data Aset" />
+
+    {{-- Search & Filter + Table --}}
+    <div class="card overflow-hidden">
+        <x-ui.table-heading title="Daftar Aset">
             <a :href="selected.length > 0
                     ? '{{ route('assets.export-pdf') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('assets.export-pdf', request()->only(['search','category_id','location_id','kondisi','status'])) }}'"
-               class="btn-secondary btn-xs">
-                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                <span x-text="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'"></span>
+               class="btn-secondary btn-icon"
+               :title="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'"
+               :aria-label="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
             </a>
             <a :href="selected.length > 0
                     ? '{{ route('assets.export-csv') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('assets.export-csv', request()->only(['search','category_id','location_id','kondisi','status'])) }}'"
-               class="btn-secondary btn-xs">
-                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                <span x-text="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'"></span>
+               class="btn-secondary btn-icon"
+               :title="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'"
+               :aria-label="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
             </a>
             <a :href="selected.length > 0
                     ? '{{ route('assets.label-massal-pdf') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('assets.label-massal-pdf', request()->only(['search','category_id','location_id','kondisi','status'])) }}'"
-               class="btn-secondary btn-xs">
-                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                <span x-text="selected.length > 0 ? 'Cetak Label Terpilih (' + selected.length + ')' : 'Cetak Label Aset'"></span>
+               class="btn-secondary btn-icon"
+               :title="selected.length > 0 ? 'Cetak Label Terpilih (' + selected.length + ')' : 'Cetak Label Aset'"
+               :aria-label="selected.length > 0 ? 'Cetak Label Terpilih (' + selected.length + ')' : 'Cetak Label Aset'">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
             </a>
-            <a href="#" x-show="selected.length > 0" x-cloak @click.prevent="confirmBulkDelete()" class="btn-danger btn-xs">
-                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                <span x-text="'Hapus Terpilih (' + selected.length + ')'"></span>
+            <a href="#" x-show="selected.length > 0" x-cloak @click.prevent="confirmBulkDelete()" class="btn-danger btn-icon"
+               :title="'Hapus Terpilih (' + selected.length + ')'" :aria-label="'Hapus Terpilih (' + selected.length + ')'">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             </a>
-            <a href="{{ route('assets.create') }}" class="btn-primary btn-xs">
-                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                Tambah Aset
+            <a href="{{ route('assets.create') }}" class="btn-primary btn-icon" title="Tambah Aset" aria-label="Tambah Aset">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
             </a>
-        </x-slot:actions>
-    </x-ui.page-header>
+        </x-ui.table-heading>
 
-    {{-- Search & Filter + Table --}}
-    <div class="card overflow-hidden">
         <div class="card-body py-2.5 border-b border-default">
             <form action="{{ route('assets.index') }}" method="GET" class="filter-form">
                 <input type="hidden" name="f" value="1">

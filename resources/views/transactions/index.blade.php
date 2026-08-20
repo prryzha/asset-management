@@ -5,31 +5,32 @@
 @section('content')
 <div class="page-content" x-data="{ selected: [] }">
 
-    <x-ui.page-header title="Riwayat Peminjaman Aset">
-        <x-slot:actions>
+    <x-ui.page-header title="Riwayat Peminjaman Aset" />
+
+    <div class="card overflow-hidden">
+        <x-ui.table-heading title="Daftar Peminjaman">
             <a :href="selected.length > 0
                     ? '{{ route('transactions.export-pdf') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('transactions.export-pdf', request()->only(['status','search','tanggal_dari','tanggal_sampai'])) }}'"
-               class="btn-secondary btn-sm">
+               class="btn-secondary btn-icon"
+               :title="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'"
+               :aria-label="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                <span x-text="selected.length > 0 ? 'Ekspor PDF Terpilih (' + selected.length + ')' : 'Ekspor PDF'"></span>
             </a>
             <a :href="selected.length > 0
                     ? '{{ route('transactions.export-csv') }}?' + selected.map(id => 'ids[]=' + id).join('&')
                     : '{{ route('transactions.export-csv', request()->only(['status','search','tanggal_dari','tanggal_sampai'])) }}'"
-               class="btn-secondary btn-sm">
+               class="btn-secondary btn-icon"
+               :title="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'"
+               :aria-label="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                <span x-text="selected.length > 0 ? 'Ekspor CSV Terpilih (' + selected.length + ')' : 'Ekspor CSV'"></span>
             </a>
-            <a href="{{ route('transactions.create') }}" class="btn-primary btn-sm">
+            <a href="{{ route('transactions.create') }}" class="btn-primary btn-icon" title="Catat Peminjaman Baru" aria-label="Catat Peminjaman Baru">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                Catat Peminjaman Baru
             </a>
-        </x-slot:actions>
-    </x-ui.page-header>
+        </x-ui.table-heading>
 
-    <div class="card mb-6">
-        <div class="card-body-compact">
+        <div class="card-body-compact border-b border-default">
             <form method="GET" action="{{ route('transactions.index') }}" class="filter-form">
                 <div class="search-input-wrapper">
                     <input type="text" name="search" value="{{ request('search') }}"
@@ -48,20 +49,18 @@
                 <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}" class="form-input form-input-sm w-auto">
                 <label class="filter-label">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
-                <button type="submit" class="btn-primary btn-sm">
+                <button type="submit" class="btn-primary btn-xs">
                     <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                     Cari
                 </button>
                 @if(request()->hasAny(['search','status','tanggal_dari','tanggal_sampai']))
-                <a href="{{ route('transactions.index') }}" class="btn-ghost btn-sm">Reset Filter</a>
+                <a href="{{ route('transactions.index') }}" class="btn-ghost btn-xs">Reset Filter</a>
                 @endif
             </form>
         </div>
-    </div>
 
-    <div class="card overflow-hidden">
         <div class="table-container">
             <table class="table">
                 <thead>

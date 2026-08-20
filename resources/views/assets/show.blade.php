@@ -425,13 +425,13 @@ function openReportDamage() {
         title: 'Laporkan Kerusakan',
         html: `
             <div class="text-left">
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Kondisi</label>
-                <select id="swal-kondisi" class="w-full border border-gray-300 rounded px-3 py-2 text-xs mb-4">
+                <label class="form-label">Kondisi</label>
+                <select id="swal-kondisi" class="form-input mb-4">
                     <option value="Kurang Baik">Kurang Baik</option>
                     <option value="Rusak Berat">Rusak Berat</option>
                 </select>
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Deskripsi Kerusakan</label>
-                <textarea id="swal-deskripsi" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 text-xs" placeholder="Jelaskan kerusakan..."></textarea>
+                <label class="form-label">Deskripsi Kerusakan</label>
+                <textarea id="swal-deskripsi" rows="3" class="form-input" placeholder="Jelaskan kerusakan..."></textarea>
             </div>
         `,
         showCancelButton: true,
@@ -460,10 +460,10 @@ function openReportLost() {
         title: 'Laporkan Aset Hilang',
         html: `
             <div class="text-left">
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Tanggal Kehilangan</label>
-                <input type="date" id="swal-tanggal-hilang" max="${today}" value="${today}" class="w-full border border-gray-300 rounded px-3 py-2 text-xs mb-4">
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Kronologi / Keterangan</label>
-                <textarea id="swal-keterangan-hilang" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 text-xs" placeholder="Jelaskan kronologi kehilangan..."></textarea>
+                <label class="form-label">Tanggal Kehilangan</label>
+                <input type="date" id="swal-tanggal-hilang" max="${today}" value="${today}" class="form-input mb-4">
+                <label class="form-label">Kronologi / Keterangan</label>
+                <textarea id="swal-keterangan-hilang" rows="3" class="form-input" placeholder="Jelaskan kronologi kehilangan..."></textarea>
             </div>
         `,
         showCancelButton: true,
@@ -494,12 +494,12 @@ function openMarkFound() {
         title: 'Tandai Aset Ditemukan',
         html: `
             <div class="text-left">
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Tanggal Ditemukan</label>
-                <input type="date" id="swal-tanggal-ditemukan" max="${today}" value="${today}" class="w-full border border-gray-300 rounded px-3 py-2 text-xs mb-4">
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Lokasi Ditemukan</label>
-                <input type="text" id="swal-lokasi-ditemukan" class="w-full border border-gray-300 rounded px-3 py-2 text-xs mb-4" placeholder="mis. Lab Komputer">
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Catatan (opsional)</label>
-                <textarea id="swal-catatan-ditemukan" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 text-xs" placeholder="Catatan tambahan..."></textarea>
+                <label class="form-label">Tanggal Ditemukan</label>
+                <input type="date" id="swal-tanggal-ditemukan" max="${today}" value="${today}" class="form-input mb-4">
+                <label class="form-label">Lokasi Ditemukan</label>
+                <input type="text" id="swal-lokasi-ditemukan" class="form-input mb-4" placeholder="mis. Lab Komputer">
+                <label class="form-label">Catatan (opsional)</label>
+                <textarea id="swal-catatan-ditemukan" rows="3" class="form-input" placeholder="Catatan tambahan..."></textarea>
             </div>
         `,
         showCancelButton: true,
@@ -533,10 +533,10 @@ function openProcessDisposal() {
         html: `
             <div class="text-left">
                 <p class="text-xs text-gray-500 mb-4">Aset akan ditandai Dihapuskan dan tidak bisa dipinjam/dimaintenance lagi. Data dan histori tetap tersimpan.</p>
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Tanggal Penghapusan</label>
-                <input type="date" id="swal-tanggal-hapus" max="${today}" value="${today}" class="w-full border border-gray-300 rounded px-3 py-2 text-xs mb-4">
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Alasan Penghapusan</label>
-                <select id="swal-alasan-hapus" class="w-full border border-gray-300 rounded px-3 py-2 text-xs mb-4">
+                <label class="form-label">Tanggal Penghapusan</label>
+                <input type="date" id="swal-tanggal-hapus" max="${today}" value="${today}" class="form-input mb-4">
+                <label class="form-label">Alasan Penghapusan</label>
+                <select id="swal-alasan-hapus" class="form-input mb-4">
                     <option value="Rusak Berat">Rusak Berat</option>
                     <option value="Tidak Layak Digunakan">Tidak Layak Digunakan</option>
                     <option value="Usia Aset">Usia Aset</option>
@@ -544,8 +544,8 @@ function openProcessDisposal() {
                     <option value="Hilang/Tidak Ditemukan">Hilang/Tidak Ditemukan</option>
                     <option value="Lainnya">Alasan Lainnya</option>
                 </select>
-                <label class="block text-xs font-normal text-gray-700 mb-1.5">Keterangan (opsional)</label>
-                <textarea id="swal-keterangan-hapus" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 text-xs" placeholder="Penjelasan tambahan..."></textarea>
+                <label class="form-label">Keterangan (opsional)</label>
+                <textarea id="swal-keterangan-hapus" rows="3" class="form-input" placeholder="Penjelasan tambahan..."></textarea>
             </div>
         `,
         showCancelButton: true,

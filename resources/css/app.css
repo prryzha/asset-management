@@ -50,12 +50,16 @@
         font-family: 'Poppins', system-ui, sans-serif !important;
     }
 
+    /* .swal2-popup inherits body's 16px base, jadi em di sini dihitung
+       relatif ke itu: 0.875em = 14px (title), 0.75em = 12px (body/tombol) —
+       menyamakan SweetAlert2 dengan aturan typography modal di tempat lain
+       (modal-header h3 = 14px, modal-body/tombol = 12px). */
     .swal2-title {
-        font-size: 1.25em !important;
+        font-size: 0.875em !important;
     }
 
     .swal2-html-container {
-        font-size: 0.95em !important;
+        font-size: 0.75em !important;
     }
 
     .swal2-styled,
@@ -68,7 +72,7 @@
     .swal2-styled.swal2-confirm,
     .swal2-styled.swal2-cancel {
         padding: 0.5em 1.2em !important;
-        font-size: 0.95em !important;
+        font-size: 0.75em !important;
     }
 
     /* ── Scrollbar Styling ── */

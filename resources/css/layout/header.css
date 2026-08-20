@@ -35,8 +35,19 @@
         border-bottom: 1px solid var(--color-border);
         font-size: 0.75rem;
         color: var(--color-text-muted);
-        overflow: hidden;
         transition: height 200ms ease-in-out, border-color 200ms ease-in-out;
+    }
+
+    /* overflow:hidden only while actually collapsing/collapsed — kept off in
+       the normal (open) state on purpose. This bar is only 40px tall, and
+       every utility dropdown (notification/language/developer profile) is
+       nested inside it; an unconditional overflow:hidden here clips their
+       open panels to a 0-height box (invisible + unclickable) since a panel
+       always renders taller than the bar. Scoping it to .topbar-collapsed
+       still gives the shrink-to-0 animation a clean edge without breaking
+       every dropdown in the bar. */
+    html.topbar-collapsed .app-topbar {
+        overflow: hidden;
     }
 
     .app-topbar-actions {
@@ -221,6 +232,51 @@
         font-size: 13px;
     }
 
+    /* The developer-profile dropdown panel (w-60, 240px) has far more room
+       than the 120px-capped sidebar/header trigger this class was sized
+       for — "Pryzha Aulia Susanto" doesn't need to truncate there, so widen
+       it just inside this one panel instead of loosening the shared class
+       everywhere it's reused. */
+    .dev-profile-header .header-user-name {
+        max-width: none;
+    }
+
+    /* ── Developer profile panel — tighter, left-aligned variant ──
+       .card-header/.card-body/.dropdown-item are shared with notification
+       and the admin sidebar menu, so this panel's own denser spacing is
+       layered on top via scoped modifier classes instead of touching those
+       shared rules (which would also shrink the other dropdowns). Explicit
+       text-align:left guards against .card-header's justify-content:
+       space-between ever reading as centered with only one child in it. */
+    .dev-profile-header,
+    .dev-profile-body {
+        text-align: left;
+    }
+
+    .dev-profile-header {
+        justify-content: flex-start;
+        padding: var(--space-3) var(--space-4);
+    }
+
+    /* Horizontal padding kept small (not 0) so each row's own hover
+       background — inherited from .dropdown-item:hover — still sits evenly
+       inset like a normal menu row instead of hugging tight to the icon+text
+       and floating off-center (that's what happened when the item's own
+       horizontal padding was zeroed out). */
+    .dev-profile-body {
+        padding: var(--space-2) var(--space-2) var(--space-3);
+    }
+
+    /* Compound selector (not just .dev-profile-item alone) so this beats
+       .dropdown-item's own shorthand padding rule regardless of import
+       order — dropdown.css loads after header.css, and two same-specificity
+       rules resolve by source order, which was silently discarding this
+       override before. */
+    .dropdown-item.dev-profile-item {
+        padding-top: var(--space-1);
+        padding-bottom: var(--space-1);
+    }
+
     .header-user-role {
         font-size: 0.75rem;
         color: var(--color-text-faint);
@@ -279,5 +335,52 @@
     .topbar-breadcrumb .current {
         color: var(--color-text-secondary);
         font-weight: 400;
+    }
+
+    /* ── Decorative accent line (bottom of the top info bar) ──
+       Plain CSS stripes, no image. Sits between .app-topbar and .app-header
+       in normal flow, inside the already-fixed .app-header-group — no new
+       positioning or --header-height change needed, it just overlaps a
+       couple of px onto the top of .app-header below it (negligible for a
+       4px line against a 64px bar). */
+    .app-header-accent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .app-header-accent-stripe {
+        height: 2px;
+    }
+
+    .app-header-accent-stripe--red {
+        background-color: var(--color-danger);
+    }
+
+    .app-header-accent-stripe--white {
+        background-color: var(--color-text-on-primary);
+    }
+
+    /* ── Language selector flag icons (topbar) ──
+       Visual placeholder only — no i18n/session logic yet. Both flags stay
+       directly visible as plain .icon-btn buttons (same 20px box/hover as
+       notification/dark-mode, reused as-is) instead of hiding the inactive
+       one behind a dropdown. This class only sizes the inline SVG flag (not
+       emoji; flag emoji fall back to plain "GB"/"ID" text on Windows without
+       an updated Segoe UI Emoji) sitting inside each button. Width fills the
+       button box exactly like .icon-lg does, height follows the flag's own
+       aspect ratio (viewBox 20x15) instead of forcing a square crop. */
+    .lang-flag-icon {
+        display: block;
+        width: 20px;
+        height: 15px;
+        border-radius: var(--radius-sm);
+        flex-shrink: 0;
+    }
+
+    /* Non-selected flag — dimmed so the active language still reads clearly
+       without needing a separate active/selected style on .icon-btn. */
+    .lang-flag-inactive {
+        opacity: 0.4;
+        transition: opacity 150ms;
     }
 }

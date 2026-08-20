@@ -43,6 +43,12 @@
         font-size: 0.75rem;
         color: var(--color-text-secondary);
         transition: background-color 150ms;
+        /* Defensive fallback only — the real fix for long content (e.g. an
+           email address) overflowing the panel edge is sizing the panel
+           wide enough to fit it on one line (see dev-profile-panel width).
+           This just stops it spilling past the border in the worst case
+           instead of being the primary wrapping mechanism. */
+        overflow-wrap: break-word;
     }
 
     .dropdown-item:hover {

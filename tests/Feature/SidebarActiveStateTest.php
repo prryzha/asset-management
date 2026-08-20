@@ -7,11 +7,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * Sidebar hanya punya satu link "Laporan Peminjaman" (href ke
- * transactions.report) yang menaungi dua tab — Riwayat (transactions.report)
- * dan Rekap (transactions.recap) — jadi link itu harus aktif untuk kedua
- * route tersebut, sementara "Peminjaman" (transactions.index) tidak boleh
- * ikut aktif di halaman laporan/rekap, dan sebaliknya.
+ * Sidebar punya link terpisah untuk "Laporan Peminjaman" (transactions.report)
+ * dan "Rekap Peminjaman" (transactions.recap) — masing-masing hanya aktif di
+ * route-nya sendiri, tidak saling ikut aktif, dan "Peminjaman"
+ * (transactions.index) tidak boleh ikut aktif di halaman laporan/rekap.
  */
 class SidebarActiveStateTest extends TestCase
 {
@@ -46,11 +45,12 @@ class SidebarActiveStateTest extends TestCase
         return in_array('active', $classes, true);
     }
 
-    public function test_recap_page_activates_laporan_peminjaman_link(): void
+    public function test_recap_page_activates_only_rekap_peminjaman_link(): void
     {
         $html = $this->actingAs($this->staff)->get(route('transactions.recap'))->getContent();
 
-        $this->assertTrue($this->sidebarLinkIsActive($html, route('transactions.report')), 'Laporan Peminjaman harus aktif saat tab Rekap dibuka.');
+        $this->assertTrue($this->sidebarLinkIsActive($html, route('transactions.recap')), 'Rekap Peminjaman harus aktif.');
+        $this->assertFalse($this->sidebarLinkIsActive($html, route('transactions.report')), 'Laporan Peminjaman TIDAK boleh ikut aktif.');
         $this->assertFalse($this->sidebarLinkIsActive($html, route('transactions.index')), 'Peminjaman TIDAK boleh ikut aktif.');
     }
 
@@ -70,5 +70,6 @@ class SidebarActiveStateTest extends TestCase
 
         $this->assertTrue($this->sidebarLinkIsActive($html, route('transactions.report')), 'Laporan Peminjaman harus aktif.');
         $this->assertFalse($this->sidebarLinkIsActive($html, route('transactions.index')), 'Peminjaman tidak boleh ikut aktif.');
+        $this->assertFalse($this->sidebarLinkIsActive($html, route('transactions.recap')), 'Rekap Peminjaman tidak boleh ikut aktif.');
     }
 }

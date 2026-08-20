@@ -9,7 +9,7 @@
 
         @if($maintenanceTertunda > 0)
         <a href="{{ route('maintenance.index') }}"
-           class="flex items-center justify-between gap-3 px-5 py-3 border-l-2 border-l-danger-500 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+           class="flex items-center justify-between gap-3 px-5 py-2 border-l-2 border-l-danger-500 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
             <div class="min-w-0">
                 <p class="text-xs text-gray-900 dark:text-gray-100">Jadwal Perawatan Terlambat</p>
                 <p class="text-xs text-secondary mt-0.5">{{ $maintenanceTertunda }} jadwal perawatan melewati tenggat</p>
@@ -22,7 +22,7 @@
 
         @if($hilang > 0)
         <a href="{{ route('assets.hilang') }}"
-           class="flex items-center justify-between gap-3 px-5 py-3 border-l-2 border-l-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+           class="flex items-center justify-between gap-3 px-5 py-2 border-l-2 border-l-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
             <div class="min-w-0">
                 <p class="text-xs text-gray-900 dark:text-gray-100">Laporan Aset Hilang</p>
                 <p class="text-xs text-secondary mt-0.5">{{ $hilang }} laporan menunggu penanganan</p>
@@ -35,7 +35,7 @@
 
         @if($borrowedCount > 0)
         <a href="{{ route('transactions.index') }}"
-           class="flex items-center justify-between gap-3 px-5 py-3 border-l-2 border-l-warning-500 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+           class="flex items-center justify-between gap-3 px-5 py-2 border-l-2 border-l-warning-500 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
             <div class="min-w-0">
                 <p class="text-xs text-gray-900 dark:text-gray-100">Aset Sedang Dipinjam</p>
                 <p class="text-xs text-secondary mt-0.5">{{ $borrowedCount }} aset belum dikembalikan</p>

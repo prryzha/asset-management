@@ -5,18 +5,17 @@
 @section('content')
 <div class="page-content">
 
-    <x-ui.page-header title="Manajemen Kategori">
-        <x-slot:actions>
-            <a href="{{ route('categories.create') }}" class="btn-primary btn-xs">
-                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                </svg>
-                Tambah Kategori
-            </a>
-        </x-slot:actions>
-    </x-ui.page-header>
+    <x-ui.page-header title="Manajemen Kategori" />
 
     <div class="card overflow-hidden">
+        <x-ui.table-heading title="Daftar Kategori">
+            <a href="{{ route('categories.create') }}" class="btn-primary btn-icon" title="Tambah Kategori" aria-label="Tambah Kategori">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+            </a>
+        </x-ui.table-heading>
+
         <div class="table-container">
             <table class="table">
                 <thead>

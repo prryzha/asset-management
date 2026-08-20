@@ -68,30 +68,103 @@
     .sidebar-nav {
         flex: 1 1 auto;
         overflow-y: auto;
-        padding: var(--space-4) var(--space-3);
-    }
-
-    .sidebar-nav > * + * {
-        margin-top: 0.125rem;
+        padding: var(--space-3);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
     }
 
     .sidebar-section {
-        margin-bottom: var(--space-3);
+        display: flex;
+        flex-direction: column;
     }
 
     .sidebar-section-title {
-        padding: 0.75rem var(--space-3) 0.375rem;
+        display: flex;
+        align-items: center;
+        padding: var(--space-1) var(--space-3);
         font-size: 0.75rem;
         font-weight: 400;
         color: var(--color-text-faint);
         letter-spacing: 0.05em;
     }
 
+    /* ── Collapsible group trigger ──
+       Modifier on top of .sidebar-section-title: same label look/spacing as
+       a plain (non-interactive) section title like "Menu Utama", plus
+       button reset + hover + chevron rotation for groups that actually have
+       children (Master Data, Transaksi, Laporan, Pengaturan). */
+    .sidebar-section-trigger {
+        width: 100%;
+        justify-content: space-between;
+        background: none;
+        border: none;
+        font-family: inherit;
+        cursor: pointer;
+        border-radius: var(--radius-md);
+        transition: background-color 150ms, color 150ms;
+    }
+
+    .sidebar-section-trigger:hover {
+        background-color: var(--color-neutral-subtle);
+        color: var(--color-text-muted);
+    }
+
+    /* Subtle wayfinding hint while expanded — NOT the same strong
+       .sidebar-link.active treatment, so the parent never reads as if it
+       were itself the active page. Reuses the same neutral hover tint,
+       just persistent instead of only on :hover. */
+    .sidebar-section-trigger[aria-expanded="true"] {
+        background-color: var(--color-neutral-subtle);
+        color: var(--color-text-muted);
+    }
+
+    /* Leading category icon — same size/color treatment as a flat item's
+       icon (.sidebar-link .icon) so parent rows carry the same visual
+       weight as Dasbor. */
+    .sidebar-section-trigger .icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        color: var(--color-text-faint);
+        transition: color 150ms;
+    }
+
+    .sidebar-section-trigger:hover .icon,
+    .sidebar-section-trigger[aria-expanded="true"] .icon {
+        color: var(--color-text-muted);
+    }
+
+    /* Chevron — separate class from the leading icon (both are .icon-sized
+       svgs in the same button) so it can stay small (14px, same as global
+       .icon-sm) without shrinking the category icon next to it. */
+    .sidebar-section-trigger .sidebar-chevron {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        transition: transform 150ms ease-in-out;
+    }
+
+    .sidebar-section-trigger[aria-expanded="true"] .sidebar-chevron {
+        transform: rotate(180deg);
+    }
+
+    /* ── Collapsible child list ──
+       Small flex gap between rows, plus the same gap again as margin-top so
+       the first child doesn't sit flush against its category trigger above
+       (was 0px there, read as touching the title). */
+    .sidebar-subnav {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        margin-top: var(--space-1);
+    }
+
     .sidebar-link {
         display: flex;
         align-items: center;
         gap: 0.625rem;
-        padding: var(--space-2) var(--space-3);
+        padding: var(--space-1) var(--space-3);
         font-size: 0.75rem;
         font-weight: 400;
         color: var(--color-sidebar-link-text);
@@ -124,5 +197,43 @@
 
     .sidebar-link.active .icon {
         color: var(--color-primary);
+    }
+
+    /* ── Child item inside a collapsible group ──
+       Children no longer carry their own 18px icon — indentation only needs
+       to clear a small bullet marker, not an icon-sized column, but it still
+       needs to read as nested under the parent's icon+label, so it's pulled
+       out to var(--space-6) (was var(--space-5) — too close to the parent's
+       own left edge). Everything else (active state, hover, font-size,
+       vertical padding) still comes from .sidebar-link. */
+    .sidebar-link-child {
+        position: relative;
+        padding-left: var(--space-6);
+    }
+
+    /* Bullet marker replacing the child icon — plain CSS pseudo-element,
+       no extra SVG/markup. Color follows the same hover/active states as
+       a regular icon would (.sidebar-link:hover .icon / .active .icon),
+       just reusing --color-text-faint/-muted/-primary directly since
+       there's no element for those existing icon rules to target here. */
+    .sidebar-link-child::before {
+        content: '';
+        position: absolute;
+        left: var(--space-4);
+        top: 50%;
+        width: 5px;
+        height: 5px;
+        border-radius: var(--radius-full);
+        background-color: var(--color-text-faint);
+        transform: translateY(-50%);
+        transition: background-color 150ms;
+    }
+
+    .sidebar-link-child:hover::before {
+        background-color: var(--color-text-muted);
+    }
+
+    .sidebar-link-child.active::before {
+        background-color: var(--color-primary);
     }
 }

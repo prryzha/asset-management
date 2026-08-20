@@ -41,8 +41,10 @@
     <x-ui.page-header title="Aktivitas Sistem" />
 
     {{-- Filter --}}
-    <div class="card mb-6">
-        <div class="card-body-compact">
+    <div class="card overflow-hidden">
+        <x-ui.table-heading title="Log Aktivitas Sistem" />
+
+        <div class="card-body-compact border-b border-default">
             <form method="GET" class="filter-form">
                 <div class="search-input-wrapper">
                     <input type="text" name="search" value="{{ request('search') }}"
@@ -62,21 +64,18 @@
                 <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}" class="form-input form-input-sm w-auto">
                 <label class="filter-label">Sampai:</label>
                 <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}" class="form-input form-input-sm w-auto">
-                <button type="submit" class="btn-primary btn-sm">
+                <button type="submit" class="btn-primary btn-xs">
                     <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5-5m2-5a7 7 0 11-14 0a7 7 0 0114 0z"/>
                     </svg>
                     Cari
                 </button>
                 @if(request()->hasAny(['search','event','tanggal_dari','tanggal_sampai']))
-                <a href="{{ route('activity-logs.index') }}" class="btn-ghost btn-sm">Reset Filter</a>
+                <a href="{{ route('activity-logs.index') }}" class="btn-ghost btn-xs">Reset Filter</a>
                 @endif
             </form>
         </div>
-    </div>
 
-    {{-- Table --}}
-    <div class="card overflow-hidden">
         <div class="table-container">
             <table class="table">
                 <thead>
@@ -124,11 +123,11 @@
                 </tbody>
             </table>
         </div>
-    </div>
-
-    {{-- Pagination --}}
-    <div class="mt-6">
-        {{ $logs->links() }}
+        @if($logs->hasPages())
+        <div class="px-5 py-3 border-t border-default">
+            {{ $logs->links() }}
+        </div>
+        @endif
     </div>
 
 </div>

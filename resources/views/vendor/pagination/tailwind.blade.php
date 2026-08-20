@@ -44,11 +44,11 @@
                 <span class="pagination-controls">
                     {{-- Previous --}}
                     @if ($paginator->onFirstPage())
-                        <span class="pagination-link pagination-disabled">
+                        <span class="pagination-link pagination-disabled" title="Halaman Sebelumnya" aria-label="Halaman Sebelumnya" aria-disabled="true">
                             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         </span>
                     @else
-                        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="pagination-link">
+                        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="pagination-link" title="Halaman Sebelumnya" aria-label="Halaman Sebelumnya">
                             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         </a>
                     @endif
@@ -71,11 +71,11 @@
 
                     {{-- Next --}}
                     @if ($paginator->hasMorePages())
-                        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="pagination-link">
+                        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="pagination-link" title="Halaman Berikutnya" aria-label="Halaman Berikutnya">
                             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     @else
-                        <span class="pagination-link pagination-disabled">
+                        <span class="pagination-link pagination-disabled" title="Halaman Berikutnya" aria-label="Halaman Berikutnya" aria-disabled="true">
                             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </span>
                     @endif
