@@ -2,16 +2,16 @@
 @php
     $statusTotal = $totalAsset + $disposed;
     $statusRows = [
-        ['label' => 'Tersedia', 'value' => $tersedia, 'bar' => 'bg-success'],
-        ['label' => 'Dipinjam', 'value' => $dipinjam, 'bar' => 'bg-warning'],
-        ['label' => 'Perbaikan', 'value' => $perbaikan, 'bar' => 'bg-danger'],
-        ['label' => 'Hilang', 'value' => $hilang, 'bar' => 'bg-gray-400 dark:bg-gray-500'],
-        ['label' => 'Dihapuskan', 'value' => $disposed, 'bar' => 'bg-gray-300 dark:bg-gray-600'],
+        ['label' => __('ui.status.Tersedia'), 'value' => $tersedia, 'bar' => 'bg-success'],
+        ['label' => __('ui.status.Dipinjam'), 'value' => $dipinjam, 'bar' => 'bg-warning'],
+        ['label' => __('ui.status.Perbaikan'), 'value' => $perbaikan, 'bar' => 'bg-danger'],
+        ['label' => __('ui.status.Hilang'), 'value' => $hilang, 'bar' => 'bg-gray-400 dark:bg-gray-500'],
+        ['label' => __('ui.status.Disposed'), 'value' => $disposed, 'bar' => 'bg-gray-300 dark:bg-gray-600'],
     ];
 @endphp
 <div class="card">
     <div class="card-header">
-        <h3>Status Aset</h3>
+        <h3>{{ __('ui.dashboard.status_aset') }}</h3>
     </div>
     <div class="card-body space-y-3">
         @foreach($statusRows as $row)

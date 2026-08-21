@@ -374,7 +374,7 @@ class AssetController extends Controller
 
             return redirect()
                 ->route('assets.index')
-                ->with('success', "{$jumlahUnit} unit aset berhasil ditambahkan.");
+                ->with('success', __('ui.messages.assets_bulk_created', ['count' => $jumlahUnit]));
         }
 
         // Auto-generate kode barang jika tidak diisi
@@ -402,7 +402,7 @@ class AssetController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Aset berhasil ditambahkan.');
+            ->with('success', __('ui.messages.asset_created'));
     }
 
     public function show(Asset $asset): View
@@ -480,7 +480,7 @@ class AssetController extends Controller
             && array_key_exists('location_id', $validated)
             && $validated['location_id'] != $asset->location_id) {
             throw ValidationException::withMessages([
-                'location_id' => 'Lokasi aset yang sudah Dihapuskan tidak dapat diubah.',
+                'location_id' => __('ui.messages.disposed_location_locked'),
             ]);
         }
 
@@ -528,7 +528,7 @@ class AssetController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Aset berhasil diperbarui.');
+            ->with('success', __('ui.messages.asset_updated'));
     }
 
     public function reportDamage(Request $request, Asset $asset): RedirectResponse
@@ -546,7 +546,7 @@ class AssetController extends Controller
             // tetap wajib menolak raw request juga (lihat pola yang sama di reportLost()).
             if (in_array($locked->status, ['Hilang', 'Disposed'])) {
                 throw ValidationException::withMessages([
-                    'status' => 'Aset dengan status ' . $this->statusLabel($locked->status) . ' tidak dapat dilaporkan kerusakannya.',
+                    'status' => __('ui.messages.damage_report_status_guard', ['status' => $this->statusLabel($locked->status)]),
                 ]);
             }
 
@@ -573,7 +573,7 @@ class AssetController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Kerusakan berhasil dilaporkan.');
+            ->with('success', __('ui.messages.damage_reported'));
     }
 
     public function reportLost(Request $request, Asset $asset): RedirectResponse
@@ -593,7 +593,7 @@ class AssetController extends Controller
             // itu akan meninggalkan transaksi/jadwal itu menggantung tanpa penutup.
             if ($locked->status !== 'Tersedia') {
                 throw ValidationException::withMessages([
-                    'status' => 'Hanya aset berstatus Tersedia yang dapat dilaporkan hilang.',
+                    'status' => __('ui.messages.lost_report_status_guard'),
                 ]);
             }
 
@@ -616,7 +616,7 @@ class AssetController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Aset berhasil dilaporkan hilang.');
+            ->with('success', __('ui.messages.asset_reported_lost'));
     }
 
     public function markFound(Request $request, Asset $asset): RedirectResponse
@@ -632,7 +632,7 @@ class AssetController extends Controller
 
             if ($locked->status !== 'Hilang') {
                 throw ValidationException::withMessages([
-                    'status' => 'Hanya aset berstatus Hilang yang dapat ditandai ditemukan.',
+                    'status' => __('ui.messages.found_status_guard'),
                 ]);
             }
 
@@ -658,7 +658,7 @@ class AssetController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Aset berhasil ditandai ditemukan.');
+            ->with('success', __('ui.messages.asset_marked_found'));
     }
 
     public function processDisposal(Request $request, Asset $asset): RedirectResponse
@@ -678,13 +678,13 @@ class AssetController extends Controller
             // guard di reportLost().
             if ($locked->status === 'Dipinjam') {
                 throw ValidationException::withMessages([
-                    'status' => 'Aset yang sedang dipinjam harus dikembalikan terlebih dahulu sebelum diproses penghapusan.',
+                    'status' => __('ui.messages.disposal_borrowed_guard'),
                 ]);
             }
 
             if (! in_array($locked->status, ['Tersedia', 'Perbaikan', 'Hilang'])) {
                 throw ValidationException::withMessages([
-                    'status' => 'Aset dengan status ' . $this->statusLabel($locked->status) . ' tidak dapat diproses penghapusan.',
+                    'status' => __('ui.messages.disposal_status_guard', ['status' => $this->statusLabel($locked->status)]),
                 ]);
             }
 
@@ -693,7 +693,7 @@ class AssetController extends Controller
             // guard yang sama dipakai TransactionController::store().
             if ($locked->maintenanceSchedules()->where('status', 'Dikerjakan')->exists()) {
                 throw ValidationException::withMessages([
-                    'status' => 'Aset sedang dalam perawatan aktif, selesaikan perawatan terlebih dahulu sebelum diproses penghapusan.',
+                    'status' => __('ui.messages.disposal_maintenance_guard'),
                 ]);
             }
 
@@ -719,7 +719,7 @@ class AssetController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Aset berhasil diproses penghapusan.');
+            ->with('success', __('ui.messages.asset_disposed'));
     }
 
     public function deleteFoto(Asset $asset): RedirectResponse
@@ -734,22 +734,22 @@ class AssetController extends Controller
 
             return redirect()
                 ->route('assets.edit', $asset)
-                ->with('success', 'Foto aset berhasil dihapus.');
+                ->with('success', __('ui.messages.photo_deleted'));
         }
 
         return redirect()
             ->route('assets.edit', $asset)
-            ->with('error', 'Tidak ada foto untuk dihapus.');
+            ->with('error', __('ui.messages.no_photo_to_delete'));
     }
 
     public function destroy(Asset $asset): RedirectResponse
     {
         if ($asset->status === 'Disposed') {
-            return redirect()->route('assets.archive')->with('error', 'Aset yang sudah Dihapuskan harus tetap tersimpan di Arsip Aset untuk kebutuhan audit.');
+            return redirect()->route('assets.archive')->with('error', __('ui.messages.disposed_must_stay_archived'));
         }
 
         if ($asset->status === 'Dipinjam' || $asset->transactions()->where('status_peminjaman', 'Dipinjam')->exists()) {
-            return redirect()->route('assets.index')->with('error', 'Tidak dapat menghapus aset yang sedang dipinjam.');
+            return redirect()->route('assets.index')->with('error', __('ui.messages.cannot_delete_borrowed_asset'));
         }
 
         $photo = $asset->foto;
@@ -766,7 +766,7 @@ class AssetController extends Controller
 
         $this->clearCache();
 
-        return redirect()->route('assets.index')->with('success', 'Aset berhasil dihapus.');
+        return redirect()->route('assets.index')->with('success', __('ui.messages.asset_deleted'));
     }
 
     public function bulkDestroy(Request $request): RedirectResponse
@@ -806,12 +806,12 @@ class AssetController extends Controller
 
         if (empty($deletedCodes)) {
             return redirect()->route('assets.index')
-                ->with('error', 'Tidak ada aset yang dihapus — semua aset yang dipilih sedang dipinjam: ' . implode(', ', $skippedCodes) . '.');
+                ->with('error', __('ui.messages.bulk_delete_none_deleted', ['kodes' => implode(', ', $skippedCodes)]));
         }
 
-        $message = count($deletedCodes) . ' aset berhasil dihapus (' . implode(', ', $deletedCodes) . ').';
+        $message = __('ui.messages.bulk_delete_success', ['count' => count($deletedCodes), 'kodes' => implode(', ', $deletedCodes)]);
         if (!empty($skippedCodes)) {
-            $message .= ' ' . count($skippedCodes) . ' dilewati karena sedang dipinjam: ' . implode(', ', $skippedCodes) . '.';
+            $message .= __('ui.messages.bulk_delete_skipped_suffix', ['count' => count($skippedCodes), 'kodes' => implode(', ', $skippedCodes)]);
         }
 
         return redirect()->route('assets.index')->with('success', $message);
@@ -935,7 +935,7 @@ class AssetController extends Controller
         if ($assets->isEmpty()) {
             return redirect()
                 ->route('assets.index', $request->only(['search', 'category_id', 'location_id', 'kondisi', 'status', 'f']))
-                ->with('error', 'Tidak ada aset yang sesuai dengan filter, label tidak dapat dicetak.');
+                ->with('error', __('ui.messages.no_assets_for_label'));
         }
 
         // Batas aman: tiap label butuh 1 QR SVG dan render DomPDF ±50 ms/label.
@@ -944,7 +944,7 @@ class AssetController extends Controller
         if ($assets->count() > self::MAX_LABEL_MASSAL) {
             return redirect()
                 ->route('assets.index', $request->only(['search', 'category_id', 'location_id', 'kondisi', 'status', 'f']))
-                ->with('error', 'Terlalu banyak aset (' . $assets->count() . '). Maksimal ' . self::MAX_LABEL_MASSAL . ' label sekali cetak — persempit filter terlebih dahulu.');
+                ->with('error', __('ui.messages.too_many_labels', ['count' => $assets->count(), 'max' => self::MAX_LABEL_MASSAL]));
         }
 
         // QR dibentuk sama persis dengan label individual (labelPdf): isinya URL
@@ -1144,7 +1144,7 @@ class AssetController extends Controller
      */
     private function statusLabel(string $status): string
     {
-        return $status === 'Disposed' ? 'Dihapuskan' : $status;
+        return __('ui.status.' . $status);
     }
 
     /**

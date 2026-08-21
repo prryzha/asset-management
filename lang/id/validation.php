@@ -203,6 +203,8 @@ return [
         'tanggal_penghapusan' => 'tanggal penghapusan',
         'alasan' => 'alasan',
         'name' => 'nama',
+        'username' => 'nama pengguna',
+        'foto_profil' => 'foto profil',
         'email' => 'email',
         'new_email' => 'email baru',
         'password' => 'password',

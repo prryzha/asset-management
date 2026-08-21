@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', __('ui.nav.dashboard'))
 
 @section('content')
 <div class="page-content dashboard-content">
 
     {{-- ===== PAGE HEADER ===== --}}
-    <x-ui.page-header title="Dashboard" subtitle="Ringkasan aset dan aktivitas terkini." />
+    <x-ui.page-header :title="__('ui.nav.dashboard')" :subtitle="__('ui.dashboard.subtitle')" />
 
     {{-- ===== BARIS 1: SUMMARY CARDS ===== --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
@@ -19,7 +19,7 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0 stat-text">
-                <p class="stat-label">Total Aset Aktif</p>
+                <p class="stat-label">{{ __('ui.dashboard.total_aset_aktif') }}</p>
                 <h2 class="stat-value">{{ $totalAsset }}</h2>
                 <p class="stat-detail truncate">Rp {{ number_format($totalNilai, 0, ',', '.') }}</p>
             </div>
@@ -33,9 +33,9 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0 stat-text">
-                <p class="stat-label">Tersedia</p>
+                <p class="stat-label">{{ __('ui.dashboard.tersedia') }}</p>
                 <h2 class="stat-value">{{ $tersedia }}</h2>
-                <p class="stat-detail">Aset tersedia</p>
+                <p class="stat-detail">{{ __('ui.dashboard.aset_tersedia') }}</p>
             </div>
         </div>
 
@@ -47,9 +47,9 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0 stat-text">
-                <p class="stat-label">Dipinjam</p>
+                <p class="stat-label">{{ __('ui.dashboard.dipinjam') }}</p>
                 <h2 class="stat-value">{{ $dipinjam }}</h2>
-                <p class="stat-detail">Aset sedang dipinjam</p>
+                <p class="stat-detail">{{ __('ui.dashboard.aset_sedang_dipinjam') }}</p>
             </div>
         </div>
 
@@ -61,9 +61,9 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0 stat-text">
-                <p class="stat-label">Perbaikan</p>
+                <p class="stat-label">{{ __('ui.dashboard.perbaikan') }}</p>
                 <h2 class="stat-value">{{ $perbaikan }}</h2>
-                <p class="stat-detail">Aset dalam perbaikan</p>
+                <p class="stat-detail">{{ __('ui.dashboard.aset_dalam_perbaikan') }}</p>
             </div>
         </div>
 
@@ -79,34 +79,33 @@
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <h3>Jadwal Perawatan</h3>
-                        <p class="text-xs text-secondary mt-0.5">Daftar jadwal perawatan aset</p>
+                        <h3>{{ __('ui.dashboard.jadwal_perawatan') }}</h3>
+                        <p class="text-xs text-secondary mt-0.5">{{ __('ui.dashboard.daftar_jadwal_perawatan') }}</p>
                     </div>
-                    <a href="{{ route('maintenance.create') }}" class="btn-primary btn-sm">
+                    <a href="{{ route('maintenance.create') }}" class="btn-primary btn-icon" title="{{ __('ui.dashboard.jadwalkan') }}" aria-label="{{ __('ui.dashboard.jadwalkan') }}">
                         <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
-                        Jadwalkan
                     </a>
                 </div>
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Waktu</th>
-                                <th>Nama Aset</th>
-                                <th>Jenis</th>
+                                <th>{{ __('ui.dashboard.waktu') }}</th>
+                                <th>{{ __('ui.dashboard.nama_aset') }}</th>
+                                <th>{{ __('ui.dashboard.jenis') }}</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Tindakan</th>
+                                <th class="text-center">{{ __('ui.dashboard.tindakan') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse(($maintenanceUpcoming ?? collect()) as $ms)
                             <tr>
-                                <td class="font-normal">{{ \Carbon\Carbon::parse($ms->tanggal_jadwal)->format('d M Y') }}</td>
+                                <td class="font-normal">{{ \Carbon\Carbon::parse($ms->tanggal_jadwal)->translatedFormat('d M Y') }}</td>
                                 <td>
                                     <span class="font-normal">{{ $ms->asset?->kode_barang ?? '-' }}</span>
-                                    <span class="text-xs text-secondary block">{{ $ms->asset?->nama_barang ?? 'Aset Dihapus' }}</span>
+                                    <span class="text-xs text-secondary block">{{ $ms->asset?->nama_barang ?? __('ui.dashboard.aset_dihapus') }}</span>
                                 </td>
                                 <td class="text-secondary">{{ $ms->jenis_perawatan }}</td>
                                 <td class="text-center">
@@ -114,13 +113,17 @@
                                 </td>
                                 <td class="text-center">
                                     @if($ms->status == 'Dijadwalkan')
-                                        <a href="{{ route('maintenance.edit', $ms) }}" class="btn-ghost btn-icon" title="Ubah" aria-label="Ubah jadwal {{ $ms->jenis_perawatan }}">
+                                        <a href="{{ route('maintenance.edit', $ms) }}" class="btn-ghost btn-icon" title="{{ __('ui.common.ubah') }}" aria-label="{{ __('ui.maintenance.ubah_jadwal_aria', ['jenis' => $ms->jenis_perawatan]) }}">
                                             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
                                         </a>
                                     @elseif($ms->status == 'Dikerjakan')
-                                        <a href="{{ route('maintenance.complete-form', $ms) }}" class="btn-primary btn-sm px-2 py-1 text-xs">Selesaikan</a>
+                                        <a href="{{ route('maintenance.complete-form', $ms) }}" class="btn-primary btn-icon" title="{{ __('ui.dashboard.selesaikan') }}" aria-label="{{ __('ui.dashboard.selesaikan') }}">
+                                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </a>
                                     @else
                                         <span class="text-xs text-secondary">—</span>
                                     @endif
@@ -129,7 +132,7 @@
                             @empty
                             <tr>
                                 <td colspan="5" class="text-center py-10">
-                                    <span class="text-xs text-secondary">Tidak ada jadwal perawatan.</span>
+                                    <span class="text-xs text-secondary">{{ __('ui.dashboard.tidak_ada_jadwal_perawatan') }}</span>
                                 </td>
                             </tr>
                             @endforelse
@@ -139,7 +142,7 @@
                 @if(($maintenanceUpcoming ?? collect())->count() > 0)
                 <div class="card-footer-link">
                     <a href="{{ route('maintenance.index') }}">
-                        Lihat Semua Jadwal &rarr;
+                        {{ __('ui.dashboard.lihat_semua_jadwal') }}
                     </a>
                 </div>
                 @endif
@@ -149,30 +152,30 @@
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <h3>Aktivitas Terbaru</h3>
-                        <p class="text-xs text-secondary mt-0.5">Log aktivitas sistem terbaru</p>
+                        <h3>{{ __('ui.dashboard.aktivitas_terbaru') }}</h3>
+                        <p class="text-xs text-secondary mt-0.5">{{ __('ui.dashboard.log_aktivitas_sistem_terbaru') }}</p>
                     </div>
                 </div>
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Tanggal</th>
-                                <th>Pengguna</th>
-                                <th>Aktivitas</th>
+                                <th>{{ __('ui.dashboard.tanggal') }}</th>
+                                <th>{{ __('ui.activity_logs.pengguna') }}</th>
+                                <th>{{ __('ui.activity_logs.aktivitas') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($recentActivities as $activity)
                             <tr>
                                 <td class="whitespace-nowrap text-secondary">{{ $activity->created_at->format('d/m/Y') }}</td>
-                                <td class="font-normal">{{ $activity->user->name ?? 'Sistem' }}</td>
+                                <td class="font-normal">{{ $activity->user->name ?? __('ui.activity_logs.sistem') }}</td>
                                 <td class="text-secondary">{{ $activity->description }}</td>
                             </tr>
                             @empty
                             <tr>
                                 <td colspan="3" class="text-center py-10">
-                                    <span class="text-xs text-secondary">Belum ada aktivitas.</span>
+                                    <span class="text-xs text-secondary">{{ __('ui.dashboard.belum_ada_aktivitas') }}</span>
                                 </td>
                             </tr>
                             @endforelse
@@ -182,7 +185,7 @@
                 @if($recentActivities->count() > 0)
                 <div class="card-footer-link">
                     <a href="{{ route('activity-logs.index') }}">
-                        Lihat Semua &rarr;
+                        {{ __('ui.dashboard.lihat_semua') }}
                     </a>
                 </div>
                 @endif

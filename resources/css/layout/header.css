@@ -71,8 +71,14 @@
         --header-info-height: 0px;
     }
 
+    /* border-bottom-width goes to 0 too, not just a transparent color — a
+       transparent 1px border still occupies 1px of flow height, nudging
+       .app-header (which sits directly after .app-topbar in flow) ~1px out
+       of alignment with .sidebar-user (positioned via top: var(--header-info-height)
+       directly, no border in the way) while collapsed. */
     html.topbar-collapsed .app-topbar {
         border-bottom-color: transparent;
+        border-bottom-width: 0;
     }
 
     @media (max-width: 639px) {
@@ -132,10 +138,52 @@
     .app-header-main {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
         gap: var(--space-4);
         height: 100%;
         padding: 0 var(--space-5);
+    }
+
+    /* ── Institution branding (left side of the main header) ──
+       Always rendered as a flex child (even empty, when Profil Instansi
+       hasn't been configured yet) so .app-header-main's space-between has
+       exactly 2 children — this keeps the system-identity group pinned to
+       the right edge exactly as before on a fresh/unconfigured install.
+       min-width:0 lets the name/subtitle truncate instead of overflowing
+       the header on narrow viewports (flex items default to min-width:auto,
+       which would otherwise block the child's own `truncate` from engaging). */
+    .app-header-institution {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        min-width: 0;
+    }
+
+    .app-header-institution-logo {
+        width: 28px;
+        height: 28px;
+        border-radius: var(--radius-md);
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    /* Fallback when no logo is uploaded yet — reuses the same circular
+       initials-avatar look as .header-user-avatar (sidebar/header user
+       menus) instead of inventing a new placeholder style. */
+    .app-header-institution-logo-fallback {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--color-primary);
+        color: var(--color-text-on-primary);
+        font-size: 0.75rem;
+        font-family: var(--font-primary);
+    }
+
+    .app-header-institution-subtitle {
+        font-size: 0.75rem;
+        color: var(--color-text-faint);
+        line-height: 1.25;
     }
 
     .app-header-brand-icon {
@@ -338,14 +386,36 @@
     }
 
     /* ── Decorative accent line (bottom of the top info bar) ──
-       Plain CSS stripes, no image. Sits between .app-topbar and .app-header
-       in normal flow, inside the already-fixed .app-header-group — no new
-       positioning or --header-height change needed, it just overlaps a
-       couple of px onto the top of .app-header below it (negligible for a
-       4px line against a 64px bar). */
+       Plain CSS stripes, no image. Painted as an absolutely-positioned
+       overlay at the .app-topbar/.app-header seam instead of a normal-flow
+       element between them — it used to sit in flow and add its own 4px to
+       the header column's height, which nothing else (sidebar top/height,
+       --header-height, .app-content-wrapper padding-top) accounted for.
+       That silently pushed .app-header 4px lower than .sidebar-user despite
+       both reading the same --header-main-height, breaking the header/
+       sidebar and content-topbar/sidebar-nav seams out of alignment (found
+       2026-08-20 from a user screenshot showing the two borders not
+       lining up). Absolute positioning removes it from flow entirely, so it
+       can never again shift the height of anything below it. Transitions
+       with --header-info-height so it still tracks the topbar collapse.
+
+       top is offset UP by the accent's own height (4px) so it paints onto
+       the topbar's bottom edge instead of overlapping the header's own top
+       4px — sitting exactly at var(--header-info-height) made the header's
+       vertically-centered content look off-center (top gap visually eaten
+       by the stripe, ~11px vs a clean ~16px at the bottom) even though the
+       flex centering itself was correct (found 2026-08-20 from a user
+       screenshot). Keep this in sync with the stripes' combined height
+       below if that ever changes. */
     .app-header-accent {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(var(--header-info-height) - 4px);
         display: flex;
         flex-direction: column;
+        z-index: 1;
+        transition: top 200ms ease-in-out;
     }
 
     .app-header-accent-stripe {

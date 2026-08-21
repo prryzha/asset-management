@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -24,8 +25,17 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Input kosong dari text field dikirim sebagai string "" (bukan
+        // null) — "nullable" di usernameRules() cuma melewatkan validasi
+        // lanjutan kalau nilainya benar-benar null, sama seperti
+        // ProfileUpdateRequest.
+        if ($request->input('username') === '') {
+            $request->merge(['username' => null]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'username' => User::usernameRules(),
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,staff',
@@ -33,6 +43,7 @@ class UserController extends Controller
 
         User::create([
             'name' => $validated['name'],
+            'username' => $validated['username'] ?? null,
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
@@ -40,7 +51,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('users.index')
-            ->with('success', 'User berhasil ditambahkan.');
+            ->with('success', __('ui.messages.user_created'));
     }
 
     public function edit(User $user): View
@@ -50,8 +61,13 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
+        if ($request->input('username') === '') {
+            $request->merge(['username' => null]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'username' => User::usernameRules($user->id),
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,staff',
             'password' => 'nullable|string|min:8|confirmed',
@@ -62,11 +78,12 @@ class UserController extends Controller
         if ($user->isAdmin() && $validated['role'] !== 'admin' && $user->isLastAdmin()) {
             return redirect()
                 ->route('users.index')
-                ->with('error', 'Akun Admin terakhir tidak dapat diubah menjadi Staff.');
+                ->with('error', __('ui.messages.last_admin_cannot_demote'));
         }
 
         $data = [
             'name' => $validated['name'],
+            'username' => $validated['username'] ?? null,
             'email' => $validated['email'],
             'role' => $validated['role'],
         ];
@@ -82,7 +99,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('users.index')
-            ->with('success', 'User berhasil diperbarui.');
+            ->with('success', __('ui.messages.user_updated'));
     }
 
     public function destroy(User $user): RedirectResponse
@@ -90,13 +107,17 @@ class UserController extends Controller
         if ($user->id === auth()->id()) {
             return redirect()
                 ->route('users.index')
-                ->with('error', 'Tidak dapat menghapus akun sendiri.');
+                ->with('error', __('ui.messages.cannot_delete_self'));
+        }
+
+        if ($user->foto_profil && Storage::disk('public')->exists($user->foto_profil)) {
+            Storage::disk('public')->delete($user->foto_profil);
         }
 
         $user->delete();
 
         return redirect()
             ->route('users.index')
-            ->with('success', 'User berhasil dihapus.');
+            ->with('success', __('ui.messages.user_deleted'));
     }
 }

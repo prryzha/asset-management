@@ -3,7 +3,11 @@
     {{-- User profile --}}
     <div class="sidebar-user relative" x-data="{ open: false }" x-on:keydown.escape.window="open = false" x-on:click.outside="open = false">
         <button type="button" class="sidebar-user-trigger" x-on:click="open = !open">
-            <div class="header-user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
+            @if(auth()->user()->foto_profil)
+                <img src="{{ asset('storage/'.auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="header-user-avatar object-cover">
+            @else
+                <div class="header-user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
+            @endif
             <div class="text-left leading-tight min-w-0">
                 <p class="header-user-name ui-title">{{ auth()->user()->name }}</p>
                 <p class="header-user-role">{{ ucfirst(auth()->user()->role) }}</p>
@@ -20,7 +24,7 @@
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
-                Profil Saya
+                {{ __('ui.nav.profil_saya') }}
             </a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -28,7 +32,7 @@
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
-                    Keluar
+                    {{ __('ui.nav.keluar') }}
                 </button>
             </form>
         </div>
@@ -58,8 +62,9 @@
         $laporanOpen = $isLaporanAset || $isArsipAset || $isLaporanPeminjaman || $isRekapPeminjaman;
 
         $isManajemenUser = request()->routeIs('users.*');
+        $isProfilInstansi = request()->routeIs('institution-profile.*');
         $isAktivitasSistem = request()->routeIs('activity-logs.*');
-        $pengaturanOpen = $isManajemenUser || $isAktivitasSistem;
+        $pengaturanOpen = $isManajemenUser || $isProfilInstansi || $isAktivitasSistem;
     @endphp
     <nav class="sidebar-nav scrollbar-hidden">
 
@@ -69,7 +74,7 @@
             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 001 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
-            Dasbor
+            {{ __('ui.nav.dashboard') }}
         </a>
 
         {{-- Master Data — collapsible --}}
@@ -80,7 +85,7 @@
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
-                    Master Data
+                    {{ __('ui.nav.master_data') }}
                 </span>
                 <svg class="sidebar-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -90,17 +95,17 @@
             <div x-show="open" x-cloak x-transition id="nav-master-data" class="sidebar-subnav">
                 <a href="{{ route('assets.index') }}"
                    class="sidebar-link sidebar-link-child {{ $isAset ? 'active' : '' }}">
-                    Aset
+                    {{ __('ui.nav.aset') }}
                 </a>
 
                 <a href="{{ route('categories.index') }}"
                    class="sidebar-link sidebar-link-child {{ $isKategori ? 'active' : '' }}">
-                    Kategori
+                    {{ __('ui.nav.kategori') }}
                 </a>
 
                 <a href="{{ route('locations.index') }}"
                    class="sidebar-link sidebar-link-child {{ $isLokasi ? 'active' : '' }}">
-                    Lokasi
+                    {{ __('ui.nav.lokasi') }}
                 </a>
             </div>
         </div>
@@ -113,7 +118,7 @@
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                     </svg>
-                    Transaksi
+                    {{ __('ui.nav.transaksi') }}
                 </span>
                 <svg class="sidebar-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -123,17 +128,17 @@
             <div x-show="open" x-cloak x-transition id="nav-transaksi" class="sidebar-subnav">
                 <a href="{{ route('transactions.index') }}"
                    class="sidebar-link sidebar-link-child {{ $isPeminjaman ? 'active' : '' }}">
-                    Peminjaman
+                    {{ __('ui.nav.peminjaman') }}
                 </a>
 
                 <a href="{{ route('maintenance.index') }}"
                    class="sidebar-link sidebar-link-child {{ $isPerawatan ? 'active' : '' }}">
-                    Perawatan
+                    {{ __('ui.nav.perawatan') }}
                 </a>
 
                 <a href="{{ route('mutasi.index') }}"
                    class="sidebar-link sidebar-link-child {{ $isMutasi ? 'active' : '' }}">
-                    Mutasi
+                    {{ __('ui.nav.mutasi') }}
                 </a>
             </div>
         </div>
@@ -146,7 +151,7 @@
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    Laporan
+                    {{ __('ui.nav.laporan') }}
                 </span>
                 <svg class="sidebar-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -156,22 +161,22 @@
             <div x-show="open" x-cloak x-transition id="nav-laporan" class="sidebar-subnav">
                 <a href="{{ route('assets.hilang') }}"
                    class="sidebar-link sidebar-link-child {{ $isLaporanAset ? 'active' : '' }}">
-                    Laporan Aset
+                    {{ __('ui.nav.laporan_aset') }}
                 </a>
 
                 <a href="{{ route('assets.archive') }}"
                    class="sidebar-link sidebar-link-child {{ $isArsipAset ? 'active' : '' }}">
-                    Arsip Aset
+                    {{ __('ui.nav.arsip_aset') }}
                 </a>
 
                 <a href="{{ route('transactions.report') }}"
                    class="sidebar-link sidebar-link-child {{ $isLaporanPeminjaman ? 'active' : '' }}">
-                    Laporan Peminjaman
+                    {{ __('ui.nav.laporan_peminjaman') }}
                 </a>
 
                 <a href="{{ route('transactions.recap') }}"
                    class="sidebar-link sidebar-link-child {{ $isRekapPeminjaman ? 'active' : '' }}">
-                    Rekap Peminjaman
+                    {{ __('ui.nav.rekap_peminjaman') }}
                 </a>
             </div>
         </div>
@@ -185,7 +190,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    Pengaturan
+                    {{ __('ui.nav.pengaturan') }}
                 </span>
                 <svg class="sidebar-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -196,13 +201,18 @@
                 @if(auth()->user()->isAdmin())
                 <a href="{{ route('users.index') }}"
                    class="sidebar-link sidebar-link-child {{ $isManajemenUser ? 'active' : '' }}">
-                    Manajemen User
+                    {{ __('ui.nav.manajemen_user') }}
+                </a>
+
+                <a href="{{ route('institution-profile.edit') }}"
+                   class="sidebar-link sidebar-link-child {{ $isProfilInstansi ? 'active' : '' }}">
+                    {{ __('ui.nav.profil_instansi') }}
                 </a>
                 @endif
 
                 <a href="{{ route('activity-logs.index') }}"
                    class="sidebar-link sidebar-link-child {{ $isAktivitasSistem ? 'active' : '' }}">
-                    Aktivitas Sistem
+                    {{ __('ui.nav.aktivitas_sistem') }}
                 </a>
             </div>
         </div>
@@ -216,7 +226,7 @@
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                 </svg>
-                Keluar
+                {{ __('ui.nav.keluar') }}
             </button>
         </form>
     </nav>

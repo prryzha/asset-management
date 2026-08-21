@@ -42,6 +42,25 @@
         padding: var(--space-3) var(--space-5);
     }
 
+    /* Asset detail page (assets/show.blade.php) compact refinement — every
+       piece of content on that page is 12px, but .card-header/.card-body
+       still used the 16px-title-era default padding, reading as "big for
+       nothing" (tall headers/cards with disproportionate empty space).
+       Same technique as .dashboard-content above: scoped via a second class
+       on the page-content wrapper so .card-header/.card-body elsewhere keep
+       their existing sizing. */
+    .asset-detail-page .card-header h3 {
+        font-size: 0.75rem;
+    }
+
+    .asset-detail-page .card-header {
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .asset-detail-page .card-body {
+        padding: var(--space-4);
+    }
+
     /* ── Table heading variant (<x-ui.table-heading>) ──
        .card-header alone is a fixed nowrap row, fine for the 1-2 items in a
        modal/dropdown header but not for a table title sitting next to up to

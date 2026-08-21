@@ -3,9 +3,11 @@
 @php
 $dot = 'badge-dot-neutral';
 $classes = 'badge-gray';
-// Internal DB value tetap "Disposed" (lihat AssetController::statusLabel()) — cuma
-// label yang ditampilkan yang diterjemahkan, supaya tidak perlu migration/rename kolom.
-$label = $status === 'Disposed' ? 'Dihapuskan' : $status;
+// Nilai DB (mis. "Tersedia", "Disposed") tetap dipakai apa adanya sebagai
+// KEY lookup — tidak pernah diubah, itu identifier teknis. Yang berubah
+// per-locale cuma label yang ditampilkan, lewat ui.status di lang/{id,en}.
+$label = __('ui.status.' . $status);
+$label = $label === 'ui.status.' . $status ? $status : $label;
 
 switch($status) {
     case 'Tersedia':

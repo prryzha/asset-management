@@ -31,7 +31,7 @@ class AssetLogController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Log aktivitas berhasil ditambahkan.');
+            ->with('success', __('ui.messages.log_created'));
     }
 
     private function mutasiQuery(Request $request)

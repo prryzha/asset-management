@@ -2,11 +2,11 @@
      dengan halaman login (guest.blade.php): kartu tengah + radial background.
      Variabel datang dari @include di tiap halaman error. --}}
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Manajemen Aset') }} - {{ $title ?? 'Kesalahan' }}</title>
+    <title>{{ config('app.name', __('ui.auth.app_name')) }} - {{ $title ?? __('ui.errors.default_title') }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -32,7 +32,7 @@
 
             <div class="auth-error-code">{{ $code ?? '' }}</div>
 
-            <h1 class="auth-error-title">{{ $title ?? 'Terjadi Kesalahan' }}</h1>
+            <h1 class="auth-error-title">{{ $title ?? __('ui.errors.default_error_title') }}</h1>
 
             @if(!empty($message))
                 <p class="auth-error-message">{{ $message }}</p>
@@ -44,7 +44,7 @@
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                 </svg>
-                Kembali ke Beranda
+                {{ __('ui.errors.back_to_home') }}
             </a>
 
         </div>

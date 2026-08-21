@@ -56,7 +56,7 @@ class LocationController extends Controller
 
         return redirect()
             ->route('locations.index')
-            ->with('success', 'Lokasi berhasil ditambahkan.');
+            ->with('success', __('ui.messages.location_created'));
     }
 
     public function edit(Location $location): View
@@ -102,7 +102,7 @@ class LocationController extends Controller
 
         return redirect()
             ->route('locations.index')
-            ->with('success', 'Lokasi berhasil diperbarui.');
+            ->with('success', __('ui.messages.location_updated'));
     }
 
     public function destroy(Location $location): RedirectResponse
@@ -110,7 +110,7 @@ class LocationController extends Controller
         if ($location->assets()->exists()) {
             return redirect()
                 ->route('locations.index')
-                ->with('error', 'Lokasi yang masih dipakai aset tidak dapat dihapus.');
+                ->with('error', __('ui.messages.location_in_use'));
         }
 
         $name = $location->nama;
@@ -130,6 +130,6 @@ class LocationController extends Controller
 
         return redirect()
             ->route('locations.index')
-            ->with('success', 'Lokasi berhasil dihapus.');
+            ->with('success', __('ui.messages.location_deleted'));
     }
 }

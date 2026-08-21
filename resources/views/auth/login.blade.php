@@ -12,7 +12,7 @@
 
         {{-- Email --}}
         <div class="form-group">
-            <label class="form-label">Email</label>
+            <label class="form-label">{{ __('ui.auth.email') }}</label>
             <input
                 type="email"
                 name="email"
@@ -25,8 +25,8 @@
         </div>
 
         {{-- Password --}}
-        <div class="form-group mt-5">
-            <label class="form-label">Password</label>
+        <div class="form-group mt-4">
+            <label class="form-label">{{ __('ui.auth.password') }}</label>
             <input
                 type="password"
                 name="password"
@@ -45,13 +45,13 @@
                     name="remember"
                     class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                     id="remember_me">
-                <span class="text-xs text-gray-600">Ingat saya</span>
+                <span class="text-xs text-gray-600">{{ __('ui.auth.remember_me') }}</span>
             </label>
 
             @if(Route::has('password.request'))
                 <a href="{{ route('password.request') }}"
                    class="text-xs font-normal text-primary-600 hover:text-primary-700">
-                    Lupa password?
+                    {{ __('ui.auth.forgot_password') }}
                 </a>
             @endif
 
@@ -60,7 +60,7 @@
         {{-- Submit --}}
         <div class="mt-8">
             <button class="btn-primary w-full">
-                Masuk
+                {{ __('ui.auth.login') }}
             </button>
         </div>
 

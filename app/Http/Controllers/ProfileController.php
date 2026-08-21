@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -22,12 +23,24 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's name. Email TIDAK lagi ditangani di sini — punya
-     * alur verifikasi tersendiri lewat ProfileEmailController.
+     * Update the user's name + foto profil. Email TIDAK lagi ditangani di
+     * sini — punya alur verifikasi tersendiri lewat ProfileEmailController.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+
+        if ($request->hasFile('foto_profil')) {
+            $user = $request->user();
+            if ($user->foto_profil && Storage::disk('public')->exists($user->foto_profil)) {
+                Storage::disk('public')->delete($user->foto_profil);
+            }
+            $validated['foto_profil'] = $request->file('foto_profil')->store('avatars', 'public');
+        } else {
+            unset($validated['foto_profil']);
+        }
+
+        $request->user()->fill($validated);
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
@@ -43,7 +56,7 @@ class ProfileController extends Controller
         // terakhir masih bisa menghapus akunnya sendiri dan menyisakan 0 Admin.
         if ($request->user()->isLastAdmin()) {
             return Redirect::route('profile.edit')
-                ->with('error', 'Akun Admin terakhir tidak dapat dihapus.');
+                ->with('error', __('ui.messages.last_admin_cannot_delete'));
         }
 
         $request->validateWithBag('userDeletion', [
@@ -51,6 +64,10 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        if ($user->foto_profil && Storage::disk('public')->exists($user->foto_profil)) {
+            Storage::disk('public')->delete($user->foto_profil);
+        }
 
         Auth::logout();
 

@@ -17,7 +17,7 @@
     }
 
     .table thead th {
-        padding: var(--space-3) var(--space-5);
+        padding: var(--space-2) var(--space-5);
         font-size: 0.75rem;
         font-weight: 500;
         color: var(--color-text-muted);
@@ -40,7 +40,7 @@
     }
 
     .table tbody td {
-        padding: var(--space-3) var(--space-5);
+        padding: var(--space-2) var(--space-5);
         font-size: 0.75rem;
         color: var(--color-text-secondary);
         vertical-align: middle;

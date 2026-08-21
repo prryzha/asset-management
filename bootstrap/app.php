@@ -14,6 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
+
+        // Harus jalan otomatis di setiap request (guest maupun login) supaya
+        // locale yang pernah dipilih tetap berlaku di halaman login juga —
+        // beda dari 'role' yang opt-in per route lewat alias di atas.
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

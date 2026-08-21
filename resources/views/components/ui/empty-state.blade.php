@@ -1,9 +1,13 @@
 @props([
     'icon' => null,
-    'title' => 'Tidak ada data',
+    'title' => null,
     'description' => null,
     'action' => null,
 ])
+
+@php
+    $title = $title ?? __('ui.common.tidak_ada_data');
+@endphp
 
 @php
     // Nama ikon (mis. "package", "users") dipetakan ke path SVG di sini —

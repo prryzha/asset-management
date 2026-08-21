@@ -8,8 +8,8 @@
 
 @include('errors.layout', [
     'code' => '404',
-    'title' => 'Halaman Tidak Ditemukan',
-    'description' => 'Halaman yang Anda cari tidak tersedia atau telah dipindahkan. Periksa kembali alamatnya atau kembali ke beranda.',
+    'title' => __('ui.errors.not_found_title'),
+    'description' => __('ui.errors.not_found_description'),
     'message' => $showMessage ? $customMessage : null,
     'iconBg' => 'bg-warning-500',
     'iconPath' => 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM13 10H7',

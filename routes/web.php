@@ -4,6 +4,8 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetLogController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InstitutionProfileController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MaintenanceScheduleController;
 use App\Http\Controllers\ProfileController;
@@ -15,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Di luar grup auth dengan sengaja — locale harus bisa diganti dari halaman
+// login juga, bukan cuma setelah login.
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
 // Konfirmasi ganti email — sengaja di luar grup `auth` karena link dikirim
 // ke inbox email BARU, yang bisa dibuka dari device/browser tanpa sesi login
@@ -80,6 +86,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+        Route::get('/pengaturan/instansi', [InstitutionProfileController::class, 'edit'])->name('institution-profile.edit');
+        Route::put('/pengaturan/instansi', [InstitutionProfileController::class, 'update'])->name('institution-profile.update');
     });
 
     // Fitur operasional — semua role yang login (admin & staff) berhak akses,

@@ -11,7 +11,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (! $request->user() || ! in_array(strtolower($request->user()->role), array_map('strtolower', $roles))) {
-            abort(403, 'Akses tidak diizinkan.');
+            abort(403, __('ui.errors.access_denied'));
         }
 
         return $next($request);

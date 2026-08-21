@@ -54,11 +54,11 @@ class HeaderNotificationComposer
 
             if ($maintenanceCount > 0) {
                 $sections[] = [
-                    'title' => 'Jadwal Perawatan Lewat Tanggal',
+                    'title' => __('ui.notifications.maintenance_overdue'),
                     'count' => $maintenanceCount,
                     'items' => $maintenance->map(fn($m) => [
-                        'label' => ($m->asset?->kode_barang ?? '(Dihapus)') . ' — ' . $m->asset?->nama_barang,
-                        'sublabel' => 'Jadwal: ' . \Carbon\Carbon::parse($m->tanggal_jadwal)->format('d M Y'),
+                        'label' => ($m->asset?->kode_barang ?? __('ui.notifications.deleted')) . ' — ' . $m->asset?->nama_barang,
+                        'sublabel' => __('ui.notifications.schedule_label', ['date' => \Carbon\Carbon::parse($m->tanggal_jadwal)->translatedFormat('d M Y')]),
                         'url' => route('maintenance.edit', $m),
                     ])->all(),
                     'moreUrl' => null,
@@ -67,7 +67,7 @@ class HeaderNotificationComposer
 
             if ($damagedCount > 0) {
                 $sections[] = [
-                    'title' => 'Aset Rusak Berat',
+                    'title' => __('ui.notifications.damaged_assets'),
                     'count' => $damagedCount,
                     'items' => $damaged->map(fn($a) => [
                         'label' => $a->kode_barang . ' — ' . $a->nama_barang,

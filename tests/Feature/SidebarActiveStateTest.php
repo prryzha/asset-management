@@ -72,4 +72,27 @@ class SidebarActiveStateTest extends TestCase
         $this->assertFalse($this->sidebarLinkIsActive($html, route('transactions.index')), 'Peminjaman tidak boleh ikut aktif.');
         $this->assertFalse($this->sidebarLinkIsActive($html, route('transactions.recap')), 'Rekap Peminjaman tidak boleh ikut aktif.');
     }
+
+    // Profil Instansi hanya muncul untuk admin (link dibungkus
+    // @if(auth()->user()->isAdmin())), jadi butuh actor admin, bukan $staff.
+
+    public function test_institution_profile_page_activates_only_its_own_link(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $html = $this->actingAs($admin)->get(route('institution-profile.edit'))->getContent();
+
+        $this->assertTrue($this->sidebarLinkIsActive($html, route('institution-profile.edit')), 'Profil Instansi harus aktif.');
+        $this->assertFalse($this->sidebarLinkIsActive($html, route('users.index')), 'Manajemen User tidak boleh ikut aktif.');
+    }
+
+    public function test_users_index_still_activates_only_manajemen_user_link(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $html = $this->actingAs($admin)->get(route('users.index'))->getContent();
+
+        $this->assertTrue($this->sidebarLinkIsActive($html, route('users.index')), 'Manajemen User harus aktif.');
+        $this->assertFalse($this->sidebarLinkIsActive($html, route('institution-profile.edit')), 'Profil Instansi tidak boleh ikut aktif.');
+    }
 }

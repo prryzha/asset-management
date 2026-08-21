@@ -82,13 +82,13 @@ class TransactionController extends Controller
 
             if ($asset->status !== 'Tersedia') {
                 throw ValidationException::withMessages([
-                    'asset_id' => 'Aset ini sudah tidak tersedia untuk dipinjam.',
+                    'asset_id' => __('ui.messages.asset_not_available'),
                 ]);
             }
 
             if ($asset->maintenanceSchedules()->where('status', 'Dikerjakan')->exists()) {
                 throw ValidationException::withMessages([
-                    'asset_id' => 'Aset ini sedang dalam perbaikan.',
+                    'asset_id' => __('ui.messages.asset_under_repair'),
                 ]);
             }
 
@@ -121,7 +121,7 @@ class TransactionController extends Controller
         // Asset::forgetStatusCaches().
         Asset::forgetStatusCaches();
 
-        return redirect()->route('transactions.index')->with('success', 'Peminjaman berhasil dicatat.');
+        return redirect()->route('transactions.index')->with('success', __('ui.messages.peminjaman_recorded'));
     }
 
     public function returnItem(Transaction $transaction): RedirectResponse
@@ -131,7 +131,7 @@ class TransactionController extends Controller
 
             if (!in_array($trx->status_peminjaman, ['Dipinjam'])) {
                 throw ValidationException::withMessages([
-                    'transaction' => 'Transaksi ini tidak dapat dikembalikan.',
+                    'transaction' => __('ui.messages.transaction_cannot_be_returned'),
                 ]);
             }
 
@@ -143,7 +143,7 @@ class TransactionController extends Controller
             // yang membangkitkan aset arsip kembali menjadi aktif.
             if ($asset->status === 'Disposed') {
                 throw ValidationException::withMessages([
-                    'transaction' => 'Aset yang sudah Dihapuskan tidak dapat diproses pengembaliannya.',
+                    'transaction' => __('ui.messages.disposed_cannot_return'),
                 ]);
             }
 
@@ -177,7 +177,7 @@ class TransactionController extends Controller
         // status aset. Lihat Asset::forgetStatusCaches().
         Asset::forgetStatusCaches();
 
-        return redirect()->route('transactions.index')->with('success', 'Pengembalian berhasil dicatat.');
+        return redirect()->route('transactions.index')->with('success', __('ui.messages.pengembalian_recorded'));
     }
 
     /**

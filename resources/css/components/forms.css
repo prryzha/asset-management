@@ -11,10 +11,19 @@
         font-family: var(--font-primary);
     }
 
+    /* line-height is the real height driver — same issue documented on
+       .form-input-sm below: with none set here, it silently inherited the
+       Tailwind Forms plugin's fixed 1.5rem (24px) reset (meant for 16px
+       text), computing a 2:1 ratio at this 12px font-size and rendering a
+       46px-tall input (measured in-browser) instead of the ~36px this
+       padding was designed for. Setting it explicitly to the same 1.5
+       ratio .form-input-sm already uses brings every text/number/date/
+       select/file input in the app down to a consistent, compact height. */
     .form-input {
         width: 100%;
-        padding: 0.625rem 0.875rem;
+        padding: 0.5rem 0.875rem;
         font-size: 0.75rem;
+        line-height: 1.5;
         color: var(--color-text);
         background-color: var(--color-surface);
         border: 1px solid var(--color-border);
@@ -42,13 +51,9 @@
         padding-right: var(--space-6);
     }
 
-    /* line-height is the real height driver here, not padding — neither
-       .form-input nor this modifier ever set it, so it silently inherited
-       the Tailwind Forms plugin's fixed 1.5rem (24px) reset (meant for its
-       default 16px text), computing a 2:1 ratio at this 12px font-size and
-       rendering ~38px tall next to .btn-xs's 30px in the same toolbar row.
-       1.5 (relative, matching .btn-xs's own line-height ratio at the same
-       font-size) brings it to line with the buttons beside it. */
+    /* Compact tier for filter/toolbar inputs — same line-height fix as
+       .form-input above, just with tighter padding to land at 32px next to
+       .btn-xs's 30px in the same toolbar row. */
     .form-input-sm {
         padding: 0.375rem 0.625rem;
         font-size: 0.75rem;
@@ -57,7 +62,7 @@
 
     textarea.form-input {
         resize: vertical;
-        min-height: 100px;
+        min-height: 84px;
     }
 
     .form-error {
@@ -131,7 +136,7 @@
        pernah men-set class file:rounded atau file:cursor-* di sini. */
     .form-input[type="file"]::file-selector-button {
         margin-right: 1rem;
-        padding: 0.5rem 1rem;
+        padding: 0.25rem 0.75rem;
         border: 0;
         font-size: 0.75rem;
         font-weight: 400;

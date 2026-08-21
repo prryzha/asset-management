@@ -74,9 +74,9 @@ class UiLanguagePolishTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Profil');
-        // "Informasi Profil" -> "Informasi Dasar" saat halaman Profil
-        // di-upgrade jadi Account Settings (bagian Profil vs Keamanan Akun).
-        $response->assertSee('Informasi Dasar');
+        // "Informasi Dasar" -> "Informasi Profil" saat card ditambah Foto
+        // Profil dan direstruktur jadi satu form (lihat ProfileController).
+        $response->assertSee('Informasi Profil');
         $response->assertSee('Keamanan Akun');
         $response->assertDontSee('>Profile<');
     }

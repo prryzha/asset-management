@@ -1,8 +1,8 @@
 <x-guest-layout>
 
-    <h2 class="text-sm font-normal text-gray-900 mb-1.5">Atur Ulang Password</h2>
+    <h2 class="text-sm font-normal text-gray-900 mb-1.5">{{ __('ui.auth.reset_password_title') }}</h2>
     <p class="text-xs text-gray-600 mb-6">
-        Masukkan password baru untuk akun Anda.
+        {{ __('ui.auth.reset_password_desc') }}
     </p>
 
     @if(session('status'))
@@ -20,7 +20,7 @@
 
         {{-- Email --}}
         <div class="form-group">
-            <label class="form-label">Email</label>
+            <label class="form-label">{{ __('ui.auth.email') }}</label>
             <input
                 type="email"
                 name="email"
@@ -33,8 +33,8 @@
         </div>
 
         {{-- Password Baru --}}
-        <div class="form-group mt-5">
-            <label class="form-label">Password Baru</label>
+        <div class="form-group mt-4">
+            <label class="form-label">{{ __('ui.auth.new_password') }}</label>
             <input
                 type="password"
                 name="password"
@@ -45,8 +45,8 @@
         </div>
 
         {{-- Konfirmasi Password Baru --}}
-        <div class="form-group mt-5">
-            <label class="form-label">Konfirmasi Password Baru</label>
+        <div class="form-group mt-4">
+            <label class="form-label">{{ __('ui.auth.confirm_new_password') }}</label>
             <input
                 type="password"
                 name="password_confirmation"
@@ -59,7 +59,7 @@
         {{-- Submit --}}
         <div class="mt-8">
             <button class="btn-primary w-full">
-                Atur Ulang Password
+                {{ __('ui.auth.reset_password_button') }}
             </button>
         </div>
 

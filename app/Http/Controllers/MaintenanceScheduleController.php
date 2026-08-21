@@ -103,7 +103,7 @@ class MaintenanceScheduleController extends Controller
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Jadwal perawatan berhasil dibuat.');
+            ->with('success', __('ui.messages.maintenance_created'));
     }
 
     public function edit(MaintenanceSchedule $maintenanceSchedule): View|RedirectResponse
@@ -111,7 +111,7 @@ class MaintenanceScheduleController extends Controller
         if ($maintenanceSchedule->status !== 'Dijadwalkan') {
             return redirect()
                 ->route('maintenance.index')
-                ->with('error', 'Hanya jadwal yang belum dimulai yang dapat diubah.');
+                ->with('error', __('ui.messages.maintenance_edit_guard'));
         }
 
         // Aset yang sudah dihapuskan (Disposed) tidak boleh muncul di pilihan aset —
@@ -133,7 +133,7 @@ class MaintenanceScheduleController extends Controller
         if ($maintenanceSchedule->status !== 'Dijadwalkan') {
             return redirect()
                 ->route('maintenance.index')
-                ->with('error', 'Hanya jadwal yang belum dimulai yang dapat diubah.');
+                ->with('error', __('ui.messages.maintenance_edit_guard'));
         }
 
         $validated = $request->validate([
@@ -149,7 +149,7 @@ class MaintenanceScheduleController extends Controller
 
             if ($schedule->status !== 'Dijadwalkan') {
                 throw ValidationException::withMessages([
-                    'maintenance' => 'Hanya jadwal yang belum dimulai yang dapat diubah.',
+                    'maintenance' => __('ui.messages.maintenance_edit_guard'),
                 ]);
             }
 
@@ -168,7 +168,7 @@ class MaintenanceScheduleController extends Controller
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Jadwal perawatan berhasil diperbarui.');
+            ->with('success', __('ui.messages.maintenance_updated'));
     }
 
     public function start(MaintenanceSchedule $maintenanceSchedule): RedirectResponse
@@ -179,7 +179,7 @@ class MaintenanceScheduleController extends Controller
 
             if ($schedule->status !== 'Dijadwalkan') {
                 throw ValidationException::withMessages([
-                    'maintenance' => 'Jadwal ini tidak dapat dimulai.',
+                    'maintenance' => __('ui.messages.maintenance_cannot_start'),
                 ]);
             }
 
@@ -190,7 +190,7 @@ class MaintenanceScheduleController extends Controller
             // "masuk maintenance normal" sama sekali (lihat AssetController::reportLost()).
             if (! in_array($asset->status, ['Tersedia', 'Perbaikan'])) {
                 throw ValidationException::withMessages([
-                    'maintenance' => 'Aset dengan status ' . $this->statusLabel($asset->status) . ' tidak dapat masuk perbaikan.',
+                    'maintenance' => __('ui.messages.maintenance_asset_status_guard', ['status' => $this->statusLabel($asset->status)]),
                 ]);
             }
 
@@ -199,7 +199,7 @@ class MaintenanceScheduleController extends Controller
                 ->where('id', '!=', $schedule->id)
                 ->exists()) {
                 throw ValidationException::withMessages([
-                    'maintenance' => 'Aset ini sudah memiliki perawatan aktif.',
+                    'maintenance' => __('ui.messages.maintenance_already_active'),
                 ]);
             }
 
@@ -232,7 +232,7 @@ class MaintenanceScheduleController extends Controller
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Perawatan berhasil dimulai.');
+            ->with('success', __('ui.messages.maintenance_started'));
     }
 
     public function completeForm(MaintenanceSchedule $maintenanceSchedule): View|RedirectResponse
@@ -240,7 +240,7 @@ class MaintenanceScheduleController extends Controller
         if ($maintenanceSchedule->status !== 'Dikerjakan') {
             return redirect()
                 ->route('maintenance.index')
-                ->with('error', 'Hanya perawatan aktif yang dapat diselesaikan.');
+                ->with('error', __('ui.messages.maintenance_complete_guard'));
         }
 
         $maintenanceSchedule->load('asset');
@@ -262,7 +262,7 @@ class MaintenanceScheduleController extends Controller
 
             if ($schedule->status !== 'Dikerjakan') {
                 throw ValidationException::withMessages([
-                    'maintenance' => 'Maintenance ini sudah tidak aktif.',
+                    'maintenance' => __('ui.messages.maintenance_not_active'),
                 ]);
             }
 
@@ -273,7 +273,7 @@ class MaintenanceScheduleController extends Controller
             // yang tidak konsisten mengubah aset Dihapuskan kembali aktif.
             if ($asset->status === 'Disposed') {
                 throw ValidationException::withMessages([
-                    'maintenance' => 'Aset yang sudah Dihapuskan tidak dapat diselesaikan perawatannya.',
+                    'maintenance' => __('ui.messages.maintenance_disposed_guard'),
                 ]);
             }
 
@@ -318,7 +318,7 @@ class MaintenanceScheduleController extends Controller
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Perawatan berhasil diselesaikan.');
+            ->with('success', __('ui.messages.maintenance_completed'));
     }
 
     public function cancel(MaintenanceSchedule $maintenanceSchedule): RedirectResponse
@@ -326,7 +326,7 @@ class MaintenanceScheduleController extends Controller
         if ($maintenanceSchedule->status !== 'Dijadwalkan') {
             return redirect()
                 ->route('maintenance.index')
-                ->with('error', 'Hanya jadwal yang belum dimulai yang dapat dibatalkan.');
+                ->with('error', __('ui.messages.maintenance_cancel_guard'));
         }
 
         $maintenanceSchedule->update([
@@ -350,7 +350,7 @@ class MaintenanceScheduleController extends Controller
 
         return redirect()
             ->route('maintenance.index')
-            ->with('success', 'Jadwal perawatan berhasil dibatalkan.');
+            ->with('success', __('ui.messages.maintenance_cancelled'));
     }
 
     /**
@@ -360,7 +360,7 @@ class MaintenanceScheduleController extends Controller
      */
     private function statusLabel(string $status): string
     {
-        return $status === 'Disposed' ? 'Dihapuskan' : $status;
+        return __('ui.status.' . $status);
     }
 
     /**
@@ -372,7 +372,7 @@ class MaintenanceScheduleController extends Controller
     {
         if (! in_array($asset->status, ['Tersedia', 'Perbaikan'])) {
             throw ValidationException::withMessages([
-                'asset_id' => 'Aset dengan status ' . $this->statusLabel($asset->status) . ' tidak dapat dijadwalkan untuk perawatan.',
+                'asset_id' => __('ui.messages.maintenance_schedule_status_guard', ['status' => $this->statusLabel($asset->status)]),
             ]);
         }
 
@@ -383,7 +383,7 @@ class MaintenanceScheduleController extends Controller
 
         if ($activeSchedule) {
             throw ValidationException::withMessages([
-                'asset_id' => 'Aset ini sudah memiliki perawatan aktif.',
+                'asset_id' => __('ui.messages.maintenance_already_active'),
             ]);
         }
     }

@@ -55,7 +55,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('categories.index')
-            ->with('success', 'Kategori berhasil ditambahkan.');
+            ->with('success', __('ui.messages.category_created'));
     }
 
     public function edit(Category $category): View
@@ -100,7 +100,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('categories.index')
-            ->with('success', 'Kategori berhasil diperbarui.');
+            ->with('success', __('ui.messages.category_updated'));
     }
 
     public function destroy(Category $category): RedirectResponse
@@ -108,7 +108,7 @@ class CategoryController extends Controller
         if ($category->assets()->exists()) {
             return redirect()
                 ->route('categories.index')
-                ->with('error', 'Kategori yang masih dipakai aset tidak dapat dihapus.');
+                ->with('error', __('ui.messages.category_in_use'));
         }
 
         $name = $category->nama;
@@ -128,6 +128,6 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('categories.index')
-            ->with('success', 'Kategori berhasil dihapus.');
+            ->with('success', __('ui.messages.category_deleted'));
     }
 }

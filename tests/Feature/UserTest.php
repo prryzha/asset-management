@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -78,6 +80,77 @@ class UserTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_create_user_with_username(): void
+    {
+        $response = $this->actingAs($this->admin)
+            ->post(route('users.store'), [
+                'name' => 'New User',
+                'username' => 'new_user',
+                'email' => 'new2@sekolah.test',
+                'password' => 'password',
+                'password_confirmation' => 'password',
+                'role' => 'staff',
+            ]);
+
+        $response->assertRedirect(route('users.index'));
+        $this->assertDatabaseHas('users', ['email' => 'new2@sekolah.test', 'username' => 'new_user']);
+    }
+
+    public function test_admin_can_update_user_username(): void
+    {
+        $user = User::factory()->create(['role' => 'staff', 'username' => null]);
+
+        $response = $this->actingAs($this->admin)
+            ->put(route('users.update', $user), [
+                'name' => $user->name,
+                'username' => 'budi_santoso',
+                'email' => $user->email,
+                'role' => 'staff',
+                'password' => '',
+                'password_confirmation' => '',
+            ]);
+
+        $response->assertSessionHasNoErrors()->assertRedirect(route('users.index'));
+        $this->assertSame('budi_santoso', $user->fresh()->username);
+    }
+
+    public function test_duplicate_username_is_rejected_in_user_management(): void
+    {
+        User::factory()->create(['username' => 'sudah_dipakai']);
+        $user = User::factory()->create(['role' => 'staff']);
+
+        $response = $this->actingAs($this->admin)
+            ->put(route('users.update', $user), [
+                'name' => $user->name,
+                'username' => 'sudah_dipakai',
+                'email' => $user->email,
+                'role' => 'staff',
+                'password' => '',
+                'password_confirmation' => '',
+            ]);
+
+        $response->assertSessionHasErrors('username');
+        $this->assertNull($user->fresh()->username);
+    }
+
+    public function test_user_keeping_their_own_username_on_update_is_allowed(): void
+    {
+        $user = User::factory()->create(['role' => 'staff', 'username' => 'budi_santoso']);
+
+        $response = $this->actingAs($this->admin)
+            ->put(route('users.update', $user), [
+                'name' => 'Nama Baru',
+                'username' => 'budi_santoso',
+                'email' => $user->email,
+                'role' => 'staff',
+                'password' => '',
+                'password_confirmation' => '',
+            ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertSame('budi_santoso', $user->fresh()->username);
+    }
+
     public function test_admin_can_delete_user(): void
     {
         $user = User::factory()->create(['role' => 'staff']);
@@ -87,6 +160,29 @@ class UserTest extends TestCase
 
         $response->assertRedirect(route('users.index'));
 
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    }
+
+    public function test_deleting_user_removes_their_foto_profil_file(): void
+    {
+        Storage::fake('public');
+        $fotoPath = UploadedFile::fake()->image('foto.jpg')->store('avatars', 'public');
+        $user = User::factory()->create(['role' => 'staff', 'foto_profil' => $fotoPath]);
+        Storage::disk('public')->assertExists($fotoPath);
+
+        $this->actingAs($this->admin)->delete(route('users.destroy', $user));
+
+        Storage::disk('public')->assertMissing($fotoPath);
+    }
+
+    public function test_deleting_user_without_foto_profil_does_not_error(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create(['role' => 'staff', 'foto_profil' => null]);
+
+        $response = $this->actingAs($this->admin)->delete(route('users.destroy', $user));
+
+        $response->assertRedirect(route('users.index'));
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 

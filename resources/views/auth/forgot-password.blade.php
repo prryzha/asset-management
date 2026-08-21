@@ -1,8 +1,8 @@
 <x-guest-layout>
 
-    <h2 class="text-sm font-normal text-gray-900 mb-1.5">Lupa Password</h2>
+    <h2 class="text-sm font-normal text-gray-900 mb-1.5">{{ __('ui.auth.forgot_password_title') }}</h2>
     <p class="text-xs text-gray-600 mb-6">
-        Tidak masalah. Masukkan alamat email Anda dan kami akan mengirimkan link untuk mengatur ulang password Anda.
+        {{ __('ui.auth.forgot_password_desc') }}
     </p>
 
     @if(session('status'))
@@ -17,7 +17,7 @@
 
         {{-- Email --}}
         <div class="form-group">
-            <label class="form-label">Email</label>
+            <label class="form-label">{{ __('ui.auth.email') }}</label>
             <input
                 type="email"
                 name="email"
@@ -31,7 +31,7 @@
         {{-- Submit --}}
         <div class="mt-8">
             <button class="btn-primary w-full">
-                Kirim Link Atur Ulang Password
+                {{ __('ui.auth.send_reset_link') }}
             </button>
         </div>
 

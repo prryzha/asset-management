@@ -9,8 +9,8 @@
 
 @include('errors.layout', [
     'code' => '403',
-    'title' => 'Akses Tidak Diizinkan',
-    'description' => 'Anda tidak memiliki izin untuk mengakses halaman ini. Hubungi admin jika menurut Anda ini sebuah kesalahan.',
+    'title' => __('ui.errors.forbidden_title'),
+    'description' => __('ui.errors.forbidden_description'),
     'message' => $showMessage ? $customMessage : null,
     'iconBg' => 'bg-danger-600',
     'iconPath' => 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',

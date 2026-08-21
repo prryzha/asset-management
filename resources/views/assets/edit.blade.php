@@ -1,17 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Ubah Aset')
+@section('title', __('ui.assets.ubah_aset_title'))
 
 @section('content')
 <div class="page-content">
 
-    <x-ui.page-header title="Ubah Aset">
+    <x-ui.page-header :title="__('ui.assets.ubah_aset_title')">
         <x-slot:actions>
-            <a href="{{ route('assets.show', $asset) }}" class="btn-ghost btn-sm">
+            <a href="{{ route('assets.show', $asset) }}" class="btn-ghost btn-icon" title="{{ __('ui.common.kembali') }}" aria-label="{{ __('ui.common.kembali') }}">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
-                Kembali
             </a>
         </x-slot:actions>
     </x-ui.page-header>
@@ -21,16 +20,16 @@
 
         <div class="card">
             <div class="card-header">
-                <h3>Informasi Aset</h3>
+                <h3>{{ __('ui.assets.informasi_aset') }}</h3>
             </div>
             <div class="card-body">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
                     {{-- Kode Barang --}}
                     <div class="form-group">
-                        <label class="form-label">Kode Barang</label>
+                        <label class="form-label">{{ __('ui.assets.kode_barang') }}</label>
                         <div class="flex gap-2">
-                            <input type="text" id="prefix_input" placeholder="Awalan (contoh: MON)"
+                            <input type="text" id="prefix_input" placeholder="{{ __('ui.assets.awalan_placeholder') }}"
                                    class="form-input w-40 uppercase" maxlength="10"
                                    value="{{ explode('-', $asset->kode_barang)[0] ?? '' }}">
                             <input type="text" name="kode_barang" id="kode_barang_input"
@@ -42,9 +41,9 @@
 
                     {{-- Lokasi --}}
                     <div class="form-group">
-                        <label class="form-label">Lokasi</label>
+                        <label class="form-label">{{ __('ui.assets.lokasi') }}</label>
                         <select name="location_id" class="form-input">
-                            <option value="">Pilih Lokasi</option>
+                            <option value="">{{ __('ui.assets.pilih_lokasi') }}</option>
                             @foreach($locations as $location)
                                 <option value="{{ $location->id }}" {{ $asset->location_id == $location->id ? 'selected' : '' }}>{{ $location->nama }}</option>
                             @endforeach
@@ -53,53 +52,53 @@
 
                     {{-- Nama Barang --}}
                     <div class="form-group">
-                        <label class="form-label">Nama Barang</label>
-                        <input type="text" name="nama_barang" value="{{ old('nama_barang', $asset->nama_barang) }}" class="form-input" placeholder="Masukkan nama barang">
+                        <label class="form-label">{{ __('ui.assets.nama_barang') }}</label>
+                        <input type="text" name="nama_barang" value="{{ old('nama_barang', $asset->nama_barang) }}" class="form-input" placeholder="{{ __('ui.assets.nama_barang_placeholder') }}">
                         @error('nama_barang')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
 
                     {{-- Kondisi --}}
                     <div class="form-group">
-                        <label class="form-label">Kondisi</label>
+                        <label class="form-label">{{ __('ui.assets.kondisi') }}</label>
                         <select name="kondisi" class="form-input">
-                            <option value="Baik" {{ $asset->kondisi=='Baik'?'selected':'' }}>Baik</option>
-                            <option value="Kurang Baik" {{ $asset->kondisi=='Kurang Baik'?'selected':'' }}>Kurang Baik</option>
-                            <option value="Rusak Berat" {{ $asset->kondisi=='Rusak Berat'?'selected':'' }}>Rusak Berat</option>
+                            <option value="Baik" {{ $asset->kondisi=='Baik'?'selected':'' }}>{{ __('ui.status.Baik') }}</option>
+                            <option value="Kurang Baik" {{ $asset->kondisi=='Kurang Baik'?'selected':'' }}>{{ __('ui.status.Kurang Baik') }}</option>
+                            <option value="Rusak Berat" {{ $asset->kondisi=='Rusak Berat'?'selected':'' }}>{{ __('ui.status.Rusak Berat') }}</option>
                         </select>
                     </div>
 
                     {{-- Merk --}}
                     <div class="form-group">
-                        <label class="form-label">Merk / Spesifikasi</label>
-                        <input type="text" name="merk" value="{{ old('merk', $asset->merk) }}" class="form-input" placeholder="Masukkan merk">
+                        <label class="form-label">{{ __('ui.assets.merk_spesifikasi') }}</label>
+                        <input type="text" name="merk" value="{{ old('merk', $asset->merk) }}" class="form-input" placeholder="{{ __('ui.assets.merk_placeholder') }}">
                     </div>
 
                     {{-- Nomor Seri --}}
                     <div class="form-group">
-                        <label class="form-label">Nomor Seri</label>
-                        <input type="text" name="nomor_seri" value="{{ old('nomor_seri', $asset->nomor_seri) }}" class="form-input" placeholder="SN-xxx">
+                        <label class="form-label">{{ __('ui.assets.nomor_seri') }}</label>
+                        <input type="text" name="nomor_seri" value="{{ old('nomor_seri', $asset->nomor_seri) }}" class="form-input" placeholder="{{ __('ui.assets.nomor_seri_placeholder') }}">
                     </div>
 
                     {{-- Status (read-only) --}}
                     <div class="form-group">
                         <label class="form-label">Status</label>
-                        <div class="flex items-center h-[42px]">
+                        <div class="flex items-center h-9">
                             <x-ui.badge-status :status="$asset->status" />
                         </div>
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5">
-                            Status ditentukan otomatis oleh proses Peminjaman/Perawatan, bukan diubah manual di sini.
+                            {{ __('ui.assets.status_readonly_hint') }}
                         </p>
                     </div>
 
                     {{-- Penanggung Jawab --}}
                     <div class="form-group">
-                        <label class="form-label">Penanggung Jawab</label>
-                        <input type="text" name="penanggung_jawab" value="{{ old('penanggung_jawab', $asset->penanggung_jawab) }}" class="form-input" placeholder="Nama PIC / pengelola aset">
+                        <label class="form-label">{{ __('ui.assets.penanggung_jawab') }}</label>
+                        <input type="text" name="penanggung_jawab" value="{{ old('penanggung_jawab', $asset->penanggung_jawab) }}" class="form-input" placeholder="{{ __('ui.assets.pic_placeholder') }}">
                     </div>
 
                     {{-- Kategori --}}
                     <div class="form-group">
-                        <label class="form-label">Kategori</label>
+                        <label class="form-label">{{ __('ui.assets.kategori') }}</label>
                         <select name="category_id" class="form-input">
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ $asset->category_id == $category->id ? 'selected' : '' }}>{{ $category->nama }}</option>
@@ -110,43 +109,42 @@
 
                     {{-- Tahun Perolehan --}}
                     <div class="form-group">
-                        <label class="form-label">Tahun Perolehan</label>
+                        <label class="form-label">{{ __('ui.assets.tahun_perolehan') }}</label>
                         <input type="number" min="1900" max="{{ date('Y') }}" name="tahun_perolehan"
                                value="{{ old('tahun_perolehan', $asset->tahun_perolehan) }}" class="form-input">
                     </div>
 
                     {{-- Nilai Perolehan --}}
                     <div class="form-group">
-                        <label class="form-label">Nilai Perolehan (Rp)</label>
+                        <label class="form-label">{{ __('ui.assets.nilai_perolehan_rp') }}</label>
                         <input type="number" min="0" name="nilai_perolehan" value="{{ old('nilai_perolehan', $asset->nilai_perolehan) }}" class="form-input">
                     </div>
 
                     {{-- Catatan --}}
                     <div class="form-group lg:col-span-2">
-                        <label class="form-label">Catatan</label>
-                        <textarea rows="4" name="catatan" class="form-input" placeholder="Catatan tambahan...">{{ old('catatan', $asset->catatan) }}</textarea>
+                        <label class="form-label">{{ __('ui.assets.catatan') }}</label>
+                        <textarea rows="4" name="catatan" class="form-input" placeholder="{{ __('ui.assets.catatan_placeholder') }}">{{ old('catatan', $asset->catatan) }}</textarea>
                     </div>
 
                     {{-- Foto --}}
                     <div class="lg:col-span-2 pt-6 border-t border-default">
-                        <label class="form-label">Foto Aset</label>
+                        <label class="form-label">{{ __('ui.assets.foto_aset') }}</label>
                         <div class="flex items-start gap-6">
                             <div class="flex-1">
                                 <input type="file" name="foto" id="foto_input" accept="image/*" class="form-input">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">Format: JPG, JPEG, PNG. Maks: 2MB</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">{{ __('ui.assets.foto_format_hint') }}</p>
                                 @error('foto')<p class="form-error">{{ $message }}</p>@enderror
                                 @if($asset->foto)
                                 <div class="mt-3">
-                                    <button type="button" id="deleteFotoBtn" class="btn-ghost btn-sm text-danger hover:text-white hover:bg-danger">
+                                    <button type="button" id="deleteFotoBtn" class="btn-ghost btn-icon text-danger hover:text-white hover:bg-danger" title="{{ __('ui.assets.hapus_foto') }}" aria-label="{{ __('ui.assets.hapus_foto') }}">
                                         <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        Hapus Foto
                                     </button>
                                 </div>
                                 @endif
                             </div>
                             <div class="flex-shrink-0">
                                 <div id="foto_current" class="{{ $asset->foto ? '' : 'hidden' }}">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-1.5 font-normal">Foto Saat Ini</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-1.5 font-normal">{{ __('ui.assets.foto_saat_ini') }}</p>
                                     <img src="{{ $asset->foto ? asset('storage/'.$asset->foto) : '' }}" id="foto_current_img"
                                          class="w-32 h-32 object-cover border border-default-strong">
                                 </div>
@@ -162,15 +160,15 @@
 
             <div class="card-footer">
                 <div class="flex items-center justify-end gap-3">
-                    <a href="{{ route('assets.show', $asset) }}" class="btn-secondary btn-sm">Batal</a>
+                    <a href="{{ route('assets.show', $asset) }}" class="btn-secondary btn-sm">{{ __('ui.common.batal') }}</a>
                     <button type="submit" id="submitBtn" class="btn-primary btn-sm">
-                        <span id="submitText">Simpan Perubahan</span>
+                        <span id="submitText">{{ __('ui.common.simpan_perubahan') }}</span>
                         <span id="submitLoading" class="inline-flex items-center gap-2 hidden">
                             <svg class="spinner" viewBox="0 0 24 24" fill="none">
                                 <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                 <path class="spinner-fill" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
                             </svg>
-                            Menyimpan...
+                            {{ __('ui.common.menyimpan') }}
                         </span>
                     </button>
                 </div>
@@ -189,6 +187,9 @@
 
 @push('scripts')
 <script>
+const assetsI18n = @json(__('ui.assets'));
+const commonI18n = @json(__('ui.common'));
+
 // Kode barang
 document.getElementById('prefix_input').addEventListener('input', function() {
     const prefix = this.value.trim().toUpperCase();
@@ -224,14 +225,14 @@ document.getElementById('foto_input').addEventListener('change', function(e) {
 // Delete foto confirmation
 document.getElementById('deleteFotoBtn')?.addEventListener('click', function() {
     Swal.fire({
-        title: 'Hapus Foto?',
-        text: 'Foto aset akan dihapus permanen.',
+        title: assetsI18n.hapus_foto_confirm_title,
+        text: assetsI18n.hapus_foto_confirm_text,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal'
+        confirmButtonText: commonI18n.ya_hapus,
+        cancelButtonText: commonI18n.batal
     }).then((result) => {
         if (result.isConfirmed) document.getElementById('deleteFotoForm').submit();
     });

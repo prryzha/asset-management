@@ -205,10 +205,15 @@
        needs to read as nested under the parent's icon+label, so it's pulled
        out to var(--space-6) (was var(--space-5) — too close to the parent's
        own left edge). Everything else (active state, hover, font-size,
-       vertical padding) still comes from .sidebar-link. */
+       vertical padding) still comes from .sidebar-link.
+       padding-left bumped a bit further past var(--space-6) (24px -> 28px)
+       — the bullet (left:var(--space-4)=16px, width 5px) left only a 3px
+       gap before the label text, which read as the text sitting right on
+       top of the bullet. 28px gives a 7px gap, just enough breathing room
+       without over-indenting relative to the parent row. */
     .sidebar-link-child {
         position: relative;
-        padding-left: var(--space-6);
+        padding-left: 1.75rem;
     }
 
     /* Bullet marker replacing the child icon — plain CSS pseudo-element,

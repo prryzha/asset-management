@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Validation\Rule;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -22,9 +23,11 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'role',
+        'foto_profil',
     ];
 
     /**
@@ -53,6 +56,28 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Satu sumber kebenaran untuk aturan validasi username — dipakai
+     * ProfileUpdateRequest (Profil Saya) dan UserController (Manajemen
+     * User) supaya kedua tempat itu tidak pernah punya aturan yang beda
+     * sendiri-sendiri. $ignoreId adalah id user yang boleh tetap memakai
+     * username-nya sendiri (dirinya sendiri saat update, null saat create).
+     *
+     * @return array<int, mixed>
+     */
+    public static function usernameRules(?int $ignoreId = null): array
+    {
+        return [
+            'nullable',
+            'string',
+            'lowercase',
+            'min:3',
+            'max:30',
+            'regex:/^[a-z0-9_.]+$/',
+            Rule::unique(self::class, 'username')->ignore($ignoreId),
+        ];
     }
 
     /**

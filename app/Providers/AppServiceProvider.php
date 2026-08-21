@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\ActivityLog;
 use App\Observers\ActivityLogObserver;
 use App\View\Composers\HeaderNotificationComposer;
+use App\View\Composers\InstitutionProfileComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -24,8 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Matikan Debugbar secara default — dia开销 banget! Enable hanya kalo butuh debug.
-        // Untuk enable: tambah DEBUGBAR_ENABLED=true di .env
         if (env('DEBUGBAR_ENABLED', false) !== true) {
             config(['debugbar.enabled' => false]);
         }
@@ -36,5 +35,6 @@ class AppServiceProvider extends ServiceProvider
         ActivityLog::observe(ActivityLogObserver::class);
 
         View::composer('layouts.app', HeaderNotificationComposer::class);
+        View::composer('layouts.app', InstitutionProfileComposer::class);
     }
 }
